@@ -42,7 +42,7 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 
 
 ## Tecnologias Utilizadas
-- **Linguagem de Programação:** Node.js versão 18.17.1.
+- **Linguagem de Programação:** Node.js versão 18.17.1
 - **Banco de Dados:** postgreSQL versão 16.3.2
 - **Outras Tecnologias:**
   - Postman versão 11.6.2
