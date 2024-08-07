@@ -51,4 +51,5 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
  
 ## Colaboradores
 - Leonardo Gonçalves Flora
+- Luis Gustavo Morais Cardoso
 - Maicon Querino Jesus de Souza
