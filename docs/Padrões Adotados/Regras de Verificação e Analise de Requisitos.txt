@@ -1,17 +1,40 @@
 Com base no capítulo 1 do livro de Engenharia de Software de Rogério Magela, definimos 3 Regras que o nosso Documento de Requisitos deverá seguir:
 
+---
 
-1. Identificação e Prioritização
-Regra: Especificação Completa (Seção 7.3.2)
+1. Especificação de um Requisito por Vez 
 
-Cada requisito deve ser identificado de forma única, utilizando uma numeração sequencial (por exemplo, RF001 para Requisitos Funcionais e RNF001 para Requisitos Não Funcionais). Além disso, a especificação deve ser completa, cobrindo todos os aspectos necessários para a implementação do sistema sem deixar lacunas. Todos os requisitos devem ser classificados por prioridade (Essencial, Importante, Desejável) para ajudar na organização e no planejamento das fases de desenvolvimento. A completude também implica que todos os requisitos relacionados ao sistema estão devidamente documentados, sem deixar nenhum aspecto importante de fora.
+Regra: Definir um Requisito por Vez (Seção 7.2.1)
+Cada requisito deve ser especificado de forma individual, garantindo que apenas uma funcionalidade ou característica seja descrita por vez. Isso evita confusões e garante que cada requisito seja claro e compreensível por todos os envolvidos no projeto.
 
-2. Clareza e Precisão
-Regra: Especificação Sem Ambiguidade (Seção 7.3.3)
+Exemplo Correto:  
+"O sistema DEVE permitir que os usuários façam login utilizando seu e-mail e senha."
 
-Todos os requisitos devem ser escritos de maneira CLARA e PRECISA para evitar ambiguidades. Cada requisito deve ser formulado de forma que possa ser entendido da mesma maneira por todos os membros da equipe de desenvolvimento e pelas partes interessadas. A ambiguidade deve ser eliminada ao máximo possível, usando uma linguagem simples, direta e sem jargões técnicos desnecessários. Quando necessário, termos técnicos devem ser claramente definidos. A utilização de exemplos e casos de uso pode ajudar a esclarecer a intenção dos requisitos.
+Exemplo Incorreto:  
+"O sistema DEVE permitir que os usuários façam login e redefinam suas senhas utilizando seu e-mail."
 
-3. Verificabilidade
-Regra: Especificação Verificável (Seção 7.3.4)
+---
 
-Todos os requisitos devem ser passíveis de verificação, ou seja, deve ser possível testar ou inspecionar cada requisito para garantir que ele foi corretamente implementado. Isso implica que os requisitos devem ser mensuráveis e testáveis, com critérios de aceitação claros que permitam validar sua correta implementação. A verificabilidade deve ser garantida por meio de objetivos e critérios observáveis. Sempre que possível, os requisitos devem incluir métricas quantitativas que possibilitem a verificação objetiva, como desempenho esperado, tempos de resposta, e outros parâmetros mensuráveis.
+2. Evitar Palavras Ambíguas  
+
+Regra: Especificação Sem Palavras Ambíguas (Seção 7.2.2)
+No documento de requisitos, deve-se evitar o uso de palavras que possam gerar múltiplas interpretações, como "geralmente", "frequentemente", "possivelmente", "aproximadamente", entre outras. Essas palavras tornam os requisitos imprecisos e podem comprometer o desenvolvimento do sistema.
+
+Exemplo Correto:  
+"O sistema DEVE processar até 100 transações por segundo."
+
+Exemplo Incorreto:  
+"O sistema DEVE processar aproximadamente 100 transações por segundo."
+
+---
+
+3. Uso de Frases Concisas  
+
+Regra: Evitar Frases Muito Longas (Seção 7.2.3)
+As frases utilizadas na especificação dos requisitos devem ser curtas e objetivas, evitando construções complexas e longas. Frases curtas são mais fáceis de entender e reduzem o risco de interpretações errôneas.
+
+Exemplo Correto:  
+"O sistema DEVE enviar uma notificação ao usuário após a conclusão da compra."
+
+Exemplo Incorreto:  
+"O sistema DEVE, logo após o usuário concluir a compra, enviar uma notificação que deverá ser recebida por ele em seu e-mail cadastrado e também exibida na tela de confirmação."
