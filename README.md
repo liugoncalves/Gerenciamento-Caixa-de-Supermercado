@@ -40,6 +40,34 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Proteção contra Acesso não Autorizado
 - Organização e Clareza na Leitura
 
+## Estrutura do Projeto
+
+```plaintext
+gerenciamento-caixa-de-supermercado/
+  ├── docs/                    
+  │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
+  │   └── Requisitos/            # Documento de requisitos
+  │
+  ├── node_modules/              # Pacotes e dependências instaladas
+  │
+  ├── src/
+  │   ├── back-end/
+  │   │   ├── controllers/       # Lida com a lógica de controle da aplicação
+  │   │   ├── repositories/      # Comunicação com o banco de dados
+  │   │   ├── routes/            # Define as rotas da aplicação
+  │   │   └── services/          # Lógica de negócios
+  │   │
+  │   └── front-end/
+  │       └── views/             # Templates para renderização no front-end
+  │
+  ├── .gitignore                 # Arquivos e pastas a serem ignorados pelo Git
+  ├── package-lock.json          # Bloqueia as versões exatas das dependências instaladas
+  ├── package.json               # Dependências e scripts do projeto
+  ├── README.md                  # Informações sobre o projeto
+  └── server.js                  # Ponto de entrada da aplicação
+```
+
+
 
 ## Tecnologias Utilizadas
 - **Linguagem de Programação:** Node.js versão 18.17.1
