@@ -1,12 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-
+import funcionarioRouter from './src/back-end/routes/funcionario-route.js';
 const port = 3002;
 const app = express();
 
 app.use(bodyParser.json());
+app.use('/funcionarios', funcionarioRouter);
 
-// Adicionar uma rota básica
+// rota base
 app.get('/', (req, res) => {
     res.send('Olá, mundo!');
 });
