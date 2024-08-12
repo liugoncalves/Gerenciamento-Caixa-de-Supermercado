@@ -43,7 +43,7 @@ async function CadastrarFuncionario(funcionario) {
 
     // Validar salário
     if (funcionario.salario <= 0) {
-        throw new Error('O salário deve ser um valor positivo');
+        throw new Error('O salário deve ser maior que zero.');
     }
 
     // Criptografa a senha

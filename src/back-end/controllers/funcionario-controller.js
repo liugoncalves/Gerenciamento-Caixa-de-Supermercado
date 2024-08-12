@@ -32,7 +32,7 @@ async function CadastrarFuncionario(req, res) {
         let resultado = await funcionarioService.CadastrarFuncionario(funcionario);
         res.status(201).send(resultado);
     } catch (error) {
-        res.status(500).send(`Erro ao cadastrar funcionário: ${error.message}`);
+        res.status(500).send(`${error.message}`);
     }
 }
 
