@@ -1,2 +1,2 @@
-# Ignore the node_modules directory
+# Ignorar o diretório node_modules ao realizar operações GIT
 node_modules/
