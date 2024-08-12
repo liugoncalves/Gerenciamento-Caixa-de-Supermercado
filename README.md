@@ -66,8 +66,35 @@ gerenciamento-caixa-de-supermercado/
   ├── README.md                  # Informações sobre o projeto
   └── server.js                  # Ponto de entrada da aplicação
 ```
+## Definições de Pastas
+- **Documentação**: Deve estar na pasta `docs/`. Além de incluir padrões adotados e requisitos.
+- **Código**: Deve estar na pasta `src/`. Além disso, ter pastas separadas para desenvolvimento de `back-end` e `front-end`.
+  
+## Estrutura de Branches
+- **`main`**: Branch principal que deve sempre refletir o estado estável e final do projeto. Não deve ser usada para desenvolvimento diário.
+- **`development`**: Branch de desenvolvimento onde novas funcionalidades e correções devem ser implementadas. Os merges para `main` devem ser feitos apenas quando todas as funcionalidades e testes estiverem completos e a aplicação estiver estável.
 
+## Regras de Commit
+- **Mensagens de Commit**: Para organizar melhor o histórico do projeto e garantir uma compreensão mais clara dos commits, será utilizado um formato de mensagem que identifica o tipo do commit:
 
+  **Tipos**:
+  - `feat`: Nova funcionalidade
+  - `fix`: Correção de bug
+  - `docs`: Alterações na documentação
+  - `style`: Alterações que não afetam o funcionamento do código (formatação, espaços, etc.)
+  - `refactor`: Refatoração de código sem alterar funcionalidades
+  - `test`: Adição ou correção de testes
+  - `chore`: Alterações administrativas e de manutenção do projeto
+
+  **Exemplos de Mensagens para commit**:
+  - `"[feat]: implementado o método para buscar cliente por CPF"`
+  - `"[fix]: correção do erro na consulta de clientes ativos"`
+  - `"[docs]: atualização no Documento de Requisitos (Dicionário de Dados) - todos os tipos DATE se tornaram TIMESTAMP"`
+  - `"[docs]: adicionadas informações sobre novos requisitos no README"`
+  - `"[style]: ajuste na formatação e indentação no código do controller"`
+  - `"[refactor]: reorganização de métodos de manipulação de clientes"`
+  - `"[test]: correção de testes para consulta de clientes ativos"`
+  - `"[chore]: atualização das dependências do projeto para as versões mais recentes"`
 
 ## Tecnologias Utilizadas
 - **Linguagem de Programação:** Node.js versão 18.17.1
