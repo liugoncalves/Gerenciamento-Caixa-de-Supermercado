@@ -7,6 +7,6 @@ router.post('/cadastrar', funcionarioController.CadastrarFuncionario);
 router.get('/listar-funcionarios', funcionarioController.ListarFuncionarios);
 router.get('/consultar-funcionario/:cpf', funcionarioController.ConsultarFuncionario);
 router.put('/alterar-funcionario/:cpf', funcionarioController.AlterarFuncionario);
-router.delete('/excluir-funcionario/:cpf', funcionarioController.ExcluirFuncionario);
+router.delete('/deletar-funcionario/:cpf', funcionarioController.DeletarFuncionario);
 
 export default router;

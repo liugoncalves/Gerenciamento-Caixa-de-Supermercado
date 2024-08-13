@@ -102,7 +102,7 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
     }
 }
 
-async function ExcluirFuncionario(cpf){
+async function DeletarFuncionario(cpf){
     const conn = await conectar();
 
     try{
@@ -134,4 +134,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , ExcluirFuncionario };
+export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario: DeletarFuncionario };

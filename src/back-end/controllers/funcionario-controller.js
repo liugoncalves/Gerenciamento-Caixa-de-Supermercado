@@ -62,7 +62,7 @@ async function AlterarFuncionario(req, res) {
     }
 }
 
-async function ExcluirFuncionario(req, res) {
+async function DeletarFuncionario(req, res) {
     let cpf = req.params.cpf;
 
     if (!cpf) {
@@ -70,7 +70,7 @@ async function ExcluirFuncionario(req, res) {
     }
 
     try {
-        let resultado = await funcionarioService.ExcluirFuncionario(cpf);
+        let resultado = await funcionarioService.DeletarFuncionario(cpf);
         res.status(200).send(resultado);
     } catch (error) {
         res.status(500).send(`${error.message}`);
@@ -100,4 +100,4 @@ function validarDadosFuncionario(funcionario) {
 
 
 
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, ExcluirFuncionario };
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario: DeletarFuncionario };
