@@ -3,7 +3,7 @@ import funcionarioController from '../controllers/funcionario-controller.js';
 
 const router = express.Router();
 
-router.post('/cadastrar', funcionarioController.CadastrarFuncionario);
+router.post('/cadastrar-funcionario', funcionarioController.CadastrarFuncionario);
 router.get('/listar-funcionarios', funcionarioController.ListarFuncionarios);
 router.get('/consultar-funcionario/:cpf', funcionarioController.ConsultarFuncionario);
 router.put('/alterar-funcionario/:cpf', funcionarioController.AlterarFuncionario);

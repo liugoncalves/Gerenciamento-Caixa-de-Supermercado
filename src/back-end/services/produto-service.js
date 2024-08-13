@@ -1,0 +1,1 @@
+import produtoRepository from '../repositories/produto-repository';

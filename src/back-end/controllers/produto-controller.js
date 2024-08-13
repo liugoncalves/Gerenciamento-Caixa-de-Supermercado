@@ -1,0 +1,1 @@
+import produtoService from '../services/produto-service.js';
