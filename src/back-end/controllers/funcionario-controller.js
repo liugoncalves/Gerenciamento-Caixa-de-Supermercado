@@ -40,4 +40,23 @@ async function ListarFuncionarios(req, res){
     res.send(await funcionarioService.ListarFuncionarios());
 }
 
-export default {CadastrarFuncionario, ListarFuncionarios};
+async function ConsultarFuncionario(req, res) {
+    let cpf = req.params.cpf;
+
+    if (!cpf) {
+        return res.status(400).send('Digite um CPF para realizar a busca.');
+    }
+
+    try {
+        const resultado = await funcionarioService.ConsultarFuncionario(cpf);
+        if (!resultado) {
+            return res.status(404).send('Funcionário não encontrado.');
+        }
+        res.send(resultado);
+    } catch (error) {
+        res.status(500).send(`Erro ao consultar funcionário: ${error.message}`);
+    }
+}
+
+
+export default {CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario};

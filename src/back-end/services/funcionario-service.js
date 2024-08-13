@@ -65,4 +65,8 @@ async function ListarFuncionarios() {
     return await funcionarioRepository.ListarFuncionarios();
 }
 
-export default { CadastrarFuncionario, ListarFuncionarios };
+async function ConsultarFuncionario(cpf) {
+    return await funcionarioRepository.ConsultarFuncionario(cpf);
+}
+
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario };
