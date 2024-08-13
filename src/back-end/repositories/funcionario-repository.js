@@ -10,7 +10,7 @@ async function CadastrarFuncionario(funcionario) {
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
             RETURNING codigo;
         `;
-        const query = await conn.query(sql, [
+        const resultado = await conn.query(sql, [
             funcionario.cpf,
             funcionario.nome,
             funcionario.email,
@@ -19,8 +19,8 @@ async function CadastrarFuncionario(funcionario) {
             funcionario.salario
         ]);
         
-        // Retorna o ID do funcionário inserido
-        return { codigo: query.rows[0].codigo };
+        // Retorna Mensagem de Sucesso
+        return { mensagem: 'Funcionário cadastrado com sucesso.' };
 
     } catch (err) {
         throw new Error('Erro ao cadastrar funcionário: ' + err.message);
@@ -29,37 +29,43 @@ async function CadastrarFuncionario(funcionario) {
     }
 }
 
-
 async function ListarFuncionarios() {
     const conn = await conectar();
 
     try {
-        var sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionario";
-        var query = await conn.query(sql);
+        const sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionario";
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum funcionário cadastrado.' };
+        }
+
+        return resultado.rows;
     } catch (err) {
-        console.log(err);
+        throw new Error('Erro ao listar funcionários: ' + err.message);
     } finally {
         conn.release();
     }
-
-    return query.rows;
 }
 
 async function ConsultarFuncionario(cpf) {
     const conn = await conectar();
 
     try {
-        var sql = "SELECT * FROM funcionario WHERE cpf = $1";
-        var query = await conn.query(sql, [cpf]);
+        const sql = "SELECT * FROM funcionario WHERE cpf = $1";
+        const resultado = await conn.query(sql, [cpf]);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Funcionário não encontrado.' };
+        }
+
+        return resultado.rows[0];
 
     } catch (err) {
-        console.log(err);
-        throw err;
+        throw new Error('Erro ao consultar funcionário: ' + err.message);
     } finally {
         conn.release();
     }
-
-    return query.rows[0];
 }
 
 async function AlterarFuncionario(cpf_antigo, funcionario) {
@@ -76,22 +82,26 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
             funcionario.cpf,
             funcionario.nome,
             funcionario.email,
-            funcionario.senha,  // Senha já deve estar criptografada pelo serviço
+            funcionario.senha,
             funcionario.cargo,
             funcionario.salario,
-            cpf_antigo  // CPF antigo para identificar o funcionário a ser alterado
+            cpf_antigo
         ];
         const resultado = await conn.query(sql, valores);
-        return resultado.rows[0];
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Funcionário não encontrado para alteração.' };
+        }
+
+        return { mensagem: 'Funcionário alterado com sucesso.'};
+         
     } catch (error) {
-        console.error('Erro ao alterar funcionário:', error);
-        throw error;
+        throw new Error('Erro ao alterar funcionário: ' + error.message);
     } finally {
         conn.release();
     }
 }
 
-    
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"

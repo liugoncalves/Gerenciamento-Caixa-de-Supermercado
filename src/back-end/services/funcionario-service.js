@@ -59,15 +59,19 @@ async function CriptografarSenha(senha) { // Função para criptografar a senha
 //...............................................//
 
 async function CadastrarFuncionario(funcionario) {
-    if (!ValidarCPF(funcionario.cpf)) {
-        throw new Error('CPF inválido');
+    try {
+        if (!ValidarCPF(funcionario.cpf)) {
+            throw new Error('CPF inválido');
+        }
+
+        ValidarSalario(funcionario.salario);
+        funcionario.senha = await CriptografarSenha(funcionario.senha);
+
+        return await funcionarioRepository.CadastrarFuncionario(funcionario);
+
+    } catch (error) {
+        throw new Error(`Erro ao cadastrar funcionário: ${error.message}`);
     }
-
-    ValidarSalario(funcionario.salario);
-
-    funcionario.senha = await CriptografarSenha(funcionario.senha);
-
-    return await funcionarioRepository.CadastrarFuncionario(funcionario);
 }
 
 async function ListarFuncionarios() {
@@ -79,16 +83,19 @@ async function ConsultarFuncionario(cpf) {
 }
 
 async function AlterarFuncionario(cpf_antigo, funcionario) {
-    if (!ValidarCPF(funcionario.cpf)) {
-        throw new Error('CPF inválido');
+    try {
+        if (!ValidarCPF(funcionario.cpf)) {
+            throw new Error('CPF inválido');
+        }
+
+        ValidarSalario(funcionario.salario);
+        funcionario.senha = await CriptografarSenha(funcionario.senha);
+
+        return await funcionarioRepository.AlterarFuncionario(cpf_antigo, funcionario);
+
+    } catch (error) {
+        throw new Error(`Erro ao alterar funcionário: ${error.message}`);
     }
-
-    ValidarSalario(funcionario.salario);
-
-    funcionario.senha = await CriptografarSenha(funcionario.senha);
-
-    return await funcionarioRepository.AlterarFuncionario(cpf_antigo, funcionario);
 }
-
 
 export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario };

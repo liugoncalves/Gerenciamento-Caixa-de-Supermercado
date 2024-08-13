@@ -71,7 +71,7 @@ function validarDadosFuncionario(funcionario) {
     }
     
     if (!['gerente', 'vendedor'].includes(cargo)) {
-        return 'Cargo inválido.';
+        return 'Cargo inválido. Escolha entre "gerente" e "vendedor".';
     }
     
     if (salario <= 0) {
