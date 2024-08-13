@@ -28,6 +28,21 @@ async function CadastrarFuncionario(funcionario) {
     }
 }
 
+async function ListarFuncionarios() {
+    const conn = await conectar();
+
+    try {
+        var sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionario";
+        var query = await conn.query(sql);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
+    }
+
+    return query.rows;
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -41,4 +56,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario };
+export default { CadastrarFuncionario , ListarFuncionarios };

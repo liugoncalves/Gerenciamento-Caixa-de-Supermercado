@@ -36,4 +36,8 @@ async function CadastrarFuncionario(req, res) {
     }
 }
 
-export default {CadastrarFuncionario};
+async function ListarFuncionarios(req, res){
+    res.send(await funcionarioService.ListarFuncionarios());
+}
+
+export default {CadastrarFuncionario, ListarFuncionarios};
