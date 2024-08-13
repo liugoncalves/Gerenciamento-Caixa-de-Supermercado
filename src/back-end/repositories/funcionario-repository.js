@@ -102,6 +102,25 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
     }
 }
 
+async function ExcluirFuncionario(cpf){
+    const conn = await conectar();
+
+    try{
+        const sql = "DELETE FROM funcionario WHERE cpf = $1";
+        var query = await conn.query(sql, [cpf]);
+        
+        if (query.rowCount === 0) {
+            return { mensagem: 'Funcionário não encontrado para exclusão.' };
+        }
+        return { mensagem: 'Funcionário excluído com sucesso.' };
+    
+    } catch (err) {
+        throw new Error('Erro ao excluir funcionário: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -115,4 +134,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario };
+export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , ExcluirFuncionario };

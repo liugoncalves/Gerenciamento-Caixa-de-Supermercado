@@ -62,6 +62,23 @@ async function AlterarFuncionario(req, res) {
     }
 }
 
+async function ExcluirFuncionario(req, res) {
+    let cpf = req.params.cpf;
+
+    if (!cpf) {
+        return res.status(400).send('Digite um CPF para realizar a exclusão.');
+    }
+
+    try {
+        let resultado = await funcionarioService.ExcluirFuncionario(cpf);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+
+
+}
+
 // Função para validar os dados do funcionário e evitar duplicação de código
 function validarDadosFuncionario(funcionario) {
     const { cpf, nome, email, senha, cargo, salario } = funcionario;
@@ -82,4 +99,5 @@ function validarDadosFuncionario(funcionario) {
 }
 
 
-export default {CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario};
+
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, ExcluirFuncionario };

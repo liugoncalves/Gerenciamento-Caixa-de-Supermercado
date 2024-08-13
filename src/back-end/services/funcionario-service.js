@@ -98,4 +98,25 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
     }
 }
 
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario };
+async function ExcluirFuncionario(cpf) {
+
+    try{
+        if (!ValidarCPF(cpf)) {
+            throw new Error('CPF inválido');
+        }
+        
+    // Verificar se o funcionário não realizou vendas, retirando informações da tabela venda
+
+        /*if (await funcionarioRepository.ConsultarVenda(cpf)) {
+        throw new Error('Funcionário não pode ser excluído, pois realizou vendas.');
+        }*/
+
+        return await funcionarioRepository.ExcluirFuncionario(cpf);
+
+    } catch (error) {
+        throw new Error(`Erro ao excluir funcionário: ${error.message}`);
+    }
+
+}
+
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario , ExcluirFuncionario };
