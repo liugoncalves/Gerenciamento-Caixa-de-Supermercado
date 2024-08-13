@@ -2,31 +2,14 @@ import funcionarioService from '../services/funcionario-service.js';
 
 async function CadastrarFuncionario(req, res) {
     const { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
-
-    // Validação dos Dados  
-    if (!cpf || !nome || !email || !senha || !cargo || !salario) {
-        return res.status(400).send('Todos os campos são obrigatórios.');
-    }
     
-    if (!['gerente', 'vendedor'].includes(cargo)) {
-        return res.status(400).send('Cargo inválido.');
-    }
-    
-    if (salario <= 0) {
-        return res.status(400).send('Salário deve ser maior que zero.');
-    }
+    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
 
-    //....................................................................//
-
-    const funcionario = {
-        cpf,
-        nome,
-        email,
-        senha,
-        cargo,
-        salario,
-        data_admissao
-    };
+    // Validação dos Dados
+    const erroValidacao = validarDadosFuncionario(funcionario);
+    if (erroValidacao) {
+        return res.status(400).send(erroValidacao);
+    }
 
     try {
         let resultado = await funcionarioService.CadastrarFuncionario(funcionario);
@@ -35,6 +18,7 @@ async function CadastrarFuncionario(req, res) {
         res.status(500).send(`${error.message}`);
     }
 }
+
 
 async function ListarFuncionarios(req, res){
     res.send(await funcionarioService.ListarFuncionarios());
@@ -58,5 +42,44 @@ async function ConsultarFuncionario(req, res) {
     }
 }
 
+async function AlterarFuncionario(req, res) {
+    let cpf_antigo = req.params.cpf;
+    let { cpf, nome, email, senha, cargo, salario, dataAdmissao } = req.body;
 
-export default {CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario};
+    const funcionario = { cpf, nome, email, senha, cargo, salario, dataAdmissao };
+
+    // Validação dos Dados
+    const erroValidacao = validarDadosFuncionario(funcionario);
+    if (erroValidacao) {
+        return res.status(400).send(erroValidacao);
+    }
+
+    try {
+        let resultado = await funcionarioService.AlterarFuncionario(cpf_antigo, funcionario);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
+// Função para validar os dados do funcionário e evitar duplicação de código
+function validarDadosFuncionario(funcionario) {
+    const { cpf, nome, email, senha, cargo, salario } = funcionario;
+
+    if (!cpf || !nome || !email || !senha || !cargo || !salario) {
+        return 'Todos os campos são obrigatórios.';
+    }
+    
+    if (!['gerente', 'vendedor'].includes(cargo)) {
+        return 'Cargo inválido.';
+    }
+    
+    if (salario <= 0) {
+        return 'Salário deve ser maior que zero.';
+    }
+
+    return null;
+}
+
+
+export default {CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario};

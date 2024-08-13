@@ -1,3 +1,4 @@
+import { query } from 'express';
 import pg from 'pg';
 
 async function CadastrarFuncionario(funcionario) {
@@ -5,9 +6,9 @@ async function CadastrarFuncionario(funcionario) {
 
     try {
         const sql = `
-            INSERT INTO funcionario (CPF, Nome, Email, Senha, Cargo, Salario, DataAdmissao)
+            INSERT INTO funcionario (cpf, nome, email, senha, cargo, salario, dataAdmissao)
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
-            RETURNING Codigo
+            RETURNING codigo;
         `;
         const query = await conn.query(sql, [
             funcionario.cpf,
@@ -27,6 +28,7 @@ async function CadastrarFuncionario(funcionario) {
         conn.release();
     }
 }
+
 
 async function ListarFuncionarios() {
     const conn = await conectar();
@@ -60,6 +62,36 @@ async function ConsultarFuncionario(cpf) {
     return query.rows[0];
 }
 
+async function AlterarFuncionario(cpf_antigo, funcionario) {
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            UPDATE funcionario 
+            SET cpf = $1, nome = $2, email = $3, senha = $4, cargo = $5, salario = $6
+            WHERE cpf = $7
+            RETURNING *;
+        `;
+        const valores = [
+            funcionario.cpf,
+            funcionario.nome,
+            funcionario.email,
+            funcionario.senha,  // Senha já deve estar criptografada pelo serviço
+            funcionario.cargo,
+            funcionario.salario,
+            cpf_antigo  // CPF antigo para identificar o funcionário a ser alterado
+        ];
+        const resultado = await conn.query(sql, valores);
+        return resultado.rows[0];
+    } catch (error) {
+        console.error('Erro ao alterar funcionário:', error);
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+
+    
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -73,4 +105,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario };
+export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario };
