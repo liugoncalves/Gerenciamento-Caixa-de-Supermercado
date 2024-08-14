@@ -65,6 +65,37 @@ async function ConsultarProduto(codigo) {
     }
 }
 
+async function AlterarProduto(codigo_antigo, produto) {
+    const conn = await conectar();
+
+    try{
+        const sql = `
+            UPDATE produtos
+            SET codigo = $1, nome = $2, valor = $3, quantidade = $4
+            WHERE codigo = $5
+            RETURNING codigo;
+        `;
+        const resultado = await conn.query(sql, [
+            produto.codigo,
+            produto.nome,
+            produto.valor,
+            produto.quantidade,
+            codigo_antigo
+        ]);
+
+        if(resultado.rowCount === 0){
+            return { mensagem: 'Produto não encontrado para alteração.' };
+        }
+
+        return { mensagem: 'Produto alterado com sucesso.' };
+    
+    } catch (err) {
+        throw new Error('Erro ao alterar produto: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -78,4 +109,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto };
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto };

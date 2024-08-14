@@ -40,6 +40,25 @@ async function ConsultarProduto(req, res){
     }
 }
 
+async function AlterarProduto(req, res){
+    let codigo_antigo = req.params.codigo;
+    let { codigo, nome, valor, quantidade } = req.body;
+
+    const produto = { codigo, nome, valor, quantidade };
+
+    const erroValidacao = await ValidarDadosProduto(produto);
+    if (erroValidacao){
+        return res.status(400).send(erroValidacao);
+    }
+
+    try {
+        let resultado = await produtoService.AlterarProduto(codigo_antigo, produto);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 async function ValidarDadosProduto(produto){
     if (!produto.codigo || !produto.nome || !produto.valor || !produto.quantidade){
         return 'Informe todos os campos para cadastrar um produto.';
@@ -60,4 +79,4 @@ async function ValidarDadosProduto(produto){
     
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto };
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto };

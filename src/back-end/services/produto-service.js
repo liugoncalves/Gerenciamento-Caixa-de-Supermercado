@@ -16,4 +16,12 @@ async function ConsultarProduto(codigo){
     return await produtoRepository.ConsultarProduto(codigo);
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto };
+async function AlterarProduto(codigo_antigo, produto){
+    try {
+        return await produtoRepository.AlterarProduto(codigo_antigo, produto);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto };
