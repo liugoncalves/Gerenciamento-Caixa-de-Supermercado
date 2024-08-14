@@ -3,6 +3,6 @@ import produtoController from '../controllers/produto-controller.js';
 
 const router = express.Router();
 
-router.post('/cadastrar-produto', produtoController.CadastrarProduto);
+router.post('/cadastrar', produtoController.CadastrarProduto);
 
 export default router;

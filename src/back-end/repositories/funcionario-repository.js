@@ -6,7 +6,7 @@ async function CadastrarFuncionario(funcionario) {
 
     try {
         const sql = `
-            INSERT INTO funcionario (cpf, nome, email, senha, cargo, salario, dataAdmissao)
+            INSERT INTO funcionarios (cpf, nome, email, senha, cargo, salario, dataAdmissao)
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
             RETURNING codigo;
         `;
@@ -33,7 +33,7 @@ async function ListarFuncionarios() {
     const conn = await conectar();
 
     try {
-        const sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionario";
+        const sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionarios";
         const resultado = await conn.query(sql);
 
         if (resultado.rowCount === 0) {
@@ -52,7 +52,7 @@ async function ConsultarFuncionario(cpf) {
     const conn = await conectar();
 
     try {
-        const sql = "SELECT * FROM funcionario WHERE cpf = $1";
+        const sql = "SELECT * FROM funcionarios WHERE cpf = $1";
         const resultado = await conn.query(sql, [cpf]);
 
         if (resultado.rowCount === 0) {
@@ -73,7 +73,7 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
 
     try {
         const sql = `
-            UPDATE funcionario 
+            UPDATE funcionarios 
             SET cpf = $1, nome = $2, email = $3, senha = $4, cargo = $5, salario = $6
             WHERE cpf = $7
             RETURNING *;
@@ -106,7 +106,7 @@ async function DeletarFuncionario(cpf){
     const conn = await conectar();
 
     try{
-        const sql = "DELETE FROM funcionario WHERE cpf = $1";
+        const sql = "DELETE FROM funcionarios WHERE cpf = $1";
         var query = await conn.query(sql, [cpf]);
         
         if (query.rowCount === 0) {

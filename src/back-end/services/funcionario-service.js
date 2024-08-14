@@ -70,7 +70,7 @@ async function CadastrarFuncionario(funcionario) {
         return await funcionarioRepository.CadastrarFuncionario(funcionario);
 
     } catch (error) {
-        throw new Error(`Erro ao cadastrar funcionário: ${error.message}`);
+        throw new Error(error.message);
     }
 }
 
