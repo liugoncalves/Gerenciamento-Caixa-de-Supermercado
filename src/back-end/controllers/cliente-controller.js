@@ -19,6 +19,10 @@ async function CadastrarCliente(req, res){
 
 }
 
+async function ListarClientes(req, res){
+    res.send(await clienteService.ListarClientes());
+}
+
 function validarDadosCliente(cliente){
     const {nome, cpf, telefone, email} = cliente;
 
@@ -33,4 +37,4 @@ function validarDadosCliente(cliente){
     return null;
 }
 
-export default {CadastrarCliente};
+export default {CadastrarCliente, ListarClientes};

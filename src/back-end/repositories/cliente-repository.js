@@ -25,6 +25,26 @@ async function CadastrarCliente(cliente) {
     }
 }
 
+async function ListarClientes(){
+    const conn = await conectar();
+
+    try{
+        const sql = 'SELECT cpf, nome, telefone, email, TO_CHAR(dataCadastro, \'YYYY-MM-DD HH24:MI:SS\') as dataCadastro FROM clientes';
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Nenhum cliente cadastrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao listar clientes: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -38,4 +58,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarCliente };
+export default { CadastrarCliente , ListarClientes };

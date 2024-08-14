@@ -40,6 +40,7 @@ async function ListarFuncionarios() {
         }
 
         return resultado.rows;
+        
     } catch (err) {
         throw new Error('Erro ao listar funcionários: ' + err.message);
     } finally {

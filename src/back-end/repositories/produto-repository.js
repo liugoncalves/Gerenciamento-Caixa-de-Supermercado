@@ -38,6 +38,7 @@ async function ListarProdutos() {
         }
 
         return resultado.rows;
+        
     } catch (err) {
         throw new Error('Erro ao listar produtos: ' + err.message);
     } finally {

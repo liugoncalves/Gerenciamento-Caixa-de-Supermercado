@@ -52,4 +52,8 @@ async function CadastrarCliente(cliente){
     }
 }
 
-export default { CadastrarCliente };
+async function ListarClientes(){
+    return await clienteRepository.ListarClientes();
+}
+
+export default { CadastrarCliente , ListarClientes };
