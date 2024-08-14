@@ -26,6 +26,25 @@ async function CadastrarProduto(produto) {
     }
 }
 
+async function ListarProdutos() {
+    const conn = await conectar();
+
+    try {
+        const sql = "SELECT codigo, nome, valor, quantidade FROM produtos";
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum produto cadastrado.' };
+        }
+
+        return resultado.rows;
+    } catch (err) {
+        throw new Error('Erro ao listar produtos: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -39,4 +58,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarProduto };
+export default { CadastrarProduto , ListarProdutos };

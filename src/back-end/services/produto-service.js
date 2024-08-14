@@ -8,4 +8,8 @@ async function CadastrarProduto(produto){
     }
 }
 
-export default { CadastrarProduto };
+async function ListarProdutos(){
+    return await produtoRepository.ListarProdutos();
+}
+
+export default { CadastrarProduto , ListarProdutos };

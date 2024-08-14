@@ -18,6 +18,10 @@ async function CadastrarProduto(req, res){
     }
 }
 
+async function ListarProdutos(req, res){
+    res.send(await produtoService.ListarProdutos());
+}
+
 async function ValidarDadosProduto(produto){
     if (!produto.codigo || !produto.nome || !produto.valor || !produto.quantidade){
         return 'Informe todos os campos para cadastrar um produto.';
@@ -38,4 +42,4 @@ async function ValidarDadosProduto(produto){
     
 }
 
-export default { CadastrarProduto };
+export default { CadastrarProduto , ListarProdutos };

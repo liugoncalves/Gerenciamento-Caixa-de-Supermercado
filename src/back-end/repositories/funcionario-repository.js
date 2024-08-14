@@ -4,7 +4,7 @@ import pg from 'pg';
 async function CadastrarFuncionario(funcionario) {
     const conn = await conectar();
 
-    try {
+    try{
         const sql = `
             INSERT INTO funcionarios (cpf, nome, email, senha, cargo, salario, dataAdmissao)
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
@@ -19,7 +19,6 @@ async function CadastrarFuncionario(funcionario) {
             funcionario.salario
         ]);
         
-        // Retorna Mensagem de Sucesso
         return { mensagem: 'Funcionário cadastrado com sucesso.' };
 
     } catch (err) {
