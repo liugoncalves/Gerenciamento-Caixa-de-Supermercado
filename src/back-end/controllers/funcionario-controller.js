@@ -44,9 +44,9 @@ async function ConsultarFuncionario(req, res) {
 
 async function AlterarFuncionario(req, res) {
     let cpf_antigo = req.params.cpf;
-    let { cpf, nome, email, senha, cargo, salario, dataAdmissao } = req.body;
+    let { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
 
-    const funcionario = { cpf, nome, email, senha, cargo, salario, dataAdmissao };
+    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
 
     // Validação dos Dados
     const erroValidacao = validarDadosFuncionario(funcionario);

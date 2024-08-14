@@ -41,6 +41,25 @@ async function ConsultarCliente(req, res){
     }
 }
 
+async function AlterarCliente(req, res){
+    let cpf_antigo = req.params.cpf;
+    let {nome, cpf, telefone, email, data_cadastro} = req.body;
+
+    const cliente = {nome, cpf, telefone, email, data_cadastro};
+
+    const erroValidacao = validarDadosCliente(cliente);
+    if (erroValidacao){
+        return res.status(400).send(erroValidacao);
+    }
+
+    try {
+        let resultado = await clienteService.AlterarCliente(cpf_antigo, cliente);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 function validarDadosCliente(cliente){
     const {nome, cpf, telefone, email} = cliente;
 
@@ -55,4 +74,4 @@ function validarDadosCliente(cliente){
     return null;
 }
 
-export default {CadastrarCliente, ListarClientes, ConsultarCliente};
+export default {CadastrarCliente, ListarClientes, ConsultarCliente, AlterarCliente};

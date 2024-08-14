@@ -69,6 +69,38 @@ async function ConsultarCliente(cpf){
     }
 }
 
+async function AlterarCliente(cpf_antigo, cliente){
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            UPDATE clientes
+            SET cpf = $1, nome = $2, telefone = $3, email = $4
+            WHERE cpf = $5
+            RETURNING *;
+        `;
+        const valores = [
+            cliente.cpf,
+            cliente.nome,
+            cliente.telefone,
+            cliente.email,
+            cpf_antigo
+        ];
+        const resultado = await conn.query(sql, valores);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Cliente não encontrado.' };
+        }
+
+        return { mensagem: 'Cliente alterado com sucesso.' };
+
+    } catch (err) {
+        throw new Error('Erro ao alterar cliente: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -82,4 +114,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente };
+export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente };

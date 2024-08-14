@@ -60,4 +60,16 @@ async function ConsultarCliente(cpf){
     return await clienteRepository.ConsultarCliente(cpf);
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente };
+async function AlterarCliente(cpf_antigo, cliente){
+    try {
+        if (!ValidarCPF(cliente.cpf)){
+            throw new Error('CPF inválido.');
+        }
+
+        return await clienteRepository.AlterarCliente(cpf_antigo, cliente);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente };
