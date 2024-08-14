@@ -59,6 +59,21 @@ async function AlterarProduto(req, res){
     }
 }
 
+async function DeletarProduto(req, res){
+    let codigo = req.params.codigo;
+
+    if (!codigo){
+        return res.status(400).send('Digite um código para realizar a exclusão.');
+    }
+
+    try {
+        let resultado = await produtoService.DeletarProduto(codigo);
+        res.send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 async function ValidarDadosProduto(produto){
     if (!produto.codigo || !produto.nome || !produto.valor || !produto.quantidade){
         return 'Informe todos os campos para cadastrar um produto.';
@@ -79,4 +94,4 @@ async function ValidarDadosProduto(produto){
     
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto };
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto , DeletarProduto };

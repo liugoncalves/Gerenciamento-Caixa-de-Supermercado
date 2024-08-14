@@ -96,6 +96,26 @@ async function AlterarProduto(codigo_antigo, produto) {
     }
 }
 
+async function DeletarProduto(codigo) {
+    const conn = await conectar();
+
+    try{
+        const sql = "DELETE FROM produtos WHERE codigo = $1";
+        const resultado = await conn.query(sql, [codigo]);
+
+        if(resultado.rowCount === 0){
+            return { mensagem: 'Produto não encontrado para exclusão.' };
+        }
+
+        return { mensagem: 'Produto excluído com sucesso.' };
+    
+    } catch (err) {
+        throw new Error('Erro ao excluir produto: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -109,4 +129,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto };
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto , DeletarProduto };

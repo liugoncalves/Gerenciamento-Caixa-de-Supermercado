@@ -99,13 +99,12 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
 }
 
 async function DeletarFuncionario(cpf) {
-
     try{
         if (!ValidarCPF(cpf)) {
             throw new Error('CPF inválido');
         }
 
-    // Verificar se o funcionário não realizou vendas, retirando informações da tabela venda
+        // Verificar se o funcionário não realizou vendas, retirando informações da tabela venda
 
         /*if (await funcionarioRepository.ConsultarVenda(cpf)) {
         throw new Error('Funcionário não pode ser excluído, pois realizou vendas.');
@@ -114,7 +113,7 @@ async function DeletarFuncionario(cpf) {
         return await funcionarioRepository.DeletarFuncionario(cpf);
 
     } catch (error) {
-        throw new Error(`Erro ao excluir funcionário: ${error.message}`);
+        throw new Error(error.message);
     }
 
 }
