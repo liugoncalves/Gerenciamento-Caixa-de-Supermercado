@@ -12,4 +12,8 @@ async function ListarProdutos(){
     return await produtoRepository.ListarProdutos();
 }
 
-export default { CadastrarProduto , ListarProdutos };
+async function ConsultarProduto(codigo){
+    return await produtoRepository.ConsultarProduto(codigo);
+}
+
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto };

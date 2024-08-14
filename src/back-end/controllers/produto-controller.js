@@ -22,6 +22,24 @@ async function ListarProdutos(req, res){
     res.send(await produtoService.ListarProdutos());
 }
 
+async function ConsultarProduto(req, res){
+    let codigo = req.params.codigo;
+
+    if (!codigo){
+        return res.status(400).send('Digite um código para realizar a busca.');
+    }
+
+    try {
+        const resultado = await produtoService.ConsultarProduto(codigo);
+        if (!resultado){
+            return res.status(404).send('Produto não encontrado.');
+        }
+        res.send(resultado);
+    } catch (error) {
+        res.status(500).send(`Erro ao consultar produto: ${error.message}`);
+    }
+}
+
 async function ValidarDadosProduto(produto){
     if (!produto.codigo || !produto.nome || !produto.valor || !produto.quantidade){
         return 'Informe todos os campos para cadastrar um produto.';
@@ -42,4 +60,4 @@ async function ValidarDadosProduto(produto){
     
 }
 
-export default { CadastrarProduto , ListarProdutos };
+export default { CadastrarProduto , ListarProdutos , ConsultarProduto };
