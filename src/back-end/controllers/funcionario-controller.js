@@ -84,11 +84,15 @@ function validarDadosFuncionario(funcionario) {
     const { cpf, nome, email, senha, cargo, salario } = funcionario;
 
     if (!cpf || !nome || !email || !senha || !cargo || !salario) {
-        return 'Todos os campos são obrigatórios.';
+        return 'Preencha todos os campos.';
     }
     
     if (!['gerente', 'vendedor'].includes(cargo)) {
         return 'Cargo inválido. Escolha entre "gerente" e "vendedor".';
+    }
+
+    if (cpf.length !== 11) {
+        return 'O CPF deve conter 11 dígitos.';
     }
     
     if (salario <= 0) {

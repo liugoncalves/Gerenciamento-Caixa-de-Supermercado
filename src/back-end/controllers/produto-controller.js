@@ -76,7 +76,7 @@ async function DeletarProduto(req, res){
 
 async function ValidarDadosProduto(produto){
     if (!produto.codigo || !produto.nome || !produto.valor || !produto.quantidade){
-        return 'Informe todos os campos para cadastrar um produto.';
+        return 'Preencha todos os campos.';
     }
 
     if (produto.valor <= 0){
