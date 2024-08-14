@@ -23,6 +23,24 @@ async function ListarClientes(req, res){
     res.send(await clienteService.ListarClientes());
 }
 
+async function ConsultarCliente(req, res){
+    const cpf = req.params.cpf;
+
+    if (!cpf){
+        return res.status(400).send('Digite um CPF para realizar a busca.');
+    }
+
+    try {
+        const resultado = await clienteService.ConsultarCliente(cpf);
+        if (!resultado){
+            return res.status(404).send('Cliente não encontrado.');
+        }
+        res.send(resultado);
+    } catch (error) {
+        res.status(500).send(`Erro ao consultar cliente: ${error.message}`);
+    }
+}
+
 function validarDadosCliente(cliente){
     const {nome, cpf, telefone, email} = cliente;
 
@@ -37,4 +55,4 @@ function validarDadosCliente(cliente){
     return null;
 }
 
-export default {CadastrarCliente, ListarClientes};
+export default {CadastrarCliente, ListarClientes, ConsultarCliente};

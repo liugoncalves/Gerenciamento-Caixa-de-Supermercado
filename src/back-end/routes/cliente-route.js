@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/cadastrar', clienteController.CadastrarCliente);
 router.get('/listar', clienteController.ListarClientes);
+router.get('/consultar/:cpf', clienteController.ConsultarCliente);
 
 export default router;

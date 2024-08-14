@@ -45,6 +45,30 @@ async function ListarClientes(){
     }
 }
 
+async function ConsultarCliente(cpf){
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            SELECT cpf, nome, telefone, email, TO_CHAR(dataCadastro, 'YYYY-MM-DD HH24:MI:SS') as dataCadastro
+            FROM clientes
+            WHERE cpf = $1
+        `;
+        const resultado = await conn.query(sql, [cpf]);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Cliente não encontrado.' };
+        }
+
+        return resultado.rows[0];
+
+    } catch (err) {
+        throw new Error('Erro ao consultar cliente: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -58,4 +82,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarCliente , ListarClientes };
+export default { CadastrarCliente , ListarClientes , ConsultarCliente };

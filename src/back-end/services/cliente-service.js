@@ -56,4 +56,8 @@ async function ListarClientes(){
     return await clienteRepository.ListarClientes();
 }
 
-export default { CadastrarCliente , ListarClientes };
+async function ConsultarCliente(cpf){
+    return await clienteRepository.ConsultarCliente(cpf);
+}
+
+export default { CadastrarCliente , ListarClientes , ConsultarCliente };

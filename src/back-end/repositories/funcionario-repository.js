@@ -40,7 +40,7 @@ async function ListarFuncionarios() {
         }
 
         return resultado.rows;
-        
+
     } catch (err) {
         throw new Error('Erro ao listar funcionários: ' + err.message);
     } finally {
@@ -52,7 +52,12 @@ async function ConsultarFuncionario(cpf) {
     const conn = await conectar();
 
     try {
-        const sql = "SELECT * FROM funcionarios WHERE cpf = $1";
+        const sql = `
+            SELECT cpf, nome, email, senha, cargo, salario, 
+                   TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao 
+            FROM funcionarios 
+            WHERE cpf = $1
+        `;
         const resultado = await conn.query(sql, [cpf]);
 
         if (resultado.rowCount === 0) {
