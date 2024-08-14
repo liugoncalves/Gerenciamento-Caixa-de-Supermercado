@@ -101,6 +101,26 @@ async function AlterarCliente(cpf_antigo, cliente){
     }
 }
 
+async function DeletarCliente(cpf){
+    const conn = await conectar();
+
+    try {
+        const sql = 'DELETE FROM clientes WHERE cpf = $1';
+        const resultado = await conn.query(sql, [cpf]);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Cliente não encontrado para exclusão.' };
+        }
+
+        return { mensagem: 'Cliente deletado com sucesso.' };
+
+    } catch (err) {
+        throw new Error('Erro ao deletar cliente: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -114,4 +134,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente };
+export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente , DeletarCliente };

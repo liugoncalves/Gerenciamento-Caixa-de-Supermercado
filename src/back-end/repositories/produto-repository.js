@@ -38,7 +38,7 @@ async function ListarProdutos() {
         }
 
         return resultado.rows;
-        
+
     } catch (err) {
         throw new Error('Erro ao listar produtos: ' + err.message);
     } finally {
@@ -108,10 +108,10 @@ async function DeletarProduto(codigo) {
             return { mensagem: 'Produto não encontrado para exclusão.' };
         }
 
-        return { mensagem: 'Produto excluído com sucesso.' };
+        return { mensagem: 'Produto deletado com sucesso.' };
     
     } catch (err) {
-        throw new Error('Erro ao excluir produto: ' + err.message);
+        throw new Error('Erro ao deletar produto: ' + err.message);
     } finally {
         conn.release();
     }

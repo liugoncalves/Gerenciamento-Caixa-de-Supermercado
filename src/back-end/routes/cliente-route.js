@@ -7,5 +7,6 @@ router.post('/cadastrar', clienteController.CadastrarCliente);
 router.get('/listar', clienteController.ListarClientes);
 router.get('/consultar/:cpf', clienteController.ConsultarCliente);
 router.put('/alterar/:cpf', clienteController.AlterarCliente);
+router.delete('/deletar/:cpf', clienteController.DeletarCliente);
 
 export default router;

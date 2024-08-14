@@ -72,4 +72,23 @@ async function AlterarCliente(cpf_antigo, cliente){
     }
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente };
+async function DeletarCliente(cpf){
+    try{
+        if (!ValidarCPF(cpf)){
+            throw new Error('CPF inválido.');
+        }
+
+        // Verificar se o cliente não realizou nenhuma compra
+        /* if (await clienteRepository.ConsultarCompra(cpf)){
+            throw new Error('Cliente não pode ser deletado pois realizou compras.');
+        } */
+
+        return await clienteRepository.DeletarCliente(cpf);
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+
+}
+
+export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente , DeletarCliente };

@@ -117,10 +117,11 @@ async function DeletarFuncionario(cpf){
         if (query.rowCount === 0) {
             return { mensagem: 'Funcionário não encontrado para exclusão.' };
         }
-        return { mensagem: 'Funcionário excluído com sucesso.' };
+
+        return { mensagem: 'Funcionário deletado com sucesso.' };
     
     } catch (err) {
-        throw new Error('Erro ao excluir funcionário: ' + err.message);
+        throw new Error('Erro ao deletar funcionário: ' + err.message);
     } finally {
         conn.release();
     }

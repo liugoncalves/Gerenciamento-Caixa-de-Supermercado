@@ -60,6 +60,21 @@ async function AlterarCliente(req, res){
     }
 }
 
+async function DeletarCliente(req, res){
+    let cpf = req.params.cpf;
+
+    if (!cpf){
+        return res.status(400).send('Digite um CPF para realizar a exclusão.');
+    }
+
+    try {
+        let resultado = await clienteService.DeletarCliente(cpf);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 function validarDadosCliente(cliente){
     const {nome, cpf, telefone, email} = cliente;
 
@@ -74,4 +89,4 @@ function validarDadosCliente(cliente){
     return null;
 }
 
-export default {CadastrarCliente, ListarClientes, ConsultarCliente, AlterarCliente};
+export default {CadastrarCliente, ListarClientes, ConsultarCliente, AlterarCliente, DeletarCliente};
