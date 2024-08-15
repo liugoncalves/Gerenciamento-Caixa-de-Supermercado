@@ -109,6 +109,26 @@ async function AlterarEndereco(codigo_antigo, endereco){
     }
 }
 
+async function DeletarEndereco(codigo){
+    const conn = await conectar();
+
+    try {
+        const sql = 'DELETE FROM enderecos WHERE codigo = $1';
+        const resultado = await conn.query(sql, [codigo]);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Endereço não encontrado para exclusão.' };
+        }
+        
+
+        return { mensagem: 'Endereço excluído com sucesso.' };
+
+    } catch (err) {
+        throw new Error('Erro ao excluir endereço: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -123,4 +143,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco , DeletarEndereco };

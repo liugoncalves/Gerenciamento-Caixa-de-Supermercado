@@ -60,6 +60,21 @@ async function AlterarEndereco(req, res){
     }
 }
 
+async function DeletarEndereco(req, res){
+    let codigo = req.params.codigo;
+
+    if (!codigo){
+        return res.status(400).send('Digite um código para realizar a exclusão.');
+    }
+
+    try {
+        let resultado = await enderecoService.DeletarEndereco(codigo);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 function validarDadosEndereco(endereco){
     const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = endereco;
 
@@ -92,4 +107,4 @@ function validarDadosEndereco(endereco){
 
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco , DeletarEndereco };
