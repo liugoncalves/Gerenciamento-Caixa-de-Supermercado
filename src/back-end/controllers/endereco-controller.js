@@ -41,6 +41,25 @@ async function ConsultarEndereco(req, res){
     }
 }
 
+async function AlterarEndereco(req, res){
+    let codigo_antigo = req.params.codigo;
+    let {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = req.body;
+
+    const endereco = {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente};
+
+    const erroValidacao = validarDadosEndereco(endereco);
+    if (erroValidacao){
+        return res.status(400).send(erroValidacao);
+    }
+
+    try {
+        let resultado = await enderecoService.AlterarEndereco(codigo_antigo, endereco);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 function validarDadosEndereco(endereco){
     const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = endereco;
 
@@ -73,4 +92,4 @@ function validarDadosEndereco(endereco){
 
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco };

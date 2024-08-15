@@ -74,6 +74,42 @@ async function ConsultarEndereco(codigo){
     }
 }
 
+async function AlterarEndereco(codigo_antigo, endereco){
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            UPDATE enderecos
+            SET nome_rua = $1, numero = $2, complemento = $3, bairro = $4, cidade = $5, estado = $6, cep = $7, cpf_cliente = $8
+            WHERE codigo = $9
+        `;
+        const resultado = await conn.query(sql, [
+            endereco.nome_rua,
+            endereco.numero,
+            endereco.complemento,
+            endereco.bairro,
+            endereco.cidade,
+            endereco.estado,
+            endereco.cep,
+            endereco.cpf_cliente,
+            codigo_antigo
+        ]);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Endereço não encontrado para alteração.' };
+        }
+
+        return { mensagem: 'Endereço alterado com sucesso.' };
+
+    }
+    catch (err) {
+        throw new Error('Erro ao alterar endereço: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -87,4 +123,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco };

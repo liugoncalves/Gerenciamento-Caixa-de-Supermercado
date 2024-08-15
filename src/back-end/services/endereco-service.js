@@ -1,4 +1,5 @@
 import enderecoRepository from '../repositories/endereco-repository.js';
+import clienteRepository from '../repositories/cliente-repository.js';
 
 // Regras de negócio
 function ValidarCPF(cpf) {
@@ -65,4 +66,21 @@ async function ConsultarEndereco(codigo){
     return await enderecoRepository.ConsultarEndereco(codigo);
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };
+async function AlterarEndereco(codigo_antigo, endereco){
+    try {
+        if (!ValidarCPF(endereco.cpf_cliente)){
+            throw new Error('CPF inválido.');
+        }
+
+        if (endereco.cep < 0){
+            throw new Error('CEP inválido.');
+        }
+
+        return await enderecoRepository.AlterarEndereco(codigo_antigo, endereco);
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco };
