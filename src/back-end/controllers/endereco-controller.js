@@ -19,6 +19,10 @@ async function CadastrarEndereco(req, res){
 
 }
 
+async function ListarEnderecos(req, res){
+    res.send(await enderecoService.ListarEnderecos());
+}
+
 function validarDadosEndereco(endereco){
     const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = endereco;
 
@@ -51,4 +55,4 @@ function validarDadosEndereco(endereco){
 
 }
 
-export default { CadastrarEndereco };
+export default { CadastrarEndereco , ListarEnderecos };

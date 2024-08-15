@@ -30,6 +30,25 @@ async function CadastrarEndereco(endereco) {
     }
 }	
 
+async function ListarEnderecos(){
+    const conn = await conectar();
+
+    try{
+        const sql = 'SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente FROM enderecos';
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Nenhum endereço cadastrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao listar endereços: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -44,4 +63,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco };
+export default { CadastrarEndereco , ListarEnderecos };
