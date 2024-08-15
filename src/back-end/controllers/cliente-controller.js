@@ -37,7 +37,7 @@ async function ConsultarCliente(req, res){
         }
         res.send(resultado);
     } catch (error) {
-        res.status(500).send(`Erro ao consultar cliente: ${error.message}`);
+        res.status(500).send(error.message);
     }
 }
 

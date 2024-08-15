@@ -61,4 +61,8 @@ async function ListarEnderecos(){
     return await enderecoRepository.ListarEnderecos();
 }
 
-export default { CadastrarEndereco , ListarEnderecos };
+async function ConsultarEndereco(codigo){
+    return await enderecoRepository.ConsultarEndereco(codigo);
+}
+
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };

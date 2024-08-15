@@ -23,6 +23,24 @@ async function ListarEnderecos(req, res){
     res.send(await enderecoService.ListarEnderecos());
 }
 
+async function ConsultarEndereco(req, res){
+    const codigo = req.params.codigo;
+
+    if (!codigo){
+        return res.status(400).send('Digite um código para realizar a busca.');
+    }
+
+    try {
+        const resultado = await enderecoService.ConsultarEndereco(codigo);
+        if (!resultado){
+            return res.status(404).send('Endereço não encontrado.');
+        }
+        res.send(resultado);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 function validarDadosEndereco(endereco){
     const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = endereco;
 
@@ -55,4 +73,4 @@ function validarDadosEndereco(endereco){
 
 }
 
-export default { CadastrarEndereco , ListarEnderecos };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };

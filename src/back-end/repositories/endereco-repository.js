@@ -50,6 +50,30 @@ async function ListarEnderecos(){
     }
 }
 
+async function ConsultarEndereco(codigo){
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente
+            FROM enderecos
+            WHERE codigo = $1
+        `;
+        const resultado = await conn.query(sql, [codigo]);
+
+        if (resultado.rowCount === 0){
+            return { mensagem: 'Endereço não encontrado.' };
+        }
+
+        return resultado.rows[0];
+
+    } catch (err) {
+        throw new Error('Erro ao consultar endereço: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -63,4 +87,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco , ListarEnderecos };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco };
