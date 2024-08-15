@@ -78,7 +78,7 @@ async function DeletarCliente(req, res){
 function validarDadosCliente(cliente){
     const {nome, cpf, telefone, email} = cliente;
 
-    if (!nome || !cpf || !telefone || !email){ // se
+    if (!nome || !cpf || !telefone || !email){ 
         return 'Preecnha todos os campos.';
     }
 

@@ -8,7 +8,6 @@ async function CadastrarCliente(cliente) {
         const sql = `
             INSERT INTO clientes (cpf, nome, telefone, email, dataCadastro)
             VALUES ($1, $2, $3, $4, NOW())
-            RETURNING codigo;
         `;
         const resultado = await conn.query(sql, [
             cliente.cpf,

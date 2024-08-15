@@ -8,7 +8,6 @@ async function CadastrarFuncionario(funcionario) {
         const sql = `
             INSERT INTO funcionarios (cpf, nome, email, senha, cargo, salario, dataAdmissao)
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
-            RETURNING codigo;
         `;
         const resultado = await conn.query(sql, [
             funcionario.cpf,
