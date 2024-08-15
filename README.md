@@ -38,7 +38,7 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Gerar Relatório em menos de 1 segundo
 - Tempo de resposta na Autenticação
 - Proteção contra Acesso não Autorizado
-- Organização e Clareza na Leitura
+- Organização e consistência 
 
 ## Estrutura do Projeto
 
