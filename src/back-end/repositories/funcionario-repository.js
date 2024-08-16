@@ -126,6 +126,31 @@ async function DeletarFuncionario(cpf){
     }
 }
 
+async function ConsultarPorEmail(email) {
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            SELECT cpf, nome, email, senha, cargo, salario, 
+                   TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao 
+            FROM funcionarios 
+            WHERE email = $1
+        `;
+        const resultado = await conn.query(sql, [email]);
+
+        if (resultado.rowCount === 0) {
+            return null;
+        }
+
+        return resultado.rows[0];
+
+    } catch (err) {
+        throw new Error('Erro ao consultar funcionário: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function conectar(){
     const pool = new pg.Pool({
         connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
@@ -139,4 +164,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario: DeletarFuncionario };
+export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, ConsultarPorEmail };

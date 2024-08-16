@@ -79,6 +79,26 @@ async function DeletarFuncionario(req, res) {
 
 }
 
+async function RealizarLogin(req, res) {
+    const { email, senha } = req.body;
+
+    // Verificação inicial dos dados
+    if (!email || !senha) {
+        return res.status(400).send('Preencha todos os campos.');
+    }
+
+    try {
+        const resultado = await funcionarioService.RealizarLogin(email, senha);
+        if (!resultado) {
+            return res.status(401).send('Credenciais incorretas.');
+        }
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
+
 // Função para validar os dados do funcionário e evitar duplicação de código
 function validarDadosFuncionario(funcionario) {
     const { cpf, nome, email, senha, cargo, salario } = funcionario;
@@ -103,5 +123,4 @@ function validarDadosFuncionario(funcionario) {
 }
 
 
-
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario: DeletarFuncionario };
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario , RealizarLogin };

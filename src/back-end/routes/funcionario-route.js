@@ -9,4 +9,6 @@ router.get('/consultar/:cpf', funcionarioController.ConsultarFuncionario);
 router.put('/alterar/:cpf', funcionarioController.AlterarFuncionario);
 router.delete('/deletar/:cpf', funcionarioController.DeletarFuncionario);
 
+router.post('/login', funcionarioController.RealizarLogin);
+
 export default router;

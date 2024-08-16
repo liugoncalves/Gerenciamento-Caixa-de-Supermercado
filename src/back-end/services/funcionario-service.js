@@ -118,4 +118,26 @@ async function DeletarFuncionario(cpf) {
 
 }
 
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario: DeletarFuncionario };
+async function RealizarLogin(email, senha) {
+    try {
+        const funcionario = await funcionarioRepository.ConsultarPorEmail(email);
+        if (!funcionario) {
+            throw new Error('E-mail não cadastrado.');
+        }
+
+        const senhaValida = await bcrypt.compare(senha, funcionario.senha);
+        if (!senhaValida) {
+            throw new Error('Senha inválida.');
+        }
+
+        // Retornar dados relevantes do funcionário, como o cargo
+        return {
+            mensagem: 'Login realizado com sucesso.',
+            cargo: funcionario.cargo,
+        };
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, RealizarLogin };
