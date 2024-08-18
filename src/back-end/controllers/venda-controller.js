@@ -19,8 +19,26 @@ async function RealizarVenda (req, res){
     }
 }
 
-async function ListarVendas (req, res){
+async function ListarVendas(req, res){
     res.send(await vendaService.ListarVendas());
+}
+
+async function ConsultarVenda(req, res){
+    let codigo = req.params.codigo
+
+    if(!codigo){
+        return res.status(400).send('Digite um código para realizar a busca.');
+    }
+
+    try{
+        const resultado = await vendaService.ConsultarVenda(codigo);
+        if(!resultado){
+            return res.status(400).send("Venda não encontrada.");
+        }
+        res.send(resultado);
+    } catch (error){
+        res.status(500).send(`Erro ao consultar venda: ${error.message}`);
+    }
 }
 
 function validarDadosVenda(venda){
@@ -42,4 +60,4 @@ function validarDadosVenda(venda){
 
 }
 
-export default {RealizarVenda, ListarVendas};
+export default {RealizarVenda, ListarVendas, ConsultarVenda};

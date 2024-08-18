@@ -58,5 +58,9 @@ async function ListarVendas(){
     return await vendaRepository.ListarVendas();
 }
 
+async function ConsultarVenda(codigo){
+    return await vendaRepository.ConsultarVenda(codigo);
+}
 
-export default { RealizarVenda , ListarVendas}
+
+export default { RealizarVenda , ListarVendas, ConsultarVenda};

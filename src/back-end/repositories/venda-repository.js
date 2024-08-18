@@ -54,6 +54,32 @@ async function ListarVendas() {
     }
 }
 
+async function ConsultarVenda(codigo){
+    const conn = await conectar();
+
+    try{
+               const sql = `
+            SELECT Codigo, CPF_Cliente, CPF_Funcionario, CodigoProduto, Quantidade,
+                    TO_CHAR(DataVenda, 'YYYY/MM/DD HH24:MI:SS') AS DataVenda,
+                    ValorTotal
+            FROM VENDAS
+            WHERE codigo = $1
+        `;
+
+        const resultado = await conn.query(sql, [codigo]);
+
+        if(resultado.rowCount == 0){
+            return { mensagem: 'Venda não encontrada'};
+        }
+
+        return resultado.rows[0];
+
+    } catch(err){
+        throw new Error ('Erro ao consultar venda: ' + err.message);
+    } finally{
+        conn.release();
+    }
+}
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -68,4 +94,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default {CadastrarVenda, ListarVendas}
+export default {CadastrarVenda, ListarVendas, ConsultarVenda};
