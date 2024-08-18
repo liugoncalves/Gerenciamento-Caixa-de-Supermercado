@@ -74,6 +74,39 @@ async function ConsultarEndereco(codigo){
     }
 }
 
+async function ConsultarEnderecoPorCPF(cpf) {
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            SELECT 
+                nome_rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                cep
+            FROM enderecos
+            WHERE cpf_cliente = $1;
+        `;
+
+        const resultado = await conn.query(sql, [cpf]);
+
+        if (resultado.rows.length === 0) {
+            return null; // Nenhum endereço encontrado para o CPF fornecido
+        }
+
+        return resultado.rows[0]; // Retorna o endereço encontrado
+
+    } catch (error) {
+        throw new Error(`Erro ao consultar o endereço: ${error.message}`);
+    } finally {
+        conn.release();
+    }
+}
+
+
 async function AlterarEndereco(codigo_antigo, endereco){
     const conn = await conectar();
 
@@ -143,4 +176,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco , DeletarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , ConsultarEnderecoPorCPF, AlterarEndereco , DeletarEndereco };

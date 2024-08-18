@@ -4,6 +4,7 @@ import funcionarioRouter from './src/back-end/routes/funcionario-route.js';
 import produtoRouter from './src/back-end/routes/produto-route.js';
 import clienteRouter from './src/back-end/routes/cliente-route.js';
 import enderecoRouter from './src/back-end/routes/endereco-route.js';
+import vendaRouter from './src/back-end/routes/venda-route.js';
 
 const port = 3002;
 const app = express();
@@ -13,6 +14,7 @@ app.use('/funcionarios', funcionarioRouter);
 app.use('/produtos', produtoRouter);
 app.use('/clientes', clienteRouter);
 app.use('/enderecos', enderecoRouter);
+app.use('/vendas', vendaRouter);
 
 // rota base
 app.get('/', (req, res) => {
