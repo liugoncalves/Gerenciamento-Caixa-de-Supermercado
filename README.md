@@ -46,7 +46,9 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 gerenciamento-caixa-de-supermercado/
   ├── docs/                    
   │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
-  │   └── Requisitos/            # Documento de requisitos
+  │   ├── Requisitos/            # Documento de requisitos
+  │   ├── Diagramas/             # Contém todos os diagramas do projeto
+  │   └── Regras de Codificação/ # Regras e padrões de codificação adotados
   │
   ├── node_modules/              # Pacotes e dependências instaladas
   │
