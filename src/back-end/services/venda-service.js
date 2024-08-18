@@ -54,5 +54,9 @@ async function RealizarVenda(venda) {
     }
 }
 
+async function ListarVendas(){
+    return await vendaRepository.ListarVendas();
+}
 
-export default { RealizarVenda };
+
+export default { RealizarVenda , ListarVendas}

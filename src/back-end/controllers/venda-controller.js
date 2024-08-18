@@ -19,6 +19,10 @@ async function RealizarVenda (req, res){
     }
 }
 
+async function ListarVendas (req, res){
+    res.send(await vendaService.ListarVendas());
+}
+
 function validarDadosVenda(venda){
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = venda;
 
@@ -38,4 +42,4 @@ function validarDadosVenda(venda){
 
 }
 
-export default {RealizarVenda};
+export default {RealizarVenda, ListarVendas};

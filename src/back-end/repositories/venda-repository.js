@@ -27,6 +27,33 @@ async function CadastrarVenda(venda) {
         }
 }
 
+async function ListarVendas() {
+    const conn = await conectar();
+
+    try {
+        // SQL para listar vendas com data formatada
+        const sql = `
+            SELECT Codigo, CPF_Cliente, CPF_Funcionario, CodigoProduto, Quantidade,
+                    TO_CHAR(DataVenda, 'YYYY/MM/DD HH24:MI:SS') AS DataVenda,
+                    ValorTotal
+            FROM VENDAS
+        `;
+
+        const resultado = await conn.query(sql);
+
+        if(resultado.rowCount == 0 ){
+            return { mensagem: 'Nenhuma venda registrada.'};
+        }
+
+        return resultado.rows;  
+
+    } catch (err){
+        throw new Error ('Erro ao listar vendas: ' + err.message)
+    } finally{
+        conn.release();
+    }
+}
+
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -41,4 +68,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default {CadastrarVenda}
+export default {CadastrarVenda, ListarVendas}
