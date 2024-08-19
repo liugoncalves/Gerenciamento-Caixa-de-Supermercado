@@ -46,6 +46,35 @@ async function ListarProdutos() {
     }
 }
 
+async function OrdenarListaProdutos(criterio) {
+    const conn = await conectar();
+
+    try {
+        // Define a cláusula ORDER BY com base no critério fornecido
+        let sql = 'SELECT codigo, nome, valor, quantidade FROM produtos';
+        if (criterio === 'nome') {
+            sql += ' ORDER BY nome';
+        } else if (criterio === 'codigo') {
+            sql += ' ORDER BY codigo';
+        } else {
+            throw new Error('Critério de ordenação inválido.');
+        }
+        
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum produto cadastrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao ordenar produtos: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function ConsultarProduto(codigo) {
     const conn = await conectar();
 
@@ -134,4 +163,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto , DeletarProduto };
+export default { CadastrarProduto , ListarProdutos , OrdenarListaProdutos, ConsultarProduto , AlterarProduto , DeletarProduto };

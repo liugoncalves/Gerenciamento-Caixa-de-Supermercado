@@ -22,6 +22,21 @@ async function ListarProdutos(req, res){
     res.send(await produtoService.ListarProdutos());
 }
 
+async function OrdenarListaProdutos(req, res) {
+    const criterio = req.query.criterio;
+
+    if (!criterio) {
+        return res.status(400).send('Critério de ordenação não especificado.');
+    }
+
+    try {
+        const resultado = await produtoService.OrdenarListaProdutos(criterio);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 async function ConsultarProduto(req, res){
     let codigo = req.params.codigo;
 
@@ -94,4 +109,4 @@ async function ValidarDadosProduto(produto){
     
 }
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto , DeletarProduto };
+export default { CadastrarProduto , ListarProdutos , OrdenarListaProdutos, ConsultarProduto , AlterarProduto , DeletarProduto };

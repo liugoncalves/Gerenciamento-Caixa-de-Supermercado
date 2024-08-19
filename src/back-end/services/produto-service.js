@@ -12,6 +12,14 @@ async function ListarProdutos(){
     return await produtoRepository.ListarProdutos();
 }
 
+async function OrdenarListaProdutos(criterio) {
+    try {
+        return await produtoRepository.OrdenarListaProdutos(criterio);
+    } catch (error) {
+        throw new Error(`Erro ao ordenar produtos: ${error.message}`);
+    }
+}
+
 async function ConsultarProduto(codigo){
     return await produtoRepository.ConsultarProduto(codigo);
 }
@@ -39,4 +47,4 @@ async function DeletarProduto(codigo){
 }
 
 
-export default { CadastrarProduto , ListarProdutos , ConsultarProduto , AlterarProduto , DeletarProduto };
+export default { CadastrarProduto , ListarProdutos , OrdenarListaProdutos, ConsultarProduto , AlterarProduto , DeletarProduto };
