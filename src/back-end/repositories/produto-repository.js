@@ -50,7 +50,11 @@ async function ConsultarProduto(codigo) {
     const conn = await conectar();
 
     try{
-        const sql = "SELECT * FROM produtos WHERE codigo = $1";
+        const sql = `
+            SELECT codigo, nome, valor, quantidade 
+            FROM produtos 
+            WHERE codigo = $1
+        `;
         const resultado = await conn.query(sql, [codigo]);
 
         if(resultado.rowCount === 0){

@@ -3,20 +3,59 @@ import produtoRepository from '../repositories/produto-repository.js';
 import clienteRepository from '../repositories/cliente-repository.js';
 import funcionarioRepository from '../repositories/funcionario-repository.js';
 import enderecoRepository from '../repositories/endereco-repository.js';
+import fs from 'fs-extra';
+import path from 'path';
+import PDFDocument from 'pdfkit';
+
+async function gerarNotaFiscalPDF(venda, nome_cliente, nome_funcionario, produto) {
+    const pdfDoc = new PDFDocument();
+    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${venda.Codigo}.pdf`);
+
+    // Criar o documento PDF
+    pdfDoc.pipe(fs.createWriteStream(filePath));
+
+    // Adicionar o conteúdo ao PDF
+    pdfDoc.fontSize(16).text('Nota Fiscal', { align: 'center' });
+    pdfDoc.moveDown();
+
+    pdfDoc.fontSize(12).text(`Código da Venda: ${venda.Codigo}`);
+    pdfDoc.text(`Data da Venda: ${new Date(venda.DataVenda).toLocaleString()}`);
+    pdfDoc.text(`Cliente: ${nome_cliente}`);
+    pdfDoc.text(`Funcionário: ${nome_funcionario}`);
+    pdfDoc.text(`Endereço: ${venda.Logradouro}`);
+    pdfDoc.text(`Produto Código: ${venda.CodigoProduto}`);
+    pdfDoc.text(`Quantidade: ${venda.Quantidade}`);
+
+    // Garantir que o valor total seja um número e formatá-lo
+    const valorTotal = venda.ValorTotal ? Number(venda.ValorTotal).toFixed(2) : '0.00';
+    pdfDoc.text(`Valor Total: R$ ${valorTotal}`);
+    pdfDoc.moveDown();
+
+    pdfDoc.text('** Esta nota fiscal foi gerada eletronicamente e não precisa ser assinada.', { align: 'center' });
+
+    // Finalizar e salvar o PDF
+    pdfDoc.end();
+
+    return { notaFiscal: filePath };
+}
 
 async function RealizarVenda(venda) {
     try {
         // Verificar se o cliente existe
-        const cliente = await clienteRepository.ConsultarCliente(venda.cpf_cliente);
-        if (!cliente || cliente.mensagem) {
+        const clienteData = await clienteRepository.ConsultarCliente(venda.cpf_cliente);
+        if (!clienteData || clienteData.mensagem) {
             throw new Error('Cliente não encontrado.');
         }
 
+        const nome_cliente = clienteData.nome;
+
         // Verificar se o funcionário existe
-        const funcionario = await funcionarioRepository.ConsultarFuncionario(venda.cpf_funcionario);
-        if (!funcionario || funcionario.mensagem) {
+        const funcionarioData = await funcionarioRepository.ConsultarFuncionario(venda.cpf_funcionario);
+        if (!funcionarioData || funcionarioData.mensagem) {
             throw new Error('Funcionário não encontrado.');
         }
+
+        const nome_funcionario = funcionarioData.nome;
 
         // Verificar se o produto existe
         const produto = await produtoRepository.ConsultarProduto(venda.codigo_produto);
@@ -47,6 +86,13 @@ async function RealizarVenda(venda) {
         };
 
         const resultado = await vendaRepository.CadastrarVenda(novaVenda);
+
+        // Gerar a nota fiscal em PDF
+        await gerarNotaFiscalPDF({
+            Codigo: resultado.codigo,
+            DataVenda: new Date().toISOString(),
+            ...novaVenda
+        }, nome_cliente, nome_funcionario, produto);
 
         return resultado;
     } catch (error) {
@@ -113,13 +159,16 @@ async function AlterarVenda(codigo_venda, venda) {
     }
 }
 
-async function DeletarVenda(codigo_venda){
-    try{
-        //Verificar se não teve nenhuma nota fiscal emitida ainda para essa venda
+async function DeletarVenda(codigo_venda) {
+    try {
+        // Verificar se a nota fiscal foi gerada
+        const venda = await vendaRepository.ConsultarVenda(codigo_venda);
+        if (venda && fs.existsSync(`./notas_fiscais/venda_${codigo_venda}.pdf`)) {
+            throw new Error('A nota fiscal foi gerada e não pode ser excluída.');
+        }
 
         return await vendaRepository.DeletarVenda(codigo_venda);
-    
-    } catch (error){
+    } catch (error) {
         throw new Error(error.message);
     }
 }

@@ -8,7 +8,7 @@ async function CadastrarVenda(venda) {
         const sql = `
             INSERT INTO Vendas (CPF_Cliente, CPF_Funcionario, CodigoProduto, Quantidade, Logradouro, DataVenda, ValorTotal)
             VALUES ($1, $2, $3, $4, $5, NOW(), $6)
-            RETURNING *;
+            RETURNING Codigo;
         `;
 
         const resultado = await conn.query(sql, [
@@ -20,7 +20,11 @@ async function CadastrarVenda(venda) {
             venda.ValorTotal
         ]);
 
-        return { mensagem: 'Venda realizada com sucesso.' };
+        // Retornar o código da venda e a mensagem de sucesso
+        return {
+                codigo: resultado.rows[0].codigo,
+                mensagem: 'Venda realizada com sucesso.'
+        };
 
         } catch (error) {
             throw new Error(`Erro ao cadastrar a venda: ${error.message}`);

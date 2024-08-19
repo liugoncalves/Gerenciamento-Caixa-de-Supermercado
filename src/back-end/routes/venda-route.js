@@ -9,4 +9,5 @@ router.get('/consultar/:codigo', vendaController.ConsultarVenda);
 router.put('/alterar/:codigo', vendaController.AlterarVenda);
 router.delete('/deletar/:codigo', vendaController.DeletarVenda);
 
+
 export default router;
