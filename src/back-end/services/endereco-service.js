@@ -62,6 +62,14 @@ async function ListarEnderecos(){
     return await enderecoRepository.ListarEnderecos();
 }
 
+async function OrdenarListaEnderecos(criterio) {
+    try {
+        return await enderecoRepository.OrdenarListaEnderecos(criterio);
+    } catch (error) {
+        throw new Error(`Erro ao ordenar endereços: ${error.message}`);
+    }
+}
+
 async function ConsultarEndereco(codigo){
     return await enderecoRepository.ConsultarEndereco(codigo);
 }
@@ -85,13 +93,6 @@ async function AlterarEndereco(codigo_antigo, endereco){
 
 async function DeletarEndereco(codigo){
     try {
-        // Verificar se o endereço está associado a alguma venda antes de deletar
-        /*const vendas = await vendaRepository.ListarVendas();
-        const enderecos = await enderecoRepository.ListarEnderecos();
-        if (vendas.some(venda => venda.codigo_endereco === codigo)){
-            throw new Error('Endereço associado a uma venda. Não é possível deletar.');
-        }*/
-
         return await enderecoRepository.DeletarEndereco(codigo);
     }
     catch (error) {
@@ -99,4 +100,4 @@ async function DeletarEndereco(codigo){
     }
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco , DeletarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , OrdenarListaEnderecos, ConsultarEndereco , AlterarEndereco , DeletarEndereco };

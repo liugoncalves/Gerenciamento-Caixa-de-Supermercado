@@ -23,6 +23,21 @@ async function ListarEnderecos(req, res){
     res.send(await enderecoService.ListarEnderecos());
 }
 
+async function OrdenarListaEnderecos(req, res) {
+    const criterio = req.query.criterio;
+
+    if (!criterio) {
+        return res.status(400).send('Critério de ordenação não especificado.');
+    }
+
+    try {
+        const resultado = await enderecoService.OrdenarListaEnderecos(criterio);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 async function ConsultarEndereco(req, res){
     const codigo = req.params.codigo;
 
@@ -107,4 +122,4 @@ function validarDadosEndereco(endereco){
 
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , AlterarEndereco , DeletarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , OrdenarListaEnderecos, ConsultarEndereco , AlterarEndereco , DeletarEndereco };

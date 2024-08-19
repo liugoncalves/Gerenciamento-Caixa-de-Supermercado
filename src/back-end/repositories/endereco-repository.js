@@ -50,6 +50,41 @@ async function ListarEnderecos(){
     }
 }
 
+async function OrdenarListaEnderecos(criterio) {
+    const conn = await conectar();
+
+    let sql = `
+        SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente
+        FROM enderecos
+    `;
+
+    // Determinar o critério de ordenação
+    if (criterio === 'nome_rua') {
+        sql += ` ORDER BY nome_rua ASC`;
+    } else if (criterio === 'cidade') {
+        sql += ` ORDER BY cidade ASC`;
+    } else if (criterio === 'estado') {
+        sql += ` ORDER BY estado ASC`;
+    } else {
+        throw new Error('Critério de ordenação inválido.');
+    }
+
+    try {
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum endereço encontrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao ordenar endereços: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function ConsultarEndereco(codigo){
     const conn = await conectar();
 
@@ -74,7 +109,7 @@ async function ConsultarEndereco(codigo){
     }
 }
 
-async function ConsultarEnderecoPorCPF(cpf) {
+async function ConsultarEnderecoPorCPF(cpf) { // Consulta por CPF do Cliente relacionado
     const conn = await conectar();
 
     try {
@@ -188,4 +223,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarEndereco , ListarEnderecos , ConsultarEndereco , ConsultarEnderecoPorCPF, AlterarEndereco , DeletarEndereco };
+export default { CadastrarEndereco , ListarEnderecos , OrdenarListaEnderecos, ConsultarEndereco , ConsultarEnderecoPorCPF, AlterarEndereco , DeletarEndereco };
