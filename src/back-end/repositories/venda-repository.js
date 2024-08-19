@@ -1,12 +1,21 @@
-import { query } from 'express';
 import pg from 'pg';
 import fs from 'fs-extra';
 import path from 'path';
 
-async function CadastrarVenda(venda) {
-    const conn = await conectar();
+// Função para conectar ao banco de dados
+async function Conectar() {
+    const pool = new pg.Pool({
+        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
+    });
 
-    try{
+    return await pool.connect();
+}
+
+// Função para cadastrar uma nova venda
+async function CadastrarVenda(venda) {
+    const conn = await Conectar();
+
+    try {
         const sql = `
             INSERT INTO Vendas (CPF_Cliente, CPF_Funcionario, CodigoProduto, Quantidade, Logradouro, DataVenda, ValorTotal)
             VALUES ($1, $2, $3, $4, $5, NOW(), $6)
@@ -24,17 +33,19 @@ async function CadastrarVenda(venda) {
 
         // Retornar o código da venda e a mensagem de sucesso
         return {
-                codigo: resultado.rows[0].codigo,
-                mensagem: 'Venda realizada com sucesso.'
+            codigo: resultado.rows[0].codigo,
+            mensagem: 'Venda realizada com sucesso.'
         };
-
-        } catch (error) {
-            throw new Error(`Erro ao cadastrar a venda: ${error.message}`);
-        }
+    } catch (error) {
+        throw new Error(`Erro ao cadastrar a venda: ${error.message}`);
+    } finally {
+        conn.release();
+    }
 }
 
+// Função para listar todas as vendas
 async function ListarVendas() {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
         // SQL para listar vendas com data formatada
@@ -47,48 +58,48 @@ async function ListarVendas() {
 
         const resultado = await conn.query(sql);
 
-        if(resultado.rowCount == 0 ){
-            return { mensagem: 'Nenhuma venda registrada.'};
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhuma venda registrada.' };
         }
 
-        return resultado.rows;  
-
-    } catch (err){
-        throw new Error ('Erro ao listar vendas: ' + err.message)
-    } finally{
+        return resultado.rows;
+    } catch (err) {
+        throw new Error('Erro ao listar vendas: ' + err.message);
+    } finally {
         conn.release();
     }
 }
 
-async function ConsultarVenda(codigo){
-    const conn = await conectar();
+// Função para consultar uma venda pelo código
+async function ConsultarVenda(codigo) {
+    const conn = await Conectar();
 
-    try{
-               const sql = `
+    try {
+        const sql = `
             SELECT Codigo, CPF_Cliente, CPF_Funcionario, CodigoProduto, Quantidade,
                     TO_CHAR(DataVenda, 'YYYY/MM/DD HH24:MI:SS') AS DataVenda,
                     ValorTotal
             FROM VENDAS
-            WHERE codigo = $1
+            WHERE Codigo = $1
         `;
 
         const resultado = await conn.query(sql, [codigo]);
 
-        if(resultado.rowCount == 0){
-            return { mensagem: 'Venda não encontrada'};
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Venda não encontrada' };
         }
 
         return resultado.rows[0];
-
-    } catch(err){
-        throw new Error ('Erro ao consultar venda: ' + err.message);
-    } finally{
+    } catch (err) {
+        throw new Error('Erro ao consultar venda: ' + err.message);
+    } finally {
         conn.release();
     }
 }
 
+// Função para consultar vendas por CPF do funcionário
 async function ConsultarVendaPorCPF(cpfFuncionario) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -98,7 +109,6 @@ async function ConsultarVendaPorCPF(cpfFuncionario) {
         const resultado = await conn.query(sql, [cpfFuncionario]);
 
         return resultado.rows; // Retorna as vendas associadas ao funcionário
-
     } catch (err) {
         throw new Error('Erro ao consultar vendas por CPF: ' + err.message);
     } finally {
@@ -106,8 +116,9 @@ async function ConsultarVendaPorCPF(cpfFuncionario) {
     }
 }
 
-async function ConsultarCompraPorCPF(cpfCliente) { // Verificar se o Cliente está associado à alguma venda
-    const conn = await conectar();
+// Função para consultar compras por CPF do cliente
+async function ConsultarCompraPorCPF(cpfCliente) {
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -117,7 +128,6 @@ async function ConsultarCompraPorCPF(cpfCliente) { // Verificar se o Cliente est
         const resultado = await conn.query(sql, [cpfCliente]);
 
         return resultado.rows; // Retorna as compras associadas ao cliente
-
     } catch (err) {
         throw new Error('Erro ao consultar compras por CPF: ' + err.message);
     } finally {
@@ -125,8 +135,9 @@ async function ConsultarCompraPorCPF(cpfCliente) { // Verificar se o Cliente est
     }
 }
 
-async function ConsultarVendaPorCodProduto(codigoProduto) { // Verificar se o Produto está associado à alguma venda
-    const conn = await conectar();
+// Função para consultar vendas por código do produto
+async function ConsultarVendaPorCodProduto(codigoProduto) {
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -135,8 +146,7 @@ async function ConsultarVendaPorCodProduto(codigoProduto) { // Verificar se o Pr
         `;
         const resultado = await conn.query(sql, [codigoProduto]);
 
-        return resultado.rows; // Retorna as compras associadas ao produto
-
+        return resultado.rows; // Retorna as vendas associadas ao produto
     } catch (err) {
         throw new Error('Erro ao consultar vendas por Código do Produto: ' + err.message);
     } finally {
@@ -144,8 +154,9 @@ async function ConsultarVendaPorCodProduto(codigoProduto) { // Verificar se o Pr
     }
 }
 
-async function AlterarVenda(codigo_venda, venda) {
-    const conn = await conectar();
+// Função para alterar uma venda existente
+async function AlterarVenda(codigoVenda, venda) {
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -155,13 +166,13 @@ async function AlterarVenda(codigo_venda, venda) {
             RETURNING *;
         `;
         const valores = [
-            venda.cpf_cliente,
-            venda.cpf_funcionario,
-            venda.codigo_produto,
-            venda.quantidade,
-            venda.logradouro,
-            venda.valorTotal,
-            codigo_venda
+            venda.CPF_Cliente,
+            venda.CPF_Funcionario,
+            venda.CodigoProduto,
+            venda.Quantidade,
+            venda.Logradouro,
+            venda.ValorTotal,
+            codigoVenda
         ];
 
         const resultado = await conn.query(sql, valores);
@@ -178,43 +189,40 @@ async function AlterarVenda(codigo_venda, venda) {
     }
 }
 
-async function DeletarVenda(codigo_venda){
-    const conn = await conectar();
+// Função para deletar uma venda pelo código
+async function DeletarVenda(codigoVenda) {
+    const conn = await Conectar();
 
-    try{
-        const sql = 'DELETE FROM vendas WHERE codigo = $1';
-        const resultado = await conn.query(sql, [codigo_venda]);
+    try {
+        const sql = 'DELETE FROM Vendas WHERE Codigo = $1';
+        const resultado = await conn.query(sql, [codigoVenda]);
 
-        if(resultado.rowCount == 0 ){
+        if (resultado.rowCount === 0) {
             return { mensagem: 'Venda não encontrada para exclusão.' };
         }
 
         return { mensagem: 'Venda excluída com sucesso.' };
-
-    } catch(err){
-        throw new Error ('Erro ao excluir venda: ' + err.message);
-    } finally{
+    } catch (err) {
+        throw new Error('Erro ao excluir venda: ' + err.message);
+    } finally {
         conn.release();
     }
 }
 
-async function VerificarNotaFiscalEmitida(codigo_venda) {
-    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${codigo_venda}.pdf`);
+// Função para verificar se a nota fiscal foi emitida
+async function VerificarNotaFiscalEmitida(codigoVenda) {
+    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${codigoVenda}.pdf`);
     return fs.pathExists(filePath);
 }
 
-
-async function conectar(){
-    const pool = new pg.Pool({
-        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
-        //    user: 'postgres',
-        //    password: 'rootleo',
-        //    host: 'localhost',
-        //    port: 5432,
-        //    database: 'BDTeste'
-    });
-
-    return await pool.connect();
-}
-
-export default {CadastrarVenda, ListarVendas, ConsultarVenda, ConsultarVendaPorCPF, ConsultarVendaPorCodProduto, ConsultarCompraPorCPF, AlterarVenda, DeletarVenda, VerificarNotaFiscalEmitida};
+export default {
+    CadastrarVenda,
+    ListarVendas,
+    ConsultarVenda,
+    ConsultarVendaPorCPF,
+    ConsultarCompraPorCPF,
+    ConsultarVendaPorCodProduto,
+    AlterarVenda,
+    DeletarVenda,
+    VerificarNotaFiscalEmitida
+};

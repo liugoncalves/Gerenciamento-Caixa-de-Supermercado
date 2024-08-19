@@ -1,12 +1,20 @@
-import vendaRepository from '../repositories/venda-repository.js';
-import produtoRepository from '../repositories/produto-repository.js';
-import clienteRepository from '../repositories/cliente-repository.js';
-import funcionarioRepository from '../repositories/funcionario-repository.js';
-import enderecoRepository from '../repositories/endereco-repository.js';
+import venda_repository from '../repositories/venda-repository.js';
+import produto_repository from '../repositories/produto-repository.js';
+import cliente_repository from '../repositories/cliente-repository.js';
+import funcionario_repository from '../repositories/funcionario-repository.js';
+import endereco_repository from '../repositories/endereco-repository.js';
 import fs from 'fs-extra';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 
+/**
+ * Gera uma nota fiscal em PDF para uma venda.
+ * @param {Object} venda - Dados da venda.
+ * @param {string} nome_cliente - Nome do cliente.
+ * @param {string} nome_funcionario - Nome do funcionário.
+ * @param {Object} produto - Dados do produto.
+ * @returns {Promise<Object>} Caminho do arquivo da nota fiscal gerada.
+ */
 async function gerarNotaFiscalPDF(venda, nome_cliente, nome_funcionario, produto) {
     const pdfDoc = new PDFDocument();
     const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${venda.Codigo}.pdf`);
@@ -39,38 +47,42 @@ async function gerarNotaFiscalPDF(venda, nome_cliente, nome_funcionario, produto
     return { notaFiscal: filePath };
 }
 
+/**
+ * Realiza uma venda, registrando-a e gerando a nota fiscal correspondente.
+ * @param {Object} venda - Dados da venda.
+ * @returns {Promise<Object>} Resultado da operação de venda.
+ * @throws {Error} Se ocorrer um erro durante o processamento da venda.
+ */
 async function RealizarVenda(venda) {
     try {
         // Verificar se o cliente existe
-        const clienteData = await clienteRepository.ConsultarCliente(venda.cpf_cliente);
-        if (!clienteData || clienteData.mensagem) {
+        const cliente = await cliente_repository.ConsultarCliente(venda.cpf_cliente);
+        if (!cliente || cliente.mensagem) {
             throw new Error('Cliente não encontrado.');
         }
-
-        const nome_cliente = clienteData.nome;
+        const nome_cliente = cliente.nome;
 
         // Verificar se o funcionário existe
-        const funcionarioData = await funcionarioRepository.ConsultarFuncionario(venda.cpf_funcionario);
-        if (!funcionarioData || funcionarioData.mensagem) {
+        const funcionario = await funcionario_repository.ConsultarFuncionario(venda.cpf_funcionario);
+        if (!funcionario || funcionario.mensagem) {
             throw new Error('Funcionário não encontrado.');
         }
-
-        const nome_funcionario = funcionarioData.nome;
+        const nome_funcionario = funcionario.nome;
 
         // Verificar se o produto existe
-        const produto = await produtoRepository.ConsultarProduto(venda.codigo_produto);
+        const produto = await produto_repository.ConsultarProduto(venda.codigo_produto);
         if (!produto || produto.mensagem) {
             throw new Error('Produto não encontrado.');
         }
 
         // Consultar o endereço do cliente
-        const endereco = await enderecoRepository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
+        const endereco = await endereco_repository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
         if (!endereco) {
             throw new Error('Endereço do cliente não encontrado.');
         }
 
-        // Concatenar o endereço completo em um único texto
-        const logradouro = `${endereco.nome_rua || ''}, ${endereco.numero || ''}, ${endereco.complemento || ''}, ${endereco.bairro || ''}, ${endereco.cidade || ''}, ${endereco.estado || ''}, CEP: ${endereco.cep || ''}`;
+        // Concatenar o endereço completo
+        const logradouro = `${endereco.nome_rua || ''}, ${endereco.numero || ''}${endereco.complemento ? ', ' + endereco.complemento : ''}, ${endereco.bairro || ''}, ${endereco.cidade || ''}, ${endereco.estado || ''}, CEP: ${endereco.cep || ''}`;
 
         // Calcular o total da venda
         const total = (produto.valor || 0) * (venda.quantidade || 0);
@@ -85,7 +97,7 @@ async function RealizarVenda(venda) {
             ValorTotal: total
         };
 
-        const resultado = await vendaRepository.CadastrarVenda(novaVenda);
+        const resultado = await venda_repository.CadastrarVenda(novaVenda);
 
         // Gerar a nota fiscal em PDF
         await gerarNotaFiscalPDF({
@@ -100,24 +112,40 @@ async function RealizarVenda(venda) {
     }
 }
 
-async function ListarVendas(){
-    return await vendaRepository.ListarVendas();
+/**
+ * Lista todas as vendas registradas.
+ * @returns {Promise<Array>} Lista de vendas.
+ */
+async function ListarVendas() {
+    return await venda_repository.ListarVendas();
 }
 
-async function ConsultarVenda(codigo){
-    return await vendaRepository.ConsultarVenda(codigo);
+/**
+ * Consulta uma venda com base no código fornecido.
+ * @param {string} codigo - Código da venda a ser consultada.
+ * @returns {Promise<Object>} Dados da venda.
+ */
+async function ConsultarVenda(codigo) {
+    return await venda_repository.ConsultarVenda(codigo);
 }
 
+/**
+ * Altera os dados de uma venda existente.
+ * @param {string} codigo_venda - Código da venda a ser alterada.
+ * @param {Object} venda - Dados atualizados da venda.
+ * @returns {Promise<Object>} Resultado da operação de alteração.
+ * @throws {Error} Se ocorrer um erro durante a alteração.
+ */
 async function AlterarVenda(codigo_venda, venda) {
     try {
         // Verificar se a venda existe
-        const vendaExistente = await vendaRepository.ConsultarVenda(codigo_venda);
+        const vendaExistente = await venda_repository.ConsultarVenda(codigo_venda);
         if (!vendaExistente) {
             throw new Error('Venda não encontrada.');
         }
 
         // Consultar o endereço do cliente existente
-        const enderecoExistente = await enderecoRepository.ConsultarEnderecoPorCPF(vendaExistente.cpf_cliente);
+        const enderecoExistente = await endereco_repository.ConsultarEnderecoPorCPF(vendaExistente.cpf_cliente);
         if (!enderecoExistente) {
             throw new Error('Endereço do cliente não encontrado.');
         }
@@ -128,7 +156,7 @@ async function AlterarVenda(codigo_venda, venda) {
             venda.codigo_produto !== vendaExistente.codigo_produto ||
             venda.quantidade !== vendaExistente.quantidade) {
             
-            const endereco = await enderecoRepository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
+            const endereco = await endereco_repository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
             if (!endereco) {
                 throw new Error('Endereço do cliente não encontrado.');
             }
@@ -144,7 +172,7 @@ async function AlterarVenda(codigo_venda, venda) {
         }
 
         // Consultar o preço do produto
-        const produto = await produtoRepository.ConsultarProduto(venda.codigo_produto);
+        const produto = await produto_repository.ConsultarProduto(venda.codigo_produto);
         if (!produto || produto.mensagem) {
             throw new Error('Produto não encontrado.');
         }
@@ -153,25 +181,32 @@ async function AlterarVenda(codigo_venda, venda) {
         const total = (produto.valor || 0) * (venda.quantidade || 0);
 
         // Atualizar a venda
-        return await vendaRepository.AlterarVenda(codigo_venda, { ...venda, logradouro, valorTotal: total });
+        return await venda_repository.AlterarVenda(codigo_venda, { ...venda, logradouro, valorTotal: total });
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
+/**
+ * Deleta uma venda com base no código fornecido.
+ * @param {string} codigo_venda - Código da venda a ser deletada.
+ * @returns {Promise<Object>} Resultado da operação de deleção.
+ * @throws {Error} Se a nota fiscal foi emitida ou ocorrer um erro durante a deleção.
+ */
 async function DeletarVenda(codigo_venda) {
     try {
         // Verificar se a nota fiscal foi emitida
-        const notaFiscalEmitida = await vendaRepository.VerificarNotaFiscalEmitida(codigo_venda);
+        const notaFiscalEmitida = await venda_repository.VerificarNotaFiscalEmitida(codigo_venda);
         if (notaFiscalEmitida) {
             throw new Error('Não é possível excluir a venda porque a nota fiscal já foi emitida.');
         }
 
         // Deletar a venda se a nota fiscal não foi emitida
-        return await vendaRepository.DeletarVenda(codigo_venda);
+        return await venda_repository.DeletarVenda(codigo_venda);
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
-export default { RealizarVenda , ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};
+// Exportação das funções do módulo
+export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda };

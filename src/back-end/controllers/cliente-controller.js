@@ -1,29 +1,51 @@
-import clienteService from '../services/cliente-service.js';
+// importação do serviço de cliente
+import cliente_service from '../services/cliente-service.js';
 
-async function CadastrarCliente(req, res){
-    const {nome, cpf, telefone , email, data_cadastro} = req.body;
+/**
+ * Cadastra um novo cliente no sistema.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function CadastrarCliente(req, res) {
+    // destruição dos dados enviados na requisição
+    const { nome, cpf, telefone, email, data_cadastro } = req.body;
 
-    const cliente = {nome, cpf, telefone, email, data_cadastro};
+    // criação do objeto cliente
+    const cliente = { nome, cpf, telefone, email, data_cadastro };
 
-    const erroValidacao = validarDadosCliente(cliente);
-    if (erroValidacao){
-        return res.status(400).send(erroValidacao);
+    // validação dos dados do cliente
+    const erro_validacao = ValidarDadosCliente(cliente);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
     try {
-        let resultado = await clienteService.CadastrarCliente(cliente);
+        // tentativa de cadastrar o cliente
+        let resultado = await cliente_service.CadastrarCliente(cliente);
         res.status(201).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
-
 }
 
-async function ListarClientes(req, res){
-    res.send(await clienteService.ListarClientes());
+/**
+ * Lista todos os clientes cadastrados.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ListarClientes(req, res) {
+    // listagem de clientes
+    res.send(await cliente_service.ListarClientes());
 }
 
+/**
+ * Ordena a lista de clientes com base no critério fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
 async function OrdenarListaClientes(req, res) {
+    // obtenção do critério de ordenação da consulta
     const criterio = req.query.criterio;
 
     if (!criterio) {
@@ -31,77 +53,113 @@ async function OrdenarListaClientes(req, res) {
     }
 
     try {
-        const resultado = await clienteService.OrdenarListaClientes(criterio);
+        // tentativa de ordenar a lista de clientes
+        const resultado = await cliente_service.OrdenarListaClientes(criterio);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
 }
 
-async function ConsultarCliente(req, res){
+/**
+ * Consulta um cliente com base no CPF fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ConsultarCliente(req, res) {
+    // obtenção do CPF da consulta
     const cpf = req.params.cpf;
 
-    if (!cpf){
+    if (!cpf) {
         return res.status(400).send('Digite um CPF para realizar a busca.');
     }
 
     try {
-        const resultado = await clienteService.ConsultarCliente(cpf);
-        if (!resultado){
+        // tentativa de consultar o cliente
+        const resultado = await cliente_service.ConsultarCliente(cpf);
+        if (!resultado) {
             return res.status(404).send('Cliente não encontrado.');
         }
         res.send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-async function AlterarCliente(req, res){
+/**
+ * Altera as informações de um cliente existente.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function AlterarCliente(req, res) {
+    // obtenção do CPF antigo e novos dados do cliente
     let cpf_antigo = req.params.cpf;
-    let {nome, cpf, telefone, email, data_cadastro} = req.body;
+    let { nome, cpf, telefone, email, data_cadastro } = req.body;
 
-    const cliente = {nome, cpf, telefone, email, data_cadastro};
+    // criação do objeto cliente com os novos dados
+    const cliente = { nome, cpf, telefone, email, data_cadastro };
 
-    const erroValidacao = validarDadosCliente(cliente);
-    if (erroValidacao){
-        return res.status(400).send(erroValidacao);
+    // validação dos dados do cliente
+    const erro_validacao = ValidarDadosCliente(cliente);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
     try {
-        let resultado = await clienteService.AlterarCliente(cpf_antigo, cliente);
+        // tentativa de alterar as informações do cliente
+        let resultado = await cliente_service.AlterarCliente(cpf_antigo, cliente);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-async function DeletarCliente(req, res){
+/**
+ * Deleta um cliente com base no CPF fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function DeletarCliente(req, res) {
+    // obtenção do CPF para exclusão
     let cpf = req.params.cpf;
 
-    if (!cpf){
+    if (!cpf) {
         return res.status(400).send('Digite um CPF para realizar a exclusão.');
     }
 
     try {
-        let resultado = await clienteService.DeletarCliente(cpf);
+        // tentativa de deletar o cliente
+        let resultado = await cliente_service.DeletarCliente(cpf);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-function validarDadosCliente(cliente){
-    const {nome, cpf, telefone, email} = cliente;
+/**
+ * Valida os dados fornecidos para um cliente.
+ * @param {Object} cliente - Dados do cliente.
+ * @returns {string|null} Mensagem de erro ou null se os dados estiverem válidos.
+ */
+function ValidarDadosCliente(cliente) {
+    const { nome, cpf, telefone, email } = cliente;
 
-    if (!nome || !cpf || !telefone || !email){ 
-        return 'Preecnha todos os campos.';
+    // verificação de campos obrigatórios
+    if (!nome || !cpf || !telefone || !email) { 
+        return 'preencha todos os campos.';
     }
 
-    if (cpf.length !== 11){
-        return 'O CPF deve conter 11 dígitos.';
+    // verificação do tamanho do CPF
+    if (cpf.length !== 11) {
+        return 'o cpf deve conter 11 dígitos.';
     }
 
     return null;
 }
 
-export default {CadastrarCliente, ListarClientes, OrdenarListaClientes, ConsultarCliente, AlterarCliente, DeletarCliente};
+// exportação das funções do módulo
+export default { CadastrarCliente, ListarClientes, OrdenarListaClientes, ConsultarCliente, AlterarCliente, DeletarCliente };

@@ -1,16 +1,25 @@
-import { query } from 'express';
 import pg from 'pg';
 
-async function CadastrarProduto(produto) {
-    const conn = await conectar();
+// Função para conectar ao banco de dados
+async function Conectar() {
+    const pool = new pg.Pool({
+        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
+    });
 
-    try{
+    return await pool.connect();
+}
+
+// Função para cadastrar um novo produto
+async function CadastrarProduto(produto) {
+    const conn = await Conectar();
+
+    try {
         const sql = `
             INSERT INTO produtos (codigo, nome, valor, quantidade)
             VALUES ($1, $2, $3, $4)
             RETURNING codigo;
         `;
-        const resultado = await conn.query(sql, [
+        await conn.query(sql, [
             produto.codigo,
             produto.nome,
             produto.valor,
@@ -26,8 +35,9 @@ async function CadastrarProduto(produto) {
     }
 }
 
+// Função para listar todos os produtos
 async function ListarProdutos() {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
         const sql = "SELECT codigo, nome, valor, quantidade FROM produtos";
@@ -46,18 +56,22 @@ async function ListarProdutos() {
     }
 }
 
+// Função para ordenar a lista de produtos com base em um critério
 async function OrdenarListaProdutos(criterio) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
-        // Define a cláusula ORDER BY com base no critério fornecido
         let sql = 'SELECT codigo, nome, valor, quantidade FROM produtos';
-        if (criterio === 'nome') {
-            sql += ' ORDER BY nome';
-        } else if (criterio === 'codigo') {
-            sql += ' ORDER BY codigo';
-        } else {
-            throw new Error('Critério de ordenação inválido.');
+        
+        switch (criterio) {
+            case 'nome':
+                sql += ' ORDER BY nome';
+                break;
+            case 'codigo':
+                sql += ' ORDER BY codigo';
+                break;
+            default:
+                throw new Error('Critério de ordenação inválido.');
         }
         
         const resultado = await conn.query(sql);
@@ -75,10 +89,11 @@ async function OrdenarListaProdutos(criterio) {
     }
 }
 
+// Função para consultar um produto pelo código
 async function ConsultarProduto(codigo) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
-    try{
+    try {
         const sql = `
             SELECT codigo, nome, valor, quantidade 
             FROM produtos 
@@ -86,7 +101,7 @@ async function ConsultarProduto(codigo) {
         `;
         const resultado = await conn.query(sql, [codigo]);
 
-        if(resultado.rowCount === 0){
+        if (resultado.rowCount === 0) {
             return { mensagem: 'Produto não encontrado.' };
         }
 
@@ -99,10 +114,11 @@ async function ConsultarProduto(codigo) {
     }
 }
 
-async function AlterarProduto(codigo_antigo, produto) {
-    const conn = await conectar();
+// Função para alterar os dados de um produto
+async function AlterarProduto(codigoAntigo, produto) {
+    const conn = await Conectar();
 
-    try{
+    try {
         const sql = `
             UPDATE produtos
             SET codigo = $1, nome = $2, valor = $3, quantidade = $4
@@ -114,10 +130,10 @@ async function AlterarProduto(codigo_antigo, produto) {
             produto.nome,
             produto.valor,
             produto.quantidade,
-            codigo_antigo
+            codigoAntigo
         ]);
 
-        if(resultado.rowCount === 0){
+        if (resultado.rowCount === 0) {
             return { mensagem: 'Produto não encontrado para alteração.' };
         }
 
@@ -130,14 +146,15 @@ async function AlterarProduto(codigo_antigo, produto) {
     }
 }
 
+// Função para deletar um produto pelo código
 async function DeletarProduto(codigo) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
-    try{
+    try {
         const sql = "DELETE FROM produtos WHERE codigo = $1";
         const resultado = await conn.query(sql, [codigo]);
 
-        if(resultado.rowCount === 0){
+        if (resultado.rowCount === 0) {
             return { mensagem: 'Produto não encontrado para exclusão.' };
         }
 
@@ -150,17 +167,11 @@ async function DeletarProduto(codigo) {
     }
 }
 
-async function conectar(){
-    const pool = new pg.Pool({
-        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
-        //    user: 'postgres',
-        //    password: 'rootleo',
-        //    host: 'localhost',
-        //    port: 5432,
-        //    database: 'BDTeste'
-    });
-
-    return await pool.connect();
-}
-
-export default { CadastrarProduto , ListarProdutos , OrdenarListaProdutos, ConsultarProduto , AlterarProduto , DeletarProduto };
+export default {
+    CadastrarProduto,
+    ListarProdutos,
+    OrdenarListaProdutos,
+    ConsultarProduto,
+    AlterarProduto,
+    DeletarProduto
+};

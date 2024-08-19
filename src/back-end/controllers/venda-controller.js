@@ -1,68 +1,106 @@
-import vendaService from '../services/venda-service.js';
+// importação do serviço de venda
+import venda_service from '../services/venda-service.js';
 
-async function RealizarVenda (req, res){
+/**
+ * Realiza uma venda com base nos dados fornecidos.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function RealizarVenda(req, res) {
+    // destruição dos dados enviados na requisição
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = req.body;
 
+    // criação do objeto venda
     const venda = { cpf_cliente, cpf_funcionario, codigo_produto, quantidade };
 
-    //Validação de Dados
-    const erroValidacao = validarDadosVenda(venda);
-    if (erroValidacao){
-        return res.status(400).send(erroValidacao);
+    // validação dos dados da venda
+    const erro_validacao = validarDadosVenda(venda);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
-    try{
-        let resultado = await vendaService.RealizarVenda(venda);
+    try {
+        // tentativa de realizar a venda
+        let resultado = await venda_service.RealizarVenda(venda);
         res.status(201).send(resultado);
-    } catch (error){
+    } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
 }
 
-async function ListarVendas(req, res){
-    res.send(await vendaService.ListarVendas());
+/**
+ * Lista todas as vendas registradas.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ListarVendas(req, res) {
+    // listagem de vendas
+    res.send(await venda_service.ListarVendas());
 }
 
-async function ConsultarVenda(req, res){
-    let codigo = req.params.codigo
+/**
+ * Consulta uma venda com base no código fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ConsultarVenda(req, res) {
+    // obtenção do código da venda
+    let codigo = req.params.codigo;
 
-    if(!codigo){
+    if (!codigo) {
         return res.status(400).send('Digite um código para realizar a busca.');
     }
 
-    try{
-        const resultado = await vendaService.ConsultarVenda(codigo);
-        if(!resultado){
-            return res.status(400).send("Venda não encontrada.");
+    try {
+        // tentativa de consultar a venda
+        const resultado = await venda_service.ConsultarVenda(codigo);
+        if (!resultado) {
+            return res.status(404).send('Venda não encontrada.');
         }
         res.send(resultado);
-    } catch (error){
+    } catch (error) {
+        // tratamento de erros
         res.status(500).send(`Erro ao consultar venda: ${error.message}`);
     }
 }
 
+/**
+ * Altera os dados de uma venda existente.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
 async function AlterarVenda(req, res) {
+    // destruição dos dados da requisição
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = req.body;
     const codigo_venda = req.params.codigo;
 
+    // criação do objeto venda com os novos dados
     const venda = { cpf_cliente, cpf_funcionario, codigo_produto, quantidade };
 
-    // Validação de Dados
-    const erroValidacao = validarDadosVenda(venda);
-    if (erroValidacao) {
-        return res.status(400).send(erroValidacao);
+    // validação dos dados da venda
+    const erro_validacao = validarDadosVenda(venda);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
     try {
-        // Atualizar a venda
-        const resultado = await vendaService.AlterarVenda(codigo_venda, venda);
+        // tentativa de alterar a venda
+        const resultado = await venda_service.AlterarVenda(codigo_venda, venda);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
 }
 
+/**
+ * Deleta uma venda com base no código fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
 async function DeletarVenda(req, res) {
+    // obtenção do código da venda
     const codigo_venda = req.params.codigo;
 
     if (!codigo_venda) {
@@ -70,25 +108,31 @@ async function DeletarVenda(req, res) {
     }
 
     try {
-        const resultado = await vendaService.DeletarVenda(codigo_venda);
+        // tentativa de deletar a venda
+        const resultado = await venda_service.DeletarVenda(codigo_venda);
         if (resultado.mensagem) {
             return res.status(404).send(resultado.mensagem);
         }
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
 }
 
-
-function validarDadosVenda(venda){
+/**
+ * Valida os dados fornecidos para uma venda.
+ * @param {Object} venda - Dados da venda.
+ * @returns {string|null} Mensagem de erro ou null se os dados estiverem válidos.
+ */
+function validarDadosVenda(venda) {
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = venda;
 
-    if(!cpf_cliente || !cpf_funcionario || !codigo_produto || !quantidade){
+    if (!cpf_cliente || !cpf_funcionario || !codigo_produto || !quantidade) {
         return 'Preencha todos os campos.';
     }
 
-    if (cpf_cliente.length !== 11 || cpf_funcionario.length !== 11){ 
+    if (cpf_cliente.length !== 11 || cpf_funcionario.length !== 11) {
         return 'O CPF deve conter 11 dígitos.';
     }
     
@@ -97,7 +141,7 @@ function validarDadosVenda(venda){
     }
 
     return null;
-
 }
 
-export default {RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};
+// exportação das funções do módulo
+export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda };

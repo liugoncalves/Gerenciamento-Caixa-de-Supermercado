@@ -1,29 +1,51 @@
-import enderecoService from '../services/endereco-service.js';
+// importação do serviço de endereço
+import endereco_service from '../services/endereco-service.js';
 
-async function CadastrarEndereco(req, res){
-    const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = req.body;
+/**
+ * Cadastra um novo endereço no sistema.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function CadastrarEndereco(req, res) {
+    // destruição dos dados enviados na requisição
+    const { nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente } = req.body;
 
-    const endereco = {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente};
+    // criação do objeto endereço
+    const endereco = { nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente };
 
-    const erroValidacao = validarDadosEndereco(endereco);
-    if (erroValidacao){
-        return res.status(400).send(erroValidacao);
+    // validação dos dados do endereço
+    const erro_validacao = ValidarDadosEndereco(endereco);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
     try {
-        let resultado = await enderecoService.CadastrarEndereco(endereco);
+        // tentativa de cadastrar o endereço
+        let resultado = await endereco_service.CadastrarEndereco(endereco);
         res.status(201).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
-
 }
 
-async function ListarEnderecos(req, res){
-    res.send(await enderecoService.ListarEnderecos());
+/**
+ * Lista todos os endereços cadastrados.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ListarEnderecos(req, res) {
+    // listagem de endereços
+    res.send(await endereco_service.ListarEnderecos());
 }
 
+/**
+ * Ordena a lista de endereços com base no critério fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
 async function OrdenarListaEnderecos(req, res) {
+    // obtenção do critério de ordenação da consulta
     const criterio = req.query.criterio;
 
     if (!criterio) {
@@ -31,95 +53,128 @@ async function OrdenarListaEnderecos(req, res) {
     }
 
     try {
-        const resultado = await enderecoService.OrdenarListaEnderecos(criterio);
+        // tentativa de ordenar a lista de endereços
+        const resultado = await endereco_service.OrdenarListaEnderecos(criterio);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(`${error.message}`);
     }
 }
 
-async function ConsultarEndereco(req, res){
+/**
+ * Consulta um endereço com base no código fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function ConsultarEndereco(req, res) {
+    // obtenção do código da consulta
     const codigo = req.params.codigo;
 
-    if (!codigo){
+    if (!codigo) {
         return res.status(400).send('Digite um código para realizar a busca.');
     }
 
     try {
-        const resultado = await enderecoService.ConsultarEndereco(codigo);
-        if (!resultado){
+        // tentativa de consultar o endereço
+        const resultado = await endereco_service.ConsultarEndereco(codigo);
+        if (!resultado) {
             return res.status(404).send('Endereço não encontrado.');
         }
         res.send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-async function AlterarEndereco(req, res){
+/**
+ * Altera as informações de um endereço existente.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function AlterarEndereco(req, res) {
+    // obtenção do código antigo e novos dados do endereço
     let codigo_antigo = req.params.codigo;
-    let {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = req.body;
+    let { nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente } = req.body;
 
-    const endereco = {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente};
+    // criação do objeto endereço com os novos dados
+    const endereco = { nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente };
 
-    const erroValidacao = validarDadosEndereco(endereco);
-    if (erroValidacao){
-        return res.status(400).send(erroValidacao);
+    // validação dos dados do endereço
+    const erro_validacao = ValidarDadosEndereco(endereco);
+    if (erro_validacao) {
+        return res.status(400).send(erro_validacao);
     }
 
     try {
-        let resultado = await enderecoService.AlterarEndereco(codigo_antigo, endereco);
+        // tentativa de alterar as informações do endereço
+        let resultado = await endereco_service.AlterarEndereco(codigo_antigo, endereco);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-async function DeletarEndereco(req, res){
+/**
+ * Deleta um endereço com base no código fornecido.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function DeletarEndereco(req, res) {
+    // obtenção do código para exclusão
     let codigo = req.params.codigo;
 
-    if (!codigo){
+    if (!codigo) {
         return res.status(400).send('Digite um código para realizar a exclusão.');
     }
 
     try {
-        let resultado = await enderecoService.DeletarEndereco(codigo);
+        // tentativa de deletar o endereço
+        let resultado = await endereco_service.DeletarEndereco(codigo);
         res.status(200).send(resultado);
     } catch (error) {
+        // tratamento de erros
         res.status(500).send(error.message);
     }
 }
 
-function validarDadosEndereco(endereco){
-    const {nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente} = endereco;
+/**
+ * Valida os dados fornecidos para um endereço.
+ * @param {Object} endereco - Dados do endereço.
+ * @returns {string|null} Mensagem de erro ou null se os dados estiverem válidos.
+ */
+function ValidarDadosEndereco(endereco) {
+    const { nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente } = endereco;
 
-    //garantir que nada esteja vazio
-    if (!nome_rua || !numero || !complemento || !bairro || !cidade || !estado || !cep || !cpf_cliente){ 
-        return 'Preencha todos os campos.';
+    // garantir que nada esteja vazio
+    if (!nome_rua || !numero || !complemento || !bairro || !cidade || !estado || !cep || !cpf_cliente) {
+        return 'preencha todos os campos.';
     }
 
-    //garantir que o número seja positivo inteiro
-    if (numero < 1 || !Number.isInteger(numero)){
-        return 'Número inválido.';
+    // garantir que o número seja um inteiro positivo
+    if (numero < 1 || !Number.isInteger(numero)) {
+        return 'número inválido.';
     }
 
-    //cep deve ter 8 dígitos
-    if (cep.length !== 8){
-        return 'O CEP deve conter 8 dígitos.';
+    // CEP deve ter 8 dígitos
+    if (cep.length !== 8) {
+        return 'o cep deve conter 8 dígitos.';
     }
 
-    //cpf deve ter 11 dígitos
-    if (cpf_cliente.length !== 11){
-        return 'O CPF deve conter 11 dígitos.';
+    // CPF deve ter 11 dígitos
+    if (cpf_cliente.length !== 11) {
+        return 'o cpf deve conter 11 dígitos.';
     }
 
-    //estado deve ser uma sigla de 2 letras, não pode ser um número
-    if (estado.length !== 2 || !isNaN(estado)){
-        return 'Estado inválido.';
+    // Estado deve ser uma sigla de 2 letras, não pode ser um número
+    if (estado.length !== 2 || !isNaN(estado)) {
+        return 'estado inválido.';
     }
 
     return null;
-
 }
 
-export default { CadastrarEndereco , ListarEnderecos , OrdenarListaEnderecos, ConsultarEndereco , AlterarEndereco , DeletarEndereco };
+// exportação das funções do módulo
+export default { CadastrarEndereco, ListarEnderecos, OrdenarListaEnderecos, ConsultarEndereco, AlterarEndereco, DeletarEndereco };
