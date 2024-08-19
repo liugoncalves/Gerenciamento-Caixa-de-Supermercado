@@ -1,4 +1,5 @@
 import produtoRepository from '../repositories/produto-repository.js';
+import vendaRepository from '../repositories/venda-repository.js';
 
 async function CadastrarProduto(produto){
     try {
@@ -34,10 +35,11 @@ async function AlterarProduto(codigo_antigo, produto){
 
 async function DeletarProduto(codigo){
     try{
-        // Verifica se o produto não está associado a uma venda
-        /* if (await produtoRepository.ConsultarVenda(codigo)) {
-        //     throw new Error('Produto associado a uma venda. Não é possível deletar.');
-        } */
+       // Verificar se o Produto está associado à vendas concluídas.
+       const vendasAssociadas = await vendaRepository.ConsultarVendaPorCodProduto(codigo);
+       if (vendasAssociadas && vendasAssociadas.length > 0) {
+           throw new Error('Produto não pode ser excluído, pois está associado à compras.');
+       }
 
         return await produtoRepository.DeletarProduto(codigo);
 

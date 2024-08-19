@@ -125,6 +125,25 @@ async function ConsultarCompraPorCPF(cpfCliente) { // Verificar se o Cliente est
     }
 }
 
+async function ConsultarVendaPorCodProduto(codigoProduto) { // Verificar se o Produto está associado à alguma venda
+    const conn = await conectar();
+
+    try {
+        const sql = `
+            SELECT Codigo FROM Vendas
+            WHERE CodigoProduto = $1
+        `;
+        const resultado = await conn.query(sql, [codigoProduto]);
+
+        return resultado.rows; // Retorna as compras associadas ao produto
+
+    } catch (err) {
+        throw new Error('Erro ao consultar vendas por Código do Produto: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function AlterarVenda(codigo_venda, venda) {
     const conn = await conectar();
 
@@ -198,4 +217,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default {CadastrarVenda, ListarVendas, ConsultarVenda, ConsultarVendaPorCPF, ConsultarCompraPorCPF, AlterarVenda, DeletarVenda, VerificarNotaFiscalEmitida};
+export default {CadastrarVenda, ListarVendas, ConsultarVenda, ConsultarVendaPorCPF, ConsultarVendaPorCodProduto, ConsultarCompraPorCPF, AlterarVenda, DeletarVenda, VerificarNotaFiscalEmitida};
