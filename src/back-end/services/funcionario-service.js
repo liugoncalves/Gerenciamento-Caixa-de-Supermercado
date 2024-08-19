@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import funcionarioRepository from '../repositories/funcionario-repository.js';
-//import vendaRepository from '../repositories/venda-repository.js';
+import vendaRepository from '../repositories/venda-repository.js';
 
 // Regras de negócio
 function ValidarCPF(cpf) {
@@ -113,11 +113,11 @@ async function DeletarFuncionario(cpf) {
             throw new Error('CPF inválido');
         }
 
-        /*Verificar se o funcionário já realizou vendas
+        //Verificar se o funcionário já realizou vendas
         const vendasAssociadas = await vendaRepository.ConsultarVendaPorCPF(cpf);
         if (vendasAssociadas && vendasAssociadas.length > 0) {
             throw new Error('Funcionário não pode ser excluído, pois realizou vendas.');
-        }*/
+        }
 
         return await funcionarioRepository.DeletarFuncionario(cpf);
 

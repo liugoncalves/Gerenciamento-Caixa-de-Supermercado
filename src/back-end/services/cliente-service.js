@@ -1,5 +1,5 @@
 import clienteRepository from '../repositories/cliente-repository.js';
-//import vendaRepository from '../repositories/venda-repository.js';
+import vendaRepository from '../repositories/venda-repository.js';
 
 // Regras de negócio
 function ValidarCPF(cpf) {
@@ -87,11 +87,11 @@ async function DeletarCliente(cpf){
             throw new Error('CPF inválido.');
         }
 
-        /* Verificar se o Cliente está associado à vendas concluídas.
+        // Verificar se o Cliente está associado à vendas concluídas.
         const comprasAssociadas = await vendaRepository.ConsultarCompraPorCPF(cpf);
         if (comprasAssociadas && comprasAssociadas.length > 0) {
             throw new Error('Cliente não pode ser excluído, pois realizou compras.');
-        }*/
+        }
 
         return await clienteRepository.DeletarCliente(cpf);
 
