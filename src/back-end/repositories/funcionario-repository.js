@@ -47,6 +47,42 @@ async function ListarFuncionarios() {
     }
 }
 
+async function OrdenarListaFuncionarios(criterio) {
+    const conn = await conectar();
+
+    let sql = `
+        SELECT cpf, nome, email, cargo, salario, 
+               TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao 
+        FROM funcionarios
+    `;
+
+    // Determinar o critério de ordenação
+    if (criterio === 'nome') {
+        sql += ` ORDER BY nome ASC`;
+    } else if (criterio === 'cpf') {
+        sql += ` ORDER BY cpf ASC`;
+    } else if (criterio === 'cargo') {
+        sql += ` ORDER BY cargo ASC`;
+    } else {
+        throw new Error('Critério de ordenação inválido.');
+    }
+
+    try {
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum funcionário encontrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao ordenar funcionários: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function ConsultarFuncionario(cpf) {
     const conn = await conectar();
 
@@ -164,4 +200,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarFuncionario , ListarFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, ConsultarPorEmail };
+export default { CadastrarFuncionario , ListarFuncionarios , OrdenarListaFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, ConsultarPorEmail };

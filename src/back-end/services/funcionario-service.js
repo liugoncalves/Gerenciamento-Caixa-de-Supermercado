@@ -78,6 +78,14 @@ async function ListarFuncionarios() {
     return await funcionarioRepository.ListarFuncionarios();
 }
 
+async function OrdenarListaFuncionarios(criterio) {
+    try {
+        return await funcionarioRepository.OrdenarListaFuncionarios(criterio);
+    } catch (error) {
+        throw new Error(`Erro ao ordenar funcionários: ${error.message}`);
+    }
+}
+
 async function ConsultarFuncionario(cpf) {
     return await funcionarioRepository.ConsultarFuncionario(cpf);
 }
@@ -140,4 +148,4 @@ async function RealizarLogin(email, senha) {
     }
 }
 
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, RealizarLogin };
+export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, RealizarLogin };

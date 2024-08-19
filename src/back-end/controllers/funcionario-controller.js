@@ -24,6 +24,22 @@ async function ListarFuncionarios(req, res){
     res.send(await funcionarioService.ListarFuncionarios());
 }
 
+async function OrdenarListaFuncionarios(req, res) {
+    const criterio = req.query.criterio;
+
+    if (!criterio) {
+        return res.status(400).send('Critério de ordenação não especificado.');
+    }
+
+    try {
+        const resultado = await funcionarioService.OrdenarListaFuncionarios(criterio);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
+
 async function ConsultarFuncionario(req, res) {
     let cpf = req.params.cpf;
 
@@ -123,4 +139,4 @@ function validarDadosFuncionario(funcionario) {
 }
 
 
-export default { CadastrarFuncionario, ListarFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario , RealizarLogin };
+export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario , RealizarLogin };
