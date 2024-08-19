@@ -56,6 +56,14 @@ async function ListarClientes(){
     return await clienteRepository.ListarClientes();
 }
 
+async function OrdenarListaClientes(criterio) {
+    try {
+        return await clienteRepository.OrdenarListaClientes(criterio);
+    } catch (error) {
+        throw new Error(`Erro ao ordenar clientes: ${error.message}`);
+    }
+}
+
 async function ConsultarCliente(cpf){
     return await clienteRepository.ConsultarCliente(cpf);
 }
@@ -91,4 +99,4 @@ async function DeletarCliente(cpf){
 
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente , DeletarCliente };
+export default { CadastrarCliente , ListarClientes , OrdenarListaClientes, ConsultarCliente , AlterarCliente , DeletarCliente };

@@ -44,6 +44,37 @@ async function ListarClientes(){
     }
 }
 
+async function OrdenarListaClientes(criterio) {
+    const conn = await conectar();
+
+    try {
+        // Define a cláusula ORDER BY com base no critério fornecido
+        let sql = 'SELECT cpf, nome, telefone, email, TO_CHAR(dataCadastro, \'YYYY-MM-DD HH24:MI:SS\') as dataCadastro FROM clientes';
+        if (criterio === 'nome') {
+            sql += ' ORDER BY nome';
+        } else if (criterio === 'cpf') {
+            sql += ' ORDER BY cpf';
+        } else if (criterio === 'data_cadastro') {
+            sql += ' ORDER BY dataCadastro';
+        } else {
+            throw new Error('Critério de ordenação inválido.');
+        }
+        
+        const resultado = await conn.query(sql);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Nenhum cliente cadastrado.' };
+        }
+
+        return resultado.rows;
+
+    } catch (err) {
+        throw new Error('Erro ao ordenar clientes: ' + err.message);
+    } finally {
+        conn.release();
+    }
+}
+
 async function ConsultarCliente(cpf){
     const conn = await conectar();
 
@@ -133,4 +164,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default { CadastrarCliente , ListarClientes , ConsultarCliente , AlterarCliente , DeletarCliente };
+export default { CadastrarCliente , ListarClientes , OrdenarListaClientes, ConsultarCliente , AlterarCliente , DeletarCliente };

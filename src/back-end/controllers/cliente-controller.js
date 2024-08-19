@@ -23,6 +23,21 @@ async function ListarClientes(req, res){
     res.send(await clienteService.ListarClientes());
 }
 
+async function OrdenarListaClientes(req, res) {
+    const criterio = req.query.criterio;
+
+    if (!criterio) {
+        return res.status(400).send('Critério de ordenação não especificado.');
+    }
+
+    try {
+        const resultado = await clienteService.OrdenarListaClientes(criterio);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 async function ConsultarCliente(req, res){
     const cpf = req.params.cpf;
 
@@ -89,4 +104,4 @@ function validarDadosCliente(cliente){
     return null;
 }
 
-export default {CadastrarCliente, ListarClientes, ConsultarCliente, AlterarCliente, DeletarCliente};
+export default {CadastrarCliente, ListarClientes, OrdenarListaClientes, ConsultarCliente, AlterarCliente, DeletarCliente};
