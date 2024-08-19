@@ -38,25 +38,7 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Gerar Relatório em menos de 1 segundo
 - Tempo de resposta na Autenticação
 - Proteção contra Acesso não Autorizado
-- Organização e Clareza na Leitura
-- 
-## Instalação do Projeto
-
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/liugoncalves/Gerenciamento-Caixa-de-Supermercado.git
-2. **Navegue até a pasta onde o projeto foi clonado:**
-   ```bash
-   cd endereco-repositorio
-3. **Instale as dependências:**
-   ```bash
-   npm install
-
-## Uso
-
-1. **Inicie o Servidor:**
-   ```bash
-   npm start
+- Organização e consistência 
 
 ## Estrutura do Projeto
 
