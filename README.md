@@ -39,6 +39,24 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Tempo de resposta na Autenticação
 - Proteção contra Acesso não Autorizado
 - Organização e Clareza na Leitura
+- 
+## Instalação do Projeto
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/liugoncalves/Gerenciamento-Caixa-de-Supermercado.git
+2. **Navegue até a pasta onde o projeto foi clonado:**
+   ```bash
+   cd endereco-repositorio
+3. **Instale as dependências:**
+   ```bash
+   npm install
+
+## Uso
+
+1. **Inicie o Servidor:**
+   ```bash
+   npm start
 
 ## Estrutura do Projeto
 
@@ -46,7 +64,9 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 gerenciamento-caixa-de-supermercado/
   ├── docs/                    
   │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
-  │   └── Requisitos/            # Documento de requisitos
+  │   ├── Requisitos/            # Documento de requisitos
+  │   ├── Diagramas/             # Contém todos os diagramas do projeto
+  │   └── Regras de Codificação/ # Regras e padrões de codificação adotados
   │
   ├── node_modules/              # Pacotes e dependências instaladas
   │
@@ -57,8 +77,10 @@ gerenciamento-caixa-de-supermercado/
   │   │   ├── routes/            # Define as rotas da aplicação
   │   │   └── services/          # Lógica de negócios
   │   │
-  │   └── front-end/
-  │       └── views/             # Templates para renderização no front-end
+  │   ├── front-end/
+  │   │   └── views/             # Templates para renderização no front-end
+  │
+  ├── uploads/                   # Pasta para armazenar arquivos emitidos (nota fiscal)
   │
   ├── .gitignore                 # Arquivos e pastas a serem ignorados pelo Git
   ├── package-lock.json          # Bloqueia as versões exatas das dependências instaladas
