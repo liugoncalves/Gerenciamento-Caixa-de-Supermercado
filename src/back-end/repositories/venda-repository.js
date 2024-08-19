@@ -1,5 +1,7 @@
 import { query } from 'express';
 import pg from 'pg';
+import fs from 'fs-extra';
+import path from 'path';
 
 async function CadastrarVenda(venda) {
     const conn = await conectar();
@@ -139,6 +141,11 @@ async function DeletarVenda(codigo_venda){
     }
 }
 
+async function VerificarNotaFiscalEmitida(codigo_venda) {
+    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${codigo_venda}.pdf`);
+    return fs.pathExists(filePath);
+}
+
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -153,4 +160,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default {CadastrarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};
+export default {CadastrarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda, VerificarNotaFiscalEmitida};

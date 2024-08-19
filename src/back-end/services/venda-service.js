@@ -161,17 +161,17 @@ async function AlterarVenda(codigo_venda, venda) {
 
 async function DeletarVenda(codigo_venda) {
     try {
-        // Verificar se a nota fiscal foi gerada
-        const venda = await vendaRepository.ConsultarVenda(codigo_venda);
-        if (venda && fs.existsSync(`./notas_fiscais/venda_${codigo_venda}.pdf`)) {
-            throw new Error('A nota fiscal foi gerada e não pode ser excluída.');
+        // Verificar se a nota fiscal foi emitida
+        const notaFiscalEmitida = await vendaRepository.VerificarNotaFiscalEmitida(codigo_venda);
+        if (notaFiscalEmitida) {
+            throw new Error('Não é possível excluir a venda porque a nota fiscal já foi emitida.');
         }
 
+        // Deletar a venda se a nota fiscal não foi emitida
         return await vendaRepository.DeletarVenda(codigo_venda);
     } catch (error) {
         throw new Error(error.message);
     }
 }
-
 
 export default { RealizarVenda , ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};
