@@ -113,7 +113,16 @@ async function AlterarVenda(codigo_venda, venda) {
     }
 }
 
+async function DeletarVenda(codigo_venda){
+    try{
+        //Verificar se não teve nenhuma nota fiscal emitida ainda para essa venda
+
+        return await vendaRepository.DeletarVenda(codigo_venda);
+    
+    } catch (error){
+        throw new Error(error.message);
+    }
+}
 
 
-
-export default { RealizarVenda , ListarVendas, ConsultarVenda, AlterarVenda};
+export default { RealizarVenda , ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};

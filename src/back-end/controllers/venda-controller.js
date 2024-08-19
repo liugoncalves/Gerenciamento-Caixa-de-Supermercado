@@ -62,6 +62,24 @@ async function AlterarVenda(req, res) {
     }
 }
 
+async function DeletarVenda(req, res) {
+    const codigo_venda = req.params.codigo;
+
+    if (!codigo_venda) {
+        return res.status(400).send('Código da venda é necessário.');
+    }
+
+    try {
+        const resultado = await vendaService.DeletarVenda(codigo_venda);
+        if (resultado.mensagem) {
+            return res.status(404).send(resultado.mensagem);
+        }
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 
 function validarDadosVenda(venda){
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = venda;
@@ -82,4 +100,4 @@ function validarDadosVenda(venda){
 
 }
 
-export default {RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda};
+export default {RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};

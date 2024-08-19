@@ -115,6 +115,26 @@ async function AlterarVenda(codigo_venda, venda) {
     }
 }
 
+async function DeletarVenda(codigo_venda){
+    const conn = await conectar();
+
+    try{
+        const sql = 'DELETE FROM vendas WHERE codigo = $1';
+        const resultado = await conn.query(sql, [codigo_venda]);
+
+        if(resultado.rowCount == 0 ){
+            return { mensagem: 'Venda não encontrada para exclusão.' };
+        }
+
+        return { mensagem: 'Venda excluída com sucesso.' };
+
+    } catch(err){
+        throw new Error ('Erro ao excluir venda: ' + err.message);
+    } finally{
+        conn.release();
+    }
+}
+
 
 async function conectar(){
     const pool = new pg.Pool({
@@ -129,4 +149,4 @@ async function conectar(){
     return await pool.connect();
 }
 
-export default {CadastrarVenda, ListarVendas, ConsultarVenda, AlterarVenda};
+export default {CadastrarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda};

@@ -166,7 +166,6 @@ async function DeletarEndereco(codigo){
             return { mensagem: 'Endereço não encontrado para exclusão.' };
         }
         
-
         return { mensagem: 'Endereço excluído com sucesso.' };
 
     } catch (err) {
