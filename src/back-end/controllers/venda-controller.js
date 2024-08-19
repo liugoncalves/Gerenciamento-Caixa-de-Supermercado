@@ -41,6 +41,28 @@ async function ConsultarVenda(req, res){
     }
 }
 
+async function AlterarVenda(req, res) {
+    const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = req.body;
+    const codigo_venda = req.params.codigo;
+
+    const venda = { cpf_cliente, cpf_funcionario, codigo_produto, quantidade };
+
+    // Validação de Dados
+    const erroValidacao = validarDadosVenda(venda);
+    if (erroValidacao) {
+        return res.status(400).send(erroValidacao);
+    }
+
+    try {
+        // Atualizar a venda
+        const resultado = await vendaService.AlterarVenda(codigo_venda, venda);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
+
 function validarDadosVenda(venda){
     const { cpf_cliente, cpf_funcionario, codigo_produto, quantidade } = venda;
 
@@ -60,4 +82,4 @@ function validarDadosVenda(venda){
 
 }
 
-export default {RealizarVenda, ListarVendas, ConsultarVenda};
+export default {RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda};

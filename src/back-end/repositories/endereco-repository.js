@@ -107,16 +107,17 @@ async function ConsultarEnderecoPorCPF(cpf) {
 }
 
 
-async function AlterarEndereco(codigo_antigo, endereco){
+async function AlterarEndereco(codigo_antigo, endereco) {
     const conn = await conectar();
 
     try {
-        const sql = `
+        // Atualiza o endereço na tabela de endereços
+        const sqlEndereco = `
             UPDATE enderecos
             SET nome_rua = $1, numero = $2, complemento = $3, bairro = $4, cidade = $5, estado = $6, cep = $7, cpf_cliente = $8
             WHERE codigo = $9
         `;
-        const resultado = await conn.query(sql, [
+        const resultadoEndereco = await conn.query(sqlEndereco, [
             endereco.nome_rua,
             endereco.numero,
             endereco.complemento,
@@ -128,14 +129,26 @@ async function AlterarEndereco(codigo_antigo, endereco){
             codigo_antigo
         ]);
 
-        if (resultado.rowCount === 0){
+        if (resultadoEndereco.rowCount === 0) {
             return { mensagem: 'Endereço não encontrado para alteração.' };
         }
 
-        return { mensagem: 'Endereço alterado com sucesso.' };
+        // Cria o logradouro atualizado
+        const logradouroAtualizado = `${endereco.nome_rua}, ${endereco.numero}${endereco.complemento ? ', ' + endereco.complemento : ''}, ${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}, ${endereco.cep}`;
 
-    }
-    catch (err) {
+        // Atualiza o logradouro nas vendas associadas ao CPF do cliente
+        const sqlVendas = `
+            UPDATE vendas
+            SET logradouro = $1
+            WHERE cpf_cliente = $2
+        `;
+        await conn.query(sqlVendas, [
+            logradouroAtualizado,
+            endereco.cpf_cliente
+        ]);
+
+        return { mensagem: 'Endereço alterado com sucesso.' };
+    } catch (err) {
         throw new Error('Erro ao alterar endereço: ' + err.message);
     } finally {
         conn.release();
