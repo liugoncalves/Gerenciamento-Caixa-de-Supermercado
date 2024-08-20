@@ -39,7 +39,7 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Tempo de resposta na Autenticação
 - Proteção contra Acesso não Autorizado
 - Organização e Clareza na Leitura
-- 
+  
 ## Instalação do Projeto
 
 1. **Clone o repositório:**
