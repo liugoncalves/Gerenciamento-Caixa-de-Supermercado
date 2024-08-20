@@ -62,6 +62,9 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 
 ```plaintext
 gerenciamento-caixa-de-supermercado/
+  ├── database/                  # Scripts SQL para criação e gerenciamento das tabelas
+  │   └── criar_tabelas.sql      # Arquivo de criação das tabelas
+  │
   ├── docs/                    
   │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
   │   ├── Requisitos/            # Documento de requisitos
