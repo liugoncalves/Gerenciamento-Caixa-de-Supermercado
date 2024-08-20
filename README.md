@@ -51,6 +51,10 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 3. **Instale as dependências:**
    ```bash
    npm install
+4. **Configure o Banco de Dados:**
+   - Estabeleça uma conexão com o banco de dados (recomendável - PostgreSQL).
+   - Crie um banco de dados se ainda não o tiver feito.
+   - Execute em seu Banco de Dados o script `criar_tabelas.sql` localizado na pasta `database` para criar as tabelas necessárias.
 
 ## Uso
 
