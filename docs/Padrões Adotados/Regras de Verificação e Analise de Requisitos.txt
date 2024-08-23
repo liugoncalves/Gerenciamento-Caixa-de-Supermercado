@@ -30,8 +30,8 @@ Exemplo Incorreto:
 
 3. Uso de Frases Concisas  
 
-Regra: Evitar Frases Muito Longas (Seção 7.2.3)
-As frases utilizadas na especificação dos requisitos devem ser curtas e objetivas, evitando construções complexas e longas. Frases curtas são mais fáceis de entender e reduzem o risco de interpretações errôneas.
+Regra: Evitar Frases com mais de 30 palavras (Seção 7.2.3)
+As frases utilizadas na especificação dos requisitos devem ser curtas e objetivas, evitando construções complexas e longas. Portanto, devemos garantir que a quantidade de palavras na especificação de requisitos não passe do número 30. Isso porque frases curtas são mais fáceis de entender e reduzem o risco de interpretações errôneas.
 
 Exemplo Correto:  
 "O sistema DEVE enviar uma notificação ao usuário após a conclusão da compra."

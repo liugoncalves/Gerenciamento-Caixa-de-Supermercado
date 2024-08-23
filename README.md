@@ -39,7 +39,7 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 - Tempo de resposta na Autenticação
 - Proteção contra Acesso não Autorizado
 - Organização e Clareza na Leitura
-- 
+  
 ## Instalação do Projeto
 
 1. **Clone o repositório:**
@@ -51,6 +51,10 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 3. **Instale as dependências:**
    ```bash
    npm install
+4. **Configure o Banco de Dados:**
+   - Estabeleça uma conexão com o banco de dados (recomendável - PostgreSQL).
+   - Crie um banco de dados se ainda não o tiver feito.
+   - Execute em seu Banco de Dados o script `criar_tabelas.sql` localizado na pasta `database` para criar as tabelas necessárias.
 
 ## Uso
 
