@@ -1,10 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import funcionarioRouter from './src/back-end/routes/funcionario-route.js';
-import produtoRouter from './src/back-end/routes/produto-route.js';
-import clienteRouter from './src/back-end/routes/cliente-route.js';
-import enderecoRouter from './src/back-end/routes/endereco-route.js';
-import vendaRouter from './src/back-end/routes/venda-route.js';
+import funcionarioRouter from './routes/funcionario-route.js';
+import produtoRouter from './routes/produto-route.js';
+import clienteRouter from './routes/cliente-route.js';
+import enderecoRouter from './routes/endereco-route.js';
+import vendaRouter from './routes/venda-route.js';
 
 const port = 3002;
 const app = express();
