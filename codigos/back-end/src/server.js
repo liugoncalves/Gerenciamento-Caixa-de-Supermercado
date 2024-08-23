@@ -1,10 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import funcionarioRouter from './codigos/back-end/routes/funcionario-route.js';
-import produtoRouter from './codigos/back-end/routes/produto-route.js';
-import clienteRouter from './codigos/back-end/routes/cliente-route.js';
-import enderecoRouter from './codigos/back-end/routes/endereco-route.js';
-import vendaRouter from './codigos/back-end/routes/venda-route.js';
+import funcionarioRouter from './routes/funcionario-route.js';
+import produtoRouter from './routes/produto-route.js';
+import clienteRouter from './routes/cliente-route.js';
+import enderecoRouter from './routes/endereco-route.js';
 
 const port = 3002;
 const app = express();
@@ -14,7 +13,7 @@ app.use('/funcionarios', funcionarioRouter);
 app.use('/produtos', produtoRouter);
 app.use('/clientes', clienteRouter);
 app.use('/enderecos', enderecoRouter);
-app.use('/vendas', vendaRouter);
+
 
 // Adicionar uma rota básica
 app.get('/', (req, res) => {
