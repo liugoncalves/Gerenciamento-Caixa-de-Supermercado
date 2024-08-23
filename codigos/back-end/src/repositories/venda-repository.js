@@ -211,7 +211,7 @@ async function DeletarVenda(codigoVenda) {
 
 // Função para verificar se a nota fiscal foi emitida
 async function VerificarNotaFiscalEmitida(codigoVenda) {
-    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${codigoVenda}.pdf`);
+    const filePath = path.resolve('../../uploads/notas-fiscais', `nota_fiscal_${codigoVenda}.pdf`);
     return fs.pathExists(filePath);
 }
 

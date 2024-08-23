@@ -17,7 +17,7 @@ import PDFDocument from 'pdfkit';
  */
 async function gerarNotaFiscalPDF(venda, nome_cliente, nome_funcionario, produto) {
     const pdfDoc = new PDFDocument();
-    const filePath = path.resolve('uploads/notas-fiscais', `nota_fiscal_${venda.Codigo}.pdf`);
+    const filePath = path.resolve('../../uploads/notas-fiscais', `nota_fiscal_${venda.Codigo}.pdf`);
 
     // Criar o documento PDF
     pdfDoc.pipe(fs.createWriteStream(filePath));
