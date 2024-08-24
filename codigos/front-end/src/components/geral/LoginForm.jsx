@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../styles/LoginForm.css';
+import '../../styles/geral/LoginForm.css';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {

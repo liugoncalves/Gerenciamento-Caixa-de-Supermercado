@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/GestaoGerenteComp.css';
+import '../../styles/gerente/GestaoGerenteComp.css';
 
 const GestaoGerente = () => {
     const navigate = useNavigate();

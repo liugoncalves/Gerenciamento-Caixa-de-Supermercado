@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/login';
-import GerenteGestao from './pages/gerente-gestao';
-import PrivateRoute from './components/PrivatesRoutes';
-import TelaInicialGerente from './pages/TelaInicialGerente';
+import Login from './pages/geral/login';
+import GerenteGestao from './pages/gerente/gerente-gestao';
+import PrivateRoute from './components/geral/PrivatesRoutes';
+import TelaInicialGerente from './pages/gerente/TelaInicialGerente';
 
 
 

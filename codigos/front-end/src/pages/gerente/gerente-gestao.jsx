@@ -1,6 +1,6 @@
 import React from 'react';
-import GestaoGerente from '../components/GestaoGerentesComp' // Certifique-se de que o caminho esteja correto
-import '../styles/GestaoGerente-pag.css'; // Para os estilos da página
+import GestaoGerente from '../../components/gerente/GestaoGerentesComp' // Certifique-se de que o caminho esteja correto
+import '../../styles/gerente/GestaoGerente-pag.css'; // Para os estilos da página
 
 const PaginaGestao = () => {
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
-import TelaInicial from '../components/TelaInicialGerente';
-import logo from '../assets/images/logo.png';
-import '../styles/TelaInicial-pag.css';
+import TelaInicial from '../../components/gerente/TelaInicialGerente';
+import logo from '../../assets/images/logo.png';
+import '../../styles/gerente/TelaInicial-pag.css';
 
 const Tela = () => {
     return (

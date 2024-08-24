@@ -1,7 +1,7 @@
 import React from 'react';
-import LoginForm from '../components/LoginForm';
-import logo from '../assets/images/logo.png';
-import '../styles/LoginPage.css';
+import LoginForm from '../../components/geral/LoginForm';
+import logo from '../../assets/images/logo.png';
+import '../../styles/geral/LoginPage.css';
 
 const LoginPage = () => {
     return (
