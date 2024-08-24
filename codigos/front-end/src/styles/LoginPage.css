@@ -12,16 +12,9 @@
     padding: 20px;
     text-align: center;
     width: 100%;
+    margin-bottom: 20px; /* Adicione uma margem para separar o logo do formulário */
 }
 
-.form-container {
-    background-color: white;
-    padding: 40px;
-    width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: -10px;
-}
-
-img {
+.logo-container img {
     max-width: 150px;
 }

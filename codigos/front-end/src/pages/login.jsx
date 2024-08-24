@@ -3,17 +3,15 @@ import LoginForm from '../components/LoginForm';
 import logo from '../assets/images/logo.png';
 import '../styles/LoginPage.css';
 
-const Login = () => {
+const LoginPage = () => {
     return (
         <div className="login-page">
             <div className="logo-container">
-                <img src={logo} alt="MLV Logo" />
+                <img src={logo} alt="Logo" />
             </div>
-            <div className="form-container">
-                <LoginForm />
-            </div>
+            <LoginForm />
         </div>
     );
 };
 
-export default Login;
+export default LoginPage;
