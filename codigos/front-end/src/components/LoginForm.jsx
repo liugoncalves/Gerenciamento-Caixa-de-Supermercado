@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/LoginForm.css';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
-    //const navigate = useNavigate();
-
+    const navigate = useNavigate();
+    localStorage.removeItem('cargo');
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -19,10 +19,19 @@ const LoginForm = () => {
                 senha,
             });
 
-            const { mensagem } = response.data; // Removendo o cargo
+            const { mensagem, cargo } = response.data; 
             setError('');
             setMessage(mensagem);
-            
+
+            // Armazena o cargo no localStorage
+            localStorage.setItem('cargo', cargo);
+
+            // Redireciona para a página apropriada com base no cargo
+            if (cargo === 'gerente') {
+                navigate('/TelaInicialGerente');
+            } else {
+                navigate('/TelaInicialVendedor');
+            }
             
         } catch (error) {
             setMessage('');
