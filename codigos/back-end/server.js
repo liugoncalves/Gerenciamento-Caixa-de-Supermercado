@@ -5,10 +5,13 @@ import produtoRouter from './src/routes/produto-route.js';
 import clienteRouter from './src/routes/cliente-route.js';
 import enderecoRouter from './src/routes/endereco-route.js';
 import vendaRouter from './src/routes/venda-route.js';
+import cors from 'cors'
+
 
 const port = 3002;
 const app = express();
 
+app.use(cors()) //liberando front para acessar o back
 app.use(bodyParser.json());
 app.use('/funcionarios', funcionarioRouter);
 app.use('/produtos', produtoRouter);
