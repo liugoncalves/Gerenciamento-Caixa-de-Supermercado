@@ -14,7 +14,7 @@ import TelaInicialVendedor from './pages/vendedor/TelaInicialVendedor';
 import VendedorGestao from './pages/vendedor/vendedor-gestao';
 import MinhasVendas from './pages/vendedor/minhas-vendas';
 import GerenciarClientes from './pages/geral/gerenciar-clientes';
-
+import CadastrarClientes from './pages/geral/cadastrar-cliente';
 
 function App() {
     return (
@@ -33,6 +33,8 @@ function App() {
                 <Route path="/vendedor-gestao" element={ <PrivateRoute element={<VendedorGestao />} allowedRoles={['vendedor']}/>}/>
                 <Route path="/minhas-vendas" element={ <PrivateRoute element={<MinhasVendas />} allowedRoles={['vendedor']}/>}/>
                 <Route path="/gerenciar-clientes" element={ <PrivateRoute element={<GerenciarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
+                <Route path="/cadastrar-cliente" element={ <PrivateRoute element={<CadastrarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
+            
             </Routes>
         </Router>
     );
