@@ -30,7 +30,7 @@ const GestaoVendedor = () => {
                     <img src={vendasIcon} alt="Minhas Vendas" />
                     <span>Minhas Vendas</span>
                 </button>
-                <button onClick={() => handleButtonClick('/exibir-compras')}>
+                <button onClick={() => handleButtonClick('/listar-compras')}>
                     <img src={comprasIcon} alt="Exibir Compras dos Clientes" />
                     <span>Exibir Compras dos Clientes</span>
                 </button>
