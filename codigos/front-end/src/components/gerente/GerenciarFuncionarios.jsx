@@ -18,8 +18,8 @@ const GerenciarFuncionarios = () => {
         });
     }, []);
 
-    const handleEdit = (id) => {
-        navigate(`/editar-funcionario/${id}`);
+    const handleEdit = (cpf) => {
+        navigate(`/editar-funcionario/${cpf}`);
     };
 
     const handleDelete = (cpf) => {
@@ -74,7 +74,7 @@ const GerenciarFuncionarios = () => {
                             <td>{funcionario.cargo}</td>
                             <td>{funcionario.dataadmissao}</td>
                             <td>
-                                <button onClick={() => handleEdit(funcionario.id)} className="edit-button">
+                                <button onClick={() => handleEdit(funcionario.cpf)} className="edit-button">
                                     <img src={editIcon} alt="Edit"/>
                                 </button>
                                 <button onClick={() => handleDelete(funcionario.cpf)} className="delete-button">
