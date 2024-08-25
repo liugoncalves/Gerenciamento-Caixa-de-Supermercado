@@ -20,7 +20,7 @@ const GerenciarClientes = () => {
     }, []);
 
     const handleEdit = (cpf) => {
-        navigate(`/editar-cliente/${cpf}`);
+        navigate(`/editar-clientes/${cpf}`);
     };
 
     const handleDelete = (cpf) => {
