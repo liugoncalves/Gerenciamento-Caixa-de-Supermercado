@@ -8,6 +8,7 @@ import deleteIcon from '../../assets/images/delete-icon.png';
 const ListarVendas = () => {
     const [vendas, setVendas] = useState([]);
     const [filteredVendas, setFilteredVendas] = useState([]);
+    const [funcionarios, setFuncionarios] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +19,22 @@ const ListarVendas = () => {
                 const response = await api.get('/vendas/listar');
                 setVendas(response.data);
                 setFilteredVendas(response.data); // Inicialmente, todas as vendas são exibidas
+
+                // Obter CPFs únicos dos funcionários
+                const cpfsFuncionarios = [...new Set(response.data.map(venda => venda.cpf_funcionario))];
+                const funcionariosData = {};
+
+                for (const cpf of cpfsFuncionarios) {
+                    try {
+                        const response = await api.get(`/funcionarios/consultar/${cpf}`);
+                        funcionariosData[cpf] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
+                    } catch (err) {
+                        console.error(`Erro ao obter dados do funcionário com CPF ${cpf}:`, err);
+                    }
+                }
+
+                setFuncionarios(funcionariosData);
+
             } catch (err) {
                 setError('Erro ao carregar vendas.');
                 console.error(err);
@@ -52,7 +69,7 @@ const ListarVendas = () => {
         setSearchTerm(searchValue);
         setFilteredVendas(
             vendas.filter(venda =>
-                venda.cpf_funcionario.includes(searchValue)
+                funcionarios[venda.cpf_funcionario]?.includes(searchValue)
             )
         );
     };
@@ -65,7 +82,7 @@ const ListarVendas = () => {
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Pesquisar pelo CPF do Funcionário..."
+                    placeholder="Pesquisar pelo Nome do Funcionário..."
                     className="search-input"
                     value={searchTerm}
                     onChange={handleSearch}
@@ -75,8 +92,7 @@ const ListarVendas = () => {
                 <table className="vendas-table">
                     <thead>
                         <tr>
-                            <th>CPF do Cliente</th>
-                            <th>CPF do Funcionário</th>
+                            <th>Nome do Funcionário</th>
                             <th>Código do Produto</th>
                             <th>Quantidade</th>
                             <th>Data da Venda</th>
@@ -87,8 +103,7 @@ const ListarVendas = () => {
                     <tbody>
                         {filteredVendas.map((venda) => (
                             <tr key={venda.codigo}>
-                                <td>{venda.cpf_cliente}</td>
-                                <td>{venda.cpf_funcionario}</td>
+                                <td>{funcionarios[venda.cpf_funcionario] || 'Desconhecido'}</td>
                                 <td>{venda.codigoproduto}</td>
                                 <td>{venda.quantidade}</td>
                                 <td>{venda.datavenda}</td>
