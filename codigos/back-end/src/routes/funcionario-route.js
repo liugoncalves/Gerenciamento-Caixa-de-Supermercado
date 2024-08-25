@@ -8,6 +8,7 @@ router.get('/listar', funcionarioController.ListarFuncionarios);
 router.get('/ordenar', funcionarioController.OrdenarListaFuncionarios);
 router.get('/consultar/:cpf', funcionarioController.ConsultarFuncionario);
 router.put('/alterar/:cpf', funcionarioController.AlterarFuncionario);
+router.put('/alterarsenha/:cpf', funcionarioController.AlterarSenhaFuncionario);
 router.delete('/deletar/:cpf', funcionarioController.DeletarFuncionario);
 
 router.post('/login', funcionarioController.RealizarLogin);

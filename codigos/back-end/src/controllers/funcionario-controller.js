@@ -93,13 +93,18 @@ async function ConsultarFuncionario(req, res) {
  * @param {Object} req - Requisição HTTP.
  * @param {Object} res - Resposta HTTP.
  */
+/**
+ * Altera as informações de um funcionário existente, exceto a senha.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
 async function AlterarFuncionario(req, res) {
     // obtenção do CPF antigo e novos dados do funcionário
     let cpf_antigo = req.params.cpf;
-    let { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
+    let { cpf, nome, email, cargo, salario, data_admissao } = req.body;
 
-    // criação do objeto funcionário com os novos dados
-    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
+    // criação do objeto funcionário com os novos dados, sem a senha
+    const funcionario = { cpf, nome, email, cargo, salario, data_admissao };
 
     // validação dos dados do funcionário
     const erro_validacao = ValidarDadosFuncionario(funcionario);
@@ -116,6 +121,38 @@ async function AlterarFuncionario(req, res) {
         res.status(500).send(`${error.message}`);
     }
 }
+
+
+/**
+ * Altera a senha de um funcionário existente.
+ * @param {Object} req - Requisição HTTP.
+ * @param {Object} res - Resposta HTTP.
+ */
+async function AlterarSenhaFuncionario(req, res) {
+    // obtenção do CPF, nova senha e confirmação da nova senha
+    let cpf = req.params.cpf;
+    let { novaSenha, confirmarNovaSenha } = req.body;
+
+    // validação dos campos de senha
+    if (!novaSenha || !confirmarNovaSenha) {
+        return res.status(400).send('Os campos "nova senha" e "confirmar nova senha" devem ser fornecidos.');
+    }
+
+    if (novaSenha !== confirmarNovaSenha) {
+        return res.status(400).send('A nova senha e a confirmação da nova senha não coincidem.');
+    }
+
+    try {
+        // tentativa de alterar a senha do funcionário
+        let resultado = await funcionario_service.AlterarSenhaFuncionario(cpf, novaSenha);
+        res.status(200).send(resultado);
+    } catch (error) {
+        // tratamento de erros
+        res.status(500).send(`${error.message}`);
+    }
+}
+
+
 
 /**
  * Deleta um funcionário com base no CPF fornecido.
@@ -173,9 +210,9 @@ async function RealizarLogin(req, res) {
  * @returns {string|null} Mensagem de erro ou null se os dados estiverem válidos.
  */
 function ValidarDadosFuncionario(funcionario) {
-    const { cpf, nome, email, senha, cargo, salario } = funcionario;
+    const { cpf, nome, email, cargo, salario } = funcionario;
 
-    if (!cpf || !nome || !email || !senha || !cargo || !salario) {
+    if (!cpf || !nome || !email  || !cargo || !salario) {
         return 'preencha todos os campos.';
     }
     
@@ -195,4 +232,5 @@ function ValidarDadosFuncionario(funcionario) {
 }
 
 // exportação das funções do módulo
-export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario, RealizarLogin };
+export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, 
+                 AlterarFuncionario, AlterarSenhaFuncionario, DeletarFuncionario, RealizarLogin };

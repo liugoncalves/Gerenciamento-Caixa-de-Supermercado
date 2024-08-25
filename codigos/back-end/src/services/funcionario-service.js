@@ -133,7 +133,6 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
         }
 
         ValidarSalario(funcionario.salario);
-        funcionario.senha = await CriptografarSenha(funcionario.senha);
 
         return await funcionario_repository.AlterarFuncionario(cpf_antigo, funcionario);
 
@@ -141,6 +140,24 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
         throw new Error(`Erro ao alterar funcionário: ${error.message}`);
     }
 }
+
+
+/**
+ * Altera a senha de um funcionário existente.
+ * @param {string} cpf - CPF do funcionário.
+ * @param {string} novaSenha - Nova senha do funcionário.
+ * @returns {Promise<Object>} Resultado da operação de alteração de senha.
+ * @throws {Error} Se ocorrer um erro durante a alteração.
+ */
+async function AlterarSenhaFuncionario(cpf, novaSenha) {
+    try {
+        const senhaCriptografada = await CriptografarSenha(novaSenha);
+        return await funcionario_repository.AlterarSenhaFuncionario(cpf, senhaCriptografada);
+    } catch (error) {
+        throw new Error(`Erro ao alterar a senha do funcionário: ${error.message}`);
+    }
+}
+
 
 /**
  * Deleta um funcionário com base no CPF fornecido.
@@ -197,4 +214,5 @@ async function RealizarLogin(email, senha) {
 }
 
 // Exportação das funções do módulo
-export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario, RealizarLogin };
+export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, 
+                 AlterarFuncionario, AlterarSenhaFuncionario, DeletarFuncionario, RealizarLogin };

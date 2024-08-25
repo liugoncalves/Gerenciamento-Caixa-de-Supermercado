@@ -120,22 +120,21 @@ async function ConsultarFuncionario(cpf) {
     }
 }
 
-// Função para alterar os dados de um funcionário
+// Função para alterar os dados de um funcionário sem alterar a senha
 async function AlterarFuncionario(cpfAntigo, funcionario) {
     const conn = await Conectar();
 
     try {
         const sql = `
             UPDATE funcionarios 
-            SET cpf = $1, nome = $2, email = $3, senha = $4, cargo = $5, salario = $6
-            WHERE cpf = $7
+            SET cpf = $1, nome = $2, email = $3, cargo = $4, salario = $5
+            WHERE cpf = $6
             RETURNING *;
         `;
         const valores = [
             funcionario.cpf,
             funcionario.nome,
             funcionario.email,
-            funcionario.senha,
             funcionario.cargo,
             funcionario.salario,
             cpfAntigo
@@ -146,14 +145,40 @@ async function AlterarFuncionario(cpfAntigo, funcionario) {
             return { mensagem: 'Funcionário não encontrado para alteração.' };
         }
 
-        return { mensagem: 'Funcionário alterado com sucesso.'};
-         
+        return { mensagem: 'Funcionário alterado com sucesso.' };
+
     } catch (error) {
         throw new Error('Erro ao alterar funcionário: ' + error.message);
     } finally {
         conn.release();
     }
 }
+
+
+// Função para alterar a senha de um funcionário pelo CPF
+async function AlterarSenhaFuncionario(cpf, senhaCriptografada) {
+    const conn = await Conectar();
+
+    try {
+        const sql = `
+            UPDATE funcionarios 
+            SET senha = $1
+            WHERE cpf = $2
+        `;
+        const resultado = await conn.query(sql, [senhaCriptografada, cpf]);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Funcionário não encontrado para alteração de senha.' };
+        }
+
+        return { mensagem: 'Senha alterada com sucesso.' };
+    } catch (error) {
+        throw new Error('Erro ao alterar a senha do funcionário: ' + error.message);
+    } finally {
+        conn.release();
+    }
+}
+
 
 // Função para deletar um funcionário pelo CPF
 async function DeletarFuncionario(cpf) {
@@ -207,7 +232,8 @@ export default {
     ListarFuncionarios, 
     OrdenarListaFuncionarios, 
     ConsultarFuncionario, 
-    AlterarFuncionario, 
+    AlterarFuncionario,
+    AlterarSenhaFuncionario, 
     DeletarFuncionario, 
     ConsultarPorEmail 
 };
