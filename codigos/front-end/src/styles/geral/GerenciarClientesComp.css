@@ -23,7 +23,7 @@
 }
 
 .add-button {
-    background-color: #4CAF50;
+    background-color: #4caf5c;
     color: white;
     border: none;
     border-radius: 4px;
@@ -47,7 +47,7 @@
 }
 
 .clientes-table th {
-    background-color: #003c69; /* Azul para os títulos */
+    background-color: #ffffff; /* Azul para os títulos */
     color: white;
     text-align: left;
 }

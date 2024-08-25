@@ -76,13 +76,8 @@
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
-    background-color: #ff5733; /* Cor de fundo vibrante para destaque */
+    background-color: #002c51;
     color: white;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Suaviza a transição de cor */
-}
-
-.add-button:hover {
-    background-color: #00c711; /* Cor de fundo ao passar o mouse */
 }

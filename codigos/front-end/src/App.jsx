@@ -16,6 +16,7 @@ import MinhasVendas from './pages/vendedor/minhas-vendas';
 import GerenciarClientes from './pages/geral/gerenciar-clientes';
 import CadastrarClientes from './pages/geral/cadastrar-cliente';
 import EditarClientes from './pages/geral/editar-clientes';
+import GerenciarProdutos from './pages/geral/gerenciar-produtos';
 
 function App() {
     return (
@@ -36,6 +37,9 @@ function App() {
                 <Route path="/gerenciar-clientes" element={ <PrivateRoute element={<GerenciarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
                 <Route path="/cadastrar-cliente" element={ <PrivateRoute element={<CadastrarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
                 <Route path="/editar-clientes/:cpf" element={ <PrivateRoute element={<EditarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
+                <Route path="/gerenciar-produtos/" element={ <PrivateRoute element={<GerenciarProdutos />} allowedRoles={['vendedor','gerente']}/>}/>
+           
+           
             </Routes>
         </Router>
     );
