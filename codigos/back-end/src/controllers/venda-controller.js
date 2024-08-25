@@ -120,6 +120,16 @@ async function DeletarVenda(req, res) {
     }
 }
 
+async function GerarNotaFiscal(req, res) {
+    try {
+        const { codigo } = req.params;
+        const resultado = await venda_service.GerarNotaFiscal(codigo);
+        res.status(200).send(resultado);
+    } catch (error) {
+        res.status(500).send(`${error.message}`);
+    }
+}
+
 /**
  * Valida os dados fornecidos para uma venda.
  * @param {Object} venda - Dados da venda.
@@ -144,4 +154,4 @@ function validarDadosVenda(venda) {
 }
 
 // exportação das funções do módulo
-export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda };
+export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda , GerarNotaFiscal};

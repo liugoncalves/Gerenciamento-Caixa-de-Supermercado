@@ -7,6 +7,62 @@ import fs from 'fs-extra';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 
+
+async function GerarNotaFiscal(codigoVenda) {
+    try {
+        // Consultar a venda pelo código
+        const venda = await venda_repository.ConsultarVenda(codigoVenda);
+        if (!venda) {
+            throw new Error('Venda não encontrada.');
+        }
+
+        // Verificar se o cliente existe
+        const cliente = await cliente_repository.ConsultarCliente(venda.cpf_cliente);
+        if (!cliente || cliente.mensagem) {
+            throw new Error('Cliente não encontrado.');
+        }
+        const nome_cliente = cliente.nome;
+
+        // Verificar se o funcionário existe
+        const funcionario = await funcionario_repository.ConsultarFuncionario(venda.cpf_funcionario);
+        if (!funcionario || funcionario.mensagem) {
+            throw new Error('Funcionário não encontrado.');
+        }
+        const nome_funcionario = funcionario.nome;
+
+        // Verificar se o produto existe
+        const produto = await produto_repository.ConsultarProduto(venda.codigoproduto);
+        if (!produto || produto.mensagem) {
+            throw new Error('Produto não encontrado.');
+        }
+
+        // Consultar o endereço do cliente
+        const endereco = await endereco_repository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
+        if (!endereco) {
+            throw new Error('Endereço do cliente não encontrado.');
+        }
+
+        // Concatenar o endereço completo
+        const logradouro = `${endereco.nome_rua || ''}, ${endereco.numero || ''}${endereco.complemento ? ', ' + endereco.complemento : ''}, ${endereco.bairro || ''}, ${endereco.cidade || ''}, ${endereco.estado || ''}, CEP: ${endereco.cep || ''}`;
+
+        // Gerar a nota fiscal em PDF
+        const resultadoNotaFiscal = await gerarNotaFiscalPDF({
+            Codigo: codigoVenda,
+            DataVenda: venda.datavenda,
+            CPF_Cliente: venda.cpf_cliente,
+            CPF_Funcionario: venda.cpf_funcionario,
+            CodigoProduto: venda.codigoproduto,
+            Quantidade: venda.quantidade,
+            Logradouro: logradouro,
+            ValorTotal: venda.valortotal
+        }, nome_cliente, nome_funcionario, produto);
+
+        return resultadoNotaFiscal;
+    } catch (error) {
+        throw new Error(`Erro ao gerar a nota fiscal: ${error.message}`);
+    }
+}
+
 /**
  * Gera uma nota fiscal em PDF para uma venda.
  * @param {Object} venda - Dados da venda.
@@ -27,16 +83,17 @@ async function gerarNotaFiscalPDF(venda, nome_cliente, nome_funcionario, produto
     pdfDoc.moveDown();
 
     pdfDoc.fontSize(12).text(`Código da Venda: ${venda.Codigo}`);
-    pdfDoc.text(`Data da Venda: ${new Date(venda.DataVenda).toLocaleString()}`);
     pdfDoc.text(`Cliente: ${nome_cliente}`);
     pdfDoc.text(`Funcionário: ${nome_funcionario}`);
     pdfDoc.text(`Endereço: ${venda.Logradouro}`);
-    pdfDoc.text(`Produto Código: ${venda.CodigoProduto}`);
+    pdfDoc.text(`Nome do Produto: ${produto.nome}`);
+    pdfDoc.text(`Código do Produto: ${venda.CodigoProduto}`);
     pdfDoc.text(`Quantidade: ${venda.Quantidade}`);
 
     // Garantir que o valor total seja um número e formatá-lo
     const valorTotal = venda.ValorTotal ? Number(venda.ValorTotal).toFixed(2) : '0.00';
     pdfDoc.text(`Valor Total: R$ ${valorTotal}`);
+    pdfDoc.text(`Data da Venda: ${new Date(venda.DataVenda).toLocaleString()}`);
     pdfDoc.moveDown();
 
     pdfDoc.text('** Esta nota fiscal foi gerada eletronicamente e não precisa ser assinada.', { align: 'center' });
@@ -99,14 +156,8 @@ async function RealizarVenda(venda) {
 
         const resultado = await venda_repository.CadastrarVenda(novaVenda);
 
-        // Gerar a nota fiscal em PDF
-        await gerarNotaFiscalPDF({
-            Codigo: resultado.codigo,
-            DataVenda: new Date().toISOString(),
-            ...novaVenda
-        }, nome_cliente, nome_funcionario, produto);
-
         return resultado;
+
     } catch (error) {
         throw new Error(`${error.message}`);
     }
@@ -209,4 +260,4 @@ async function DeletarVenda(codigo_venda) {
 }
 
 // Exportação das funções do módulo
-export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda };
+export default { RealizarVenda, ListarVendas, ConsultarVenda, AlterarVenda, DeletarVenda , GerarNotaFiscal};
