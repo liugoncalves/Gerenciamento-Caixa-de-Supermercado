@@ -46,12 +46,21 @@ const MinhasVendas = () => {
         fetchVendas();
     }, []);
 
+    useEffect(() => {
+        const cpfFuncionario = localStorage.getItem('cpf');
+        if (cpfFuncionario) {
+            setFilteredVendas(vendas.filter(venda => venda.cpf_funcionario === cpfFuncionario));
+        }
+    }, [vendas]);
+
     const handleDelete = (codigo) => {
-        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar da venda com codigo ${codigo}?`);
+        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar a venda com código ${codigo}?`);
 
         if (isConfirmed) {
             api.delete(`/vendas/deletar/${codigo}`).then(() => {
-                setCompras(Compras.filter(compra => compra.codigo !== codigo));
+                setFilteredVendas(filteredVendas.filter(venda => venda.codigo !== codigo));
+            }).catch(err => {
+                console.error('Erro ao deletar a venda:', err);
             });
         }
     };
@@ -62,7 +71,7 @@ const MinhasVendas = () => {
         setSearchTerm(searchValue);
         setFilteredVendas(
             vendas.filter(venda =>
-                funcionarios[venda.cpf_funcionario]?.includes(searchValue)
+                funcionarios[venda.cpf_funcionario]?.toLowerCase().includes(searchValue.toLowerCase())
             )
         );
     };
