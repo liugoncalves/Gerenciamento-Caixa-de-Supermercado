@@ -78,3 +78,8 @@
 .finalizar-button:hover {
     background-color: #0056b3;
 }
+.error-message {
+    color: #dc3545; /* Vermelho para erros */
+    margin-top: 10px;
+    font-size: 16px;
+}

@@ -6,6 +6,7 @@ import '../../styles/geral/Venda-pag.css';
 const RealizarVenda = () => {
     const [cpfCliente, setCpfCliente] = useState('');
     const [carrinho, setCarrinho] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const adicionarAoCarrinho = (item) => {
         setCarrinho(prevCarrinho => [...prevCarrinho, item]);
@@ -13,13 +14,21 @@ const RealizarVenda = () => {
 
     const handleFinalizarCompra = async () => {
         if (!cpfCliente || carrinho.length === 0) {
-            alert('Preencha o CPF do cliente e adicione itens ao carrinho.');
+            setErrorMessage('Preencha o CPF do cliente e adicione itens ao carrinho.');
             return;
         }
 
-        const cpfFuncionario = 'CPF_DO_FUNCIONARIO'; // Substitua pelo CPF do funcionário atual
-
         try {
+            // Verificar se o cliente existe
+            const clienteResponse = await api.get(`/clientes/consultar/${cpfCliente}`);
+            if (!clienteResponse.data) {
+                setErrorMessage('O cliente deve existir para realizar a compra.');
+                return;
+            }
+
+            // Se o cliente existe, proceder com a venda
+            const cpfFuncionario = localStorage.getItem('cpf'); // Substitua pelo CPF do funcionário atual
+            
             // Enviar a requisição para cada item do carrinho
             const promises = carrinho.map(item => {
                 const venda = {
@@ -37,9 +46,12 @@ const RealizarVenda = () => {
             alert('Venda finalizada com sucesso!');
             setCarrinho([]); // Limpa o carrinho após a compra
             setCpfCliente(''); // Limpa o campo do CPF do cliente
+            setErrorMessage(''); // Limpa a mensagem de erro
+
         } catch (err) {
             console.error('Erro ao finalizar a venda:', err.response ? err.response.data : err.message);
-            alert('Não foi possível finalizar a venda.');
+            setErrorMessage('Não foi possível finalizar a venda. Verifique o CPF e os Produtos');
+            
         }
     };
 
@@ -49,6 +61,11 @@ const RealizarVenda = () => {
 
     return (
         <div className="realizar-compra-container">
+            {errorMessage && (
+                <div className="error-message">
+                    {errorMessage}
+                </div>
+            )}
             <header className="header">
                 <h1>Realizar Venda</h1>
             </header>
