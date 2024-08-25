@@ -7,6 +7,7 @@ import TelaInicialGerente from './pages/gerente/TelaInicialGerente';
 import GerenciarFuncionarios from './pages/gerente/gerenciar-funcionarios';
 import EditarFuncionario from './pages/gerente/editar-funcionario';
 import CadastrarFuncionario from './pages/gerente/cadastrar-funcionario';
+import RealizarVenda from './pages/geral/realizar-venda';
 
 
 
@@ -20,6 +21,8 @@ function App() {
                 <Route path="/gerente-gestao" element={ <PrivateRoute element={<GerenteGestao />} allowedRoles={['gerente']}/>}/>
                 <Route path="/gerenciar-funcionarios" element={ <PrivateRoute element={<GerenciarFuncionarios />} allowedRoles={['gerente']}/>}/>
                 <Route path="/cadastrar-funcionario" element={ <PrivateRoute element={<CadastrarFuncionario />} allowedRoles={['gerente']}/>}/>
+                <Route path="/realizar-venda" element={ <PrivateRoute element={<RealizarVenda />} allowedRoles={['gerente','vendedor']}/>}/>
+             
             </Routes>
         </Router>
     );

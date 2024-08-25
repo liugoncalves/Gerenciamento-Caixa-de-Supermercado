@@ -16,7 +16,7 @@ const TelaInicial = () => {
             <div className="button-container">
                 <button 
                     className="home-button" 
-                    onClick={() => handleClick('/venda')}
+                    onClick={() => handleClick('/realizar-venda')}
                 >
                     <img src={vendaIcon} alt="Realizar Venda" />
                     Realizar Venda
