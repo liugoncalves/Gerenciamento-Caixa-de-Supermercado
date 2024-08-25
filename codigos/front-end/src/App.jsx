@@ -13,6 +13,7 @@ import ListarCompras from './pages/geral/listar-compras';
 import TelaInicialVendedor from './pages/vendedor/TelaInicialVendedor';
 import VendedorGestao from './pages/vendedor/vendedor-gestao';
 import MinhasVendas from './pages/vendedor/minhas-vendas';
+import GerenciarClientes from './pages/geral/gerenciar-clientes';
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/TelaInicialVendedor" element={ <PrivateRoute element={<TelaInicialVendedor />} allowedRoles={['vendedor']}/>}/>
                 <Route path="/vendedor-gestao" element={ <PrivateRoute element={<VendedorGestao />} allowedRoles={['vendedor']}/>}/>
                 <Route path="/minhas-vendas" element={ <PrivateRoute element={<MinhasVendas />} allowedRoles={['vendedor']}/>}/>
+                <Route path="/gerenciar-clientes" element={ <PrivateRoute element={<GerenciarClientes />} allowedRoles={['vendedor','gerente']}/>}/>
             </Routes>
         </Router>
     );

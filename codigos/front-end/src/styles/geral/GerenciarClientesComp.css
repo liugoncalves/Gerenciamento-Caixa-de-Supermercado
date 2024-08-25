@@ -1,6 +1,5 @@
-/* src/styles/gerente/GerenciarFuncionariosComp.css */
 
-.gerenciar-funcionarios-container {
+.gerenciar-clientes-container {
     padding: 20px;
 }
 
@@ -37,23 +36,23 @@
     background-color: #45a049;
 }
 
-.funcionarios-table {
+.clientes-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.funcionarios-table th, .funcionarios-table td {
+.clientes-table th, .clientes-table td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-.funcionarios-table th {
+.clientes-table th {
     background-color: #003c69; /* Azul para os títulos */
     color: white;
     text-align: left;
 }
 
-.funcionarios-table td {
+.clientes-table td {
     background-color: #f9f9f9;
 }
 

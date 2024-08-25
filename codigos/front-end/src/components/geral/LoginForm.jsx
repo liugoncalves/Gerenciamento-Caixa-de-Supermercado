@@ -19,12 +19,13 @@ const LoginForm = () => {
                 senha,
             });
 
-            const { mensagem, cargo } = response.data; 
+            const { mensagem, cargo, cpf } = response.data; 
             setError('');
             setMessage(mensagem);
 
             // Armazena o cargo no localStorage
             localStorage.setItem('cargo', cargo);
+            localStorage.setItem('cpf', cpf);
 
             // Redireciona para a página apropriada com base no cargo
             if (cargo === 'gerente') {

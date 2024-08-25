@@ -10,6 +10,7 @@ import deleteIcon from '../../assets/images/delete-icon.png';
 const GerenciarFuncionarios = () => {
     const [funcionarios, setFuncionarios] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); // Estado para a mensagem de erro
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,9 +27,19 @@ const GerenciarFuncionarios = () => {
         const isConfirmed = window.confirm(`Tem certeza de que deseja deletar o funcionário com CPF ${cpf}?`);
 
         if (isConfirmed) {
-            api.delete(`/funcionarios/deletar/${cpf}`).then(() => {
-                setFuncionarios(funcionarios.filter(func => func.cpf !== cpf));
-            });
+            api.delete(`/funcionarios/deletar/${cpf}`)
+                .then(() => {
+                    setFuncionarios(funcionarios.filter(func => func.cpf !== cpf));
+                    setErrorMessage(''); // Limpa a mensagem de erro se a exclusão for bem-sucedida
+                })
+                .catch((error) => {
+                    // Verifica se a resposta contém uma mensagem de erro e a exibe
+                    if (error.response && error.response.data) {
+                        setErrorMessage(error.response.data.message || 'Erro ao excluir o funcionário.');
+                    } else {
+                        setErrorMessage('Erro ao excluir o funcionário.');
+                    }
+                });
         }
     };
 
@@ -44,6 +55,7 @@ const GerenciarFuncionarios = () => {
 
     return (
         <div className="gerenciar-funcionarios-container">
+            {errorMessage && <div className="error-message">{errorMessage}</div>} {/* Exibe a mensagem de erro */}
             <div className="search-add-container">
                 <input
                     type="text"
