@@ -46,20 +46,13 @@ const ListarVendas = () => {
         fetchVendas();
     }, []);
 
-    const handleDelete = async (codigo) => {
-        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar a venda com código ${codigo}?`);
+    const handleDelete = (codigo) => {
+        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar da venda com codigo ${codigo}?`);
 
         if (isConfirmed) {
-            try {
-                await api.delete(`/vendas/deletar/${codigo}`);
-                // Recarrega as vendas após exclusão
-                const response = await api.get('/vendas/listar');
-                setVendas(response.data);
-                setFilteredVendas(response.data);
-            } catch (err) {
-                console.error('Erro ao deletar venda:', err);
-                alert('Não foi possível deletar a venda.');
-            }
+            api.delete(`/vendas/deletar/${codigo}`).then(() => {
+                setCompras(Compras.filter(compra => compra.codigo !== codigo));
+            });
         }
     };
 

@@ -10,7 +10,7 @@ const ListarVendasPage = () => {
         <div className="listar-vendas-page">
             <LogoutButton />
             <header className="header">
-                <h1>Listar Vendas</h1>
+                <h1>Vendas dos funcionários</h1>
             </header>
             <ListarVendas />
         </div>

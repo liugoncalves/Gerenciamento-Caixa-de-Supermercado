@@ -9,6 +9,7 @@ import EditarFuncionario from './pages/gerente/editar-funcionario';
 import CadastrarFuncionario from './pages/gerente/cadastrar-funcionario';
 import RealizarVenda from './pages/geral/realizar-venda';
 import ListarVenda from './pages/gerente/Listar-vendas';
+import ListarCompras from './pages/geral/listar-compras';
 
 
 
@@ -24,6 +25,9 @@ function App() {
                 <Route path="/cadastrar-funcionario" element={ <PrivateRoute element={<CadastrarFuncionario />} allowedRoles={['gerente']}/>}/>
                 <Route path="/realizar-venda" element={ <PrivateRoute element={<RealizarVenda />} allowedRoles={['gerente','vendedor']}/>}/>
                 <Route path="/Listar-vendas" element={ <PrivateRoute element={<ListarVenda />} allowedRoles={['gerente']}/>}/>
+                <Route path="/listar-compras" element={ <PrivateRoute element={<ListarCompras />} allowedRoles={['gerente','vendedor']}/>}/>
+            
+            
             </Routes>
         </Router>
     );

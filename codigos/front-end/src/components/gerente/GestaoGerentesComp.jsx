@@ -35,7 +35,7 @@ const GestaoGerente = () => {
                     <img src={vendasIcon} alt="Exibir Vendas" />
                     <span>Exibir Vendas</span>
                 </button>
-                <button onClick={() => handleButtonClick('/exibir-compras')}>
+                <button onClick={() => handleButtonClick('/listar-compras')}>
                     <img src={comprasIcon} alt="Exibir Compras" />
                     <span>Exibir Compras dos Clientes</span>
                 </button>
