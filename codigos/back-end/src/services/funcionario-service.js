@@ -207,7 +207,9 @@ async function RealizarLogin(email, senha) {
         return {
             mensagem: 'Login realizado com sucesso.',
             cargo: funcionario.cargo,
+            cpf: funcionario.cpf
         };
+        
     } catch (error) {
         throw new Error(error.message);
     }
