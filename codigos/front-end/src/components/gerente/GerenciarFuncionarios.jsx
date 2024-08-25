@@ -33,7 +33,7 @@ const GerenciarFuncionarios = () => {
     };
 
     const handleAdd = () => {
-        navigate('/adicionar-funcionario');
+        navigate('/cadastrar-funcionario');
     };
 
     // Função para filtrar funcionários com base no termo de pesquisa

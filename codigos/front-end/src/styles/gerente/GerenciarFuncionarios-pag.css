@@ -10,7 +10,7 @@
 .header {
     width: 100%;
     background-color: #003c69; /* Faixa azul no topo */
-    color: white;
+    color: rgb(255, 249, 249);
     padding: 20px 0;
     display: flex;
     justify-content: center;
