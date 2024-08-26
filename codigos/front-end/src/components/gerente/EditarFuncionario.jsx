@@ -7,6 +7,7 @@ const EditarFuncionario = () => {
     const { cpf } = useParams(); // Obtém o CPF da URL
     const [funcionario, setFuncionario] = useState({
         cpf: '',
+        nome: '', // Adiciona o nome ao estado
         salario: '',
         email: '',
         cargo: ''
@@ -80,6 +81,15 @@ const EditarFuncionario = () => {
                             value={funcionario.cpf}
                             onChange={handleChange}
                             readOnly // CPF não pode ser alterado
+                        />
+                    </label>
+                    <label>
+                        Nome:
+                        <input
+                            type="text"
+                            name="nome"
+                            value={funcionario.nome}
+                            onChange={handleChange}
                         />
                     </label>
                     <label>

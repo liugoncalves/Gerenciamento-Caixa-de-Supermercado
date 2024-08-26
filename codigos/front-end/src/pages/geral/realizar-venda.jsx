@@ -2,8 +2,20 @@ import React, { useState } from 'react';
 import api from '../../services/api'; // Importação do módulo da API
 import AdicionarProduto from '../../components/geral/Venda'; // Corrigir o caminho de importação
 import '../../styles/geral/Venda-pag.css';
+import { useNavigate } from 'react-router-dom';
 
 const RealizarVenda = () => {
+    const navigate = useNavigate();
+
+    const handleVoltar = () => {
+        const cargo = localStorage.getItem('cargo');
+        if (cargo === 'gerente') {
+            navigate('/TelaInicialGerente');
+        } else {
+            navigate('/TelaInicialVendedor');
+        }
+    };
+
     const [cpfCliente, setCpfCliente] = useState('');
     const [carrinho, setCarrinho] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
@@ -68,6 +80,7 @@ const RealizarVenda = () => {
             )}
             <header className="header">
                 <h1>Realizar Venda</h1>
+                <button onClick={handleVoltar} className="back-button">Voltar</button>
             </header>
             <div className="compra-form">
                 <div className="input-group">

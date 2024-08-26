@@ -3,7 +3,7 @@ import pg from 'pg';
 // Função para conectar ao banco de dados
 async function Conectar() {
     const pool = new pg.Pool({
-        connectionString: "postgres://postgres:rootleoe@localhost:5432/caixa-supermercado"
+        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
     });
 
     return await pool.connect();

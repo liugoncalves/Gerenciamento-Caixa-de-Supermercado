@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../../assets/images/delete-icon.png';
 import editIcon from '../../assets/images/edit-icon.png'; // Novo ícone de editar
 
-const ListarVendas = () => {
+const ListarCompras = () => {
     const [vendas, setVendas] = useState([]);
     const [filteredVendas, setFilteredVendas] = useState([]);
-    const [funcionarios, setFuncionarios] = useState({});
+    const [clientes, setClientes] = useState({});
+    const [produtos, setProdutos] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,23 +21,39 @@ const ListarVendas = () => {
         const fetchVendas = async () => {
             try {
                 const response = await api.get('/vendas/listar');
-                setVendas(response.data);
-                setFilteredVendas(response.data); // Inicialmente, todas as vendas são exibidas
+                const vendasData = response.data;
+                setVendas(vendasData);
+                setFilteredVendas(vendasData); // Inicialmente, todas as vendas são exibidas
 
-                // Obter CPFs únicos dos funcionários
-                const cpfsFuncionarios = [...new Set(response.data.map(venda => venda.cpf_funcionario))];
-                const funcionariosData = {};
-
-                for (const cpf of cpfsFuncionarios) {
+                // Obter CPFs únicos dos clientes
+                const cpfsClientes = [...new Set(vendasData.map(venda => venda.cpf_cliente))];
+                const clientesData = {};
+                
+                for (const cpf of cpfsClientes) {
                     try {
-                        const response = await api.get(`/funcionarios/consultar/${cpf}`);
-                        funcionariosData[cpf] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
+                        const response = await api.get(`/clientes/consultar/${cpf}`);
+                        clientesData[cpf] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
                     } catch (err) {
-                        console.error(`Erro ao obter dados do funcionário com CPF ${cpf}:`, err);
+                        console.error(`Erro ao obter dados do cliente com CPF ${cpf}:`, err);
+                    }
+                }
+                
+                setClientes(clientesData);
+
+                // Obter códigos únicos dos produtos
+                const codigosProdutos = [...new Set(vendasData.map(venda => venda.codigoproduto))];
+                const produtosData = {};
+
+                for (const codigo of codigosProdutos) {
+                    try {
+                        const response = await api.get(`/produtos/consultar/${codigo}`);
+                        produtosData[codigo] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
+                    } catch (err) {
+                        console.error(`Erro ao obter dados do produto com código ${codigo}:`, err);
                     }
                 }
 
-                setFuncionarios(funcionariosData);
+                setProdutos(produtosData);
 
             } catch (err) {
                 setError('Erro ao carregar vendas.');
@@ -50,7 +67,7 @@ const ListarVendas = () => {
     }, []);
 
     const handleDelete = (codigo) => {
-        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar da venda com código ${codigo}?`);
+        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar a venda com código ${codigo}?`);
 
         if (isConfirmed) {
             api.delete(`/vendas/deletar/${codigo}`).then(() => {
@@ -63,13 +80,13 @@ const ListarVendas = () => {
         navigate(`/editar-venda/${codigo}`);
     };
 
-    // Função para filtrar vendas com base no CPF do funcionário
+    // Função para filtrar vendas com base no nome do cliente
     const handleSearch = (e) => {
         const searchValue = e.target.value;
         setSearchTerm(searchValue);
         setFilteredVendas(
             vendas.filter(venda =>
-                funcionarios[venda.cpf_funcionario]?.toLowerCase().includes(searchValue.toLowerCase())
+                clientes[venda.cpf_cliente]?.toLowerCase().includes(searchValue.toLowerCase())
             )
         );
     };
@@ -82,7 +99,7 @@ const ListarVendas = () => {
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Pesquisar pelo Nome do Funcionário..."
+                    placeholder="Pesquisar pelo Nome do Cliente..."
                     className="search-input"
                     value={searchTerm}
                     onChange={handleSearch}
@@ -92,8 +109,8 @@ const ListarVendas = () => {
                 <table className="vendas-table">
                     <thead>
                         <tr>
-                            <th>Nome do Funcionário</th>
-                            <th>Código do Produto</th>
+                            <th>Nome do Cliente</th>
+                            <th>Nome do Produto</th>
                             <th>Quantidade</th>
                             <th>Data da Venda</th>
                             <th>Valor Total</th>
@@ -103,8 +120,8 @@ const ListarVendas = () => {
                     <tbody>
                         {filteredVendas.map((venda) => (
                             <tr key={venda.codigo}>
-                                <td>{funcionarios[venda.cpf_funcionario] || 'Desconhecido'}</td>
-                                <td>{venda.codigoproduto}</td>
+                                <td>{clientes[venda.cpf_cliente] || 'Desconhecido'}</td>
+                                <td>{produtos[venda.codigoproduto] || 'Desconhecido'}</td> {/* Nome do produto */}
                                 <td>{venda.quantidade}</td>
                                 <td>{venda.datavenda}</td>
                                 <td>R$ {(parseFloat(venda.valortotal)).toFixed(2)}</td>
@@ -125,4 +142,4 @@ const ListarVendas = () => {
     );
 };
 
-export default ListarVendas;
+export default ListarCompras;
