@@ -10,8 +10,7 @@ const CadastroFuncionarioComp = () => {
         email: '',
         senha: '',
         cargo: '',
-        salario: '',
-        dataadmissao: ''
+        salario: ''
     });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -63,8 +62,7 @@ const CadastroFuncionarioComp = () => {
                 email: '',
                 senha: '',
                 cargo: '',
-                salario: '',
-                dataadmissao: ''
+                salario: ''
             });
         } catch (error) {
             // Verificar se o erro é relacionado ao email já cadastrado
@@ -138,16 +136,6 @@ const CadastroFuncionarioComp = () => {
                         type="text"
                         name="salario"
                         value={funcionario.salario}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <label>
-                    Data de Admissão:
-                    <input
-                        type="date"
-                        name="dataadmissao"
-                        value={funcionario.dataadmissao}
                         onChange={handleChange}
                         required
                     />

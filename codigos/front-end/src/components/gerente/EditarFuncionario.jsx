@@ -9,8 +9,7 @@ const EditarFuncionario = () => {
         cpf: '',
         salario: '',
         email: '',
-        cargo: '',
-        dataadmissao: ''
+        cargo: ''
     });
     const [loading, setLoading] = useState(true);
     const [successMessage, setSuccessMessage] = useState('');
@@ -107,15 +106,6 @@ const EditarFuncionario = () => {
                             type="text"
                             name="cargo"
                             value={funcionario.cargo}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label>
-                        Data de Admissão:
-                        <input
-                            type="date"
-                            name="dataadmissao"
-                            value={funcionario.dataadmissao}
                             onChange={handleChange}
                         />
                     </label>

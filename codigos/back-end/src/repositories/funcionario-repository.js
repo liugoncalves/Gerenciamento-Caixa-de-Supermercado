@@ -3,7 +3,7 @@ import pg from 'pg';
 // Função para conectar ao banco de dados
 async function Conectar() {
     const pool = new pg.Pool({
-        connectionString: "postgres://postgres:root@localhost:5432/caixa-supermercado"
+        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
     });
 
     return await pool.connect();
@@ -41,7 +41,7 @@ async function ListarFuncionarios() {
     const conn = await Conectar();
 
     try {
-        const sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionarios";
+        const sql = "SELECT nome, cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionarios";
         const resultado = await conn.query(sql);
 
         if (resultado.rowCount === 0) {

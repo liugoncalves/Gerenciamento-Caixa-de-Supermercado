@@ -8,10 +8,10 @@ import cliente_service from '../services/cliente-service.js';
  */
 async function CadastrarCliente(req, res) {
     // destruição dos dados enviados na requisição
-    const { nome, cpf, telefone, email, data_cadastro } = req.body;
+    const { nome, cpf, telefone, email } = req.body;
 
     // criação do objeto cliente
-    const cliente = { nome, cpf, telefone, email, data_cadastro };
+    const cliente = { nome, cpf, telefone, email};
 
     // validação dos dados do cliente
     const erro_validacao = ValidarDadosCliente(cliente);

@@ -8,10 +8,10 @@ import funcionario_service from '../services/funcionario-service.js';
  */
 async function CadastrarFuncionario(req, res) {
     // destruição dos dados enviados na requisição
-    const { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
+    const { cpf, nome, email, senha, cargo, salario } = req.body;
 
     // criação do objeto funcionário
-    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
+    const funcionario = { cpf, nome, email, senha, cargo, salario };
 
     // validação dos dados do funcionário
     const erro_validacao = ValidarDadosFuncionario(funcionario);
@@ -101,10 +101,10 @@ async function ConsultarFuncionario(req, res) {
 async function AlterarFuncionario(req, res) {
     // obtenção do CPF antigo e novos dados do funcionário
     let cpf_antigo = req.params.cpf;
-    let { cpf, nome, email, cargo, salario, data_admissao } = req.body;
+    let { cpf, nome, email, cargo, salario } = req.body;
 
     // criação do objeto funcionário com os novos dados, sem a senha
-    const funcionario = { cpf, nome, email, cargo, salario, data_admissao };
+    const funcionario = { cpf, nome, email, cargo, salario };
 
     // validação dos dados do funcionário
     const erro_validacao = ValidarDadosFuncionario(funcionario);

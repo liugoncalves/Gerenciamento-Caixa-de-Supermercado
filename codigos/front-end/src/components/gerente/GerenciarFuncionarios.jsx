@@ -50,6 +50,7 @@ const GerenciarFuncionarios = () => {
     // Função para filtrar funcionários com base no termo de pesquisa
     const filteredFuncionarios = funcionarios.filter(funcionario =>
         funcionario.cpf.includes(searchTerm) || // Filtra pelo CPF
+        funcionario.nome.toLowerCase().includes(searchTerm.toLowerCase()) || // Filtra pelo Nome
         funcionario.email.toLowerCase().includes(searchTerm.toLowerCase()) // Filtra pelo Email
     );
 
@@ -69,6 +70,7 @@ const GerenciarFuncionarios = () => {
             <table className="funcionarios-table">
                 <thead>
                     <tr>
+                        <th>Nome</th>
                         <th>CPF</th>
                         <th>Salário</th>
                         <th>Email</th>
@@ -80,6 +82,7 @@ const GerenciarFuncionarios = () => {
                 <tbody>
                     {filteredFuncionarios.map((funcionario) => (
                         <tr key={funcionario.cpf}>
+                            <td>{funcionario.nome}</td>
                             <td>{funcionario.cpf}</td>
                             <td>{funcionario.salario}</td>
                             <td>{funcionario.email}</td>
