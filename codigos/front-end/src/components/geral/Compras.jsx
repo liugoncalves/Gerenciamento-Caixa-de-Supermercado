@@ -1,85 +1,82 @@
+// src/pages/ListarVendas.jsx
+
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import '../../styles/geral/ComprasComp.css';
+import '../../styles/gerente/ListarVendaComp.css';
 
-// Importação da imagem do botão de deletar
+// Importação dos ícones
 import deleteIcon from '../../assets/images/delete-icon.png';
+import editIcon from '../../assets/images/edit-icon.png'; // Novo ícone de editar
+import invoiceIcon from '../../assets/images/nota-icon.png'; // Novo ícone de nota fiscal
 
-const ListarCompras = () => {
-    const [compras, setCompras] = useState([]);
-    const [filteredCompras, setFilteredCompras] = useState([]);
-    const [clientes, setClientes] = useState({});
-    const [produtos, setProdutos] = useState({});
+const ListarVendas = () => {
+    const [vendas, setVendas] = useState([]);
+    const [filteredVendas, setFilteredVendas] = useState([]);
+    const [funcionarios, setFuncionarios] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const fetchCompras = async () => {
+        const fetchVendas = async () => {
             try {
                 const response = await api.get('/vendas/listar');
-                setCompras(response.data);
-                setFilteredCompras(response.data); // Inicialmente, todas as compras são exibidas
+                setVendas(response.data);
+                setFilteredVendas(response.data); // Inicialmente, todas as vendas são exibidas
 
-                // Obter CPFs únicos dos clientes
-                const cpfsClientes = [...new Set(response.data.map(compra => compra.cpf_cliente))];
-                const clientesData = {};
+                // Obter CPFs únicos dos funcionários
+                const cpfsFuncionarios = [...new Set(response.data.map(venda => venda.cpf_funcionario))];
+                const funcionariosData = {};
 
-                for (const cpf of cpfsClientes) {
+                for (const cpf of cpfsFuncionarios) {
                     try {
-                        const response = await api.get(`/clientes/consultar/${cpf}`);
-                        clientesData[cpf] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
+                        const response = await api.get(`/funcionarios/consultar/${cpf}`);
+                        funcionariosData[cpf] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
                     } catch (err) {
-                        console.error(`Erro ao obter dados do cliente com CPF ${cpf}:`, err);
+                        console.error(`Erro ao obter dados do funcionário com CPF ${cpf}:`, err);
                     }
                 }
 
-                setClientes(clientesData);
-
-                // Obter códigos únicos dos produtos
-                const codigosProdutos = [...new Set(response.data.map(compra => compra.codigoproduto))];
-                const produtosData = {};
-
-                for (const codigo of codigosProdutos) {
-                    try {
-                        const response = await api.get(`/produtos/consultar/${codigo}`);
-                        produtosData[codigo] = response.data.nome; // Supondo que o retorno tem a propriedade "nome"
-                    } catch (err) {
-                        console.error(`Erro ao obter dados do produto com código ${codigo}:`, err);
-                    }
-                }
-
-                setProdutos(produtosData);
+                setFuncionarios(funcionariosData);
 
             } catch (err) {
-                setError('Erro ao carregar compras.');
+                setError('Erro ao carregar vendas.');
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchCompras();
+        fetchVendas();
     }, []);
 
     const handleDelete = (codigo) => {
-        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar a compra com codigo ${codigo}?`);
+        const isConfirmed = window.confirm(`Tem certeza de que deseja deletar da venda com código ${codigo}?`);
 
         if (isConfirmed) {
             api.delete(`/vendas/deletar/${codigo}`).then(() => {
-                setCompras(Compras.filter(compra => compra.codigo !== codigo));
+                setVendas(vendas.filter(venda => venda.codigo !== codigo));
             });
         }
     };
 
+    const handleEdit = (codigo) => {
+        // Implementar lógica para editar a venda com o código fornecido
+        console.log(`Editar venda com código ${codigo}`);
+    };
 
-    // Função para filtrar compras com base no nome do cliente
+    const handleNota = (codigo) => {
+        // Implementar lógica para gerar a nota fiscal da venda com o código fornecido
+        console.log(`Gerar nota fiscal para venda com código ${codigo}`);
+    };
+
+    // Função para filtrar vendas com base no CPF do funcionário
     const handleSearch = (e) => {
         const searchValue = e.target.value;
         setSearchTerm(searchValue);
-        setFilteredCompras(
-            compras.filter(compra =>
-                clientes[compra.cpf_cliente]?.includes(searchValue)
+        setFilteredVendas(
+            vendas.filter(venda =>
+                funcionarios[venda.cpf_funcionario]?.toLowerCase().includes(searchValue.toLowerCase())
             )
         );
     };
@@ -88,39 +85,45 @@ const ListarCompras = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="listar-compras-container">
+        <div className="listar-vendas-container">
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Pesquisar pelo Nome do Cliente..."
+                    placeholder="Pesquisar pelo Nome do Funcionário..."
                     className="search-input"
                     value={searchTerm}
                     onChange={handleSearch}
                 />
             </div>
-            <div className="compras-list">
-                <table className="compras-table">
+            <div className="vendas-list">
+                <table className="vendas-table">
                     <thead>
                         <tr>
-                            <th>Nome do Cliente</th>
-                            <th>Produto</th>
+                            <th>Nome do Funcionário</th>
+                            <th>Código do Produto</th>
                             <th>Quantidade</th>
-                            <th>Data da Compra</th>
+                            <th>Data da Venda</th>
                             <th>Valor Total</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCompras.map((compra) => (
-                            <tr key={compra.codigo}>
-                                <td>{clientes[compra.cpf_cliente] || 'Desconhecido'}</td>
-                                <td>{produtos[compra.codigoproduto] || 'Desconhecido'}</td>
-                                <td>{compra.quantidade}</td>
-                                <td>{compra.datavenda}</td>
-                                <td>R$ {(parseFloat(compra.valortotal)).toFixed(2)}</td>
+                        {filteredVendas.map((venda) => (
+                            <tr key={venda.codigo}>
+                                <td>{funcionarios[venda.cpf_funcionario] || 'Desconhecido'}</td>
+                                <td>{venda.codigoproduto}</td>
+                                <td>{venda.quantidade}</td>
+                                <td>{venda.datavenda}</td>
+                                <td>R$ {(parseFloat(venda.valortotal)).toFixed(2)}</td>
                                 <td>
-                                    <button onClick={() => handleDelete(compra.codigo)} className="delete-button">
-                                        <img src={deleteIcon} alt="Delete" />
+                                    <button onClick={() => handleDelete(venda.codigo)} className="action-button">
+                                        <img src={deleteIcon} alt="Deletar" />
+                                    </button>
+                                    <button onClick={() => handleEdit(venda.codigo)} className="action-button">
+                                        <img src={editIcon} alt="Editar" />
+                                    </button>
+                                    <button onClick={() => handleNota(venda.codigo)} className="action-button">
+                                        <img src={invoiceIcon} alt="Nota Fiscal" />
                                     </button>
                                 </td>
                             </tr>
@@ -132,4 +135,4 @@ const ListarCompras = () => {
     );
 };
 
-export default ListarCompras;
+export default ListarVendas;

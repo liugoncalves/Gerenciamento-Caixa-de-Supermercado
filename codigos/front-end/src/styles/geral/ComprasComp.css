@@ -40,20 +40,21 @@
     color: #333;
 }
 
-/* Estilo para a ação de deletar */
-.delete-button {
+/* Estilo para os botões de ação */
+.action-button {
     border: none;
     background: none;
     cursor: pointer;
     padding: 0;
+    margin: 0 5px;
 }
 
-.delete-button img {
+.action-button img {
     width: 20px;
     height: 20px;
 }
 
-.delete-button img:hover {
+.action-button img:hover {
     filter: hue-rotate(60deg);
 }
 

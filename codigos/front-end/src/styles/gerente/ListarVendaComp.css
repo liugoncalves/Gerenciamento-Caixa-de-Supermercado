@@ -38,18 +38,28 @@
     color: #333;
 }
 
-.delete-button {
+.action-button {
     border: none;
     background: none;
     cursor: pointer;
-    padding: 0;
+    margin-right: 10px;
 }
 
-.delete-button img {
+.action-button img {
     width: 20px;
     height: 20px;
 }
 
-.delete-button img:hover {
-    filter: hue-rotate(60deg);
+.action-button img:hover {
+    filter: brightness(0.8); /* Ajusta o brilho ao passar o mouse */
+}
+
+/* Estilo específico para o botão de deletar */
+.delete-button img {
+    filter: hue-rotate(60deg); /* Ajusta a cor do ícone de deletar ao passar o mouse */
+}
+
+/* Adiciona um pouco de espaçamento entre os ícones */
+.action-button {
+    margin-right: 10px;
 }
