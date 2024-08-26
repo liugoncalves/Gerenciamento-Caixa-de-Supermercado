@@ -1,13 +1,11 @@
-// src/pages/ListarVendas.jsx
-
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import '../../styles/gerente/ListarVendaComp.css';
+import { useNavigate } from 'react-router-dom';
 
 // Importação dos ícones
 import deleteIcon from '../../assets/images/delete-icon.png';
 import editIcon from '../../assets/images/edit-icon.png'; // Novo ícone de editar
-import invoiceIcon from '../../assets/images/nota-icon.png'; // Novo ícone de nota fiscal
 
 const ListarVendas = () => {
     const [vendas, setVendas] = useState([]);
@@ -16,6 +14,7 @@ const ListarVendas = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchVendas = async () => {
@@ -61,13 +60,7 @@ const ListarVendas = () => {
     };
 
     const handleEdit = (codigo) => {
-        // Implementar lógica para editar a venda com o código fornecido
-        console.log(`Editar venda com código ${codigo}`);
-    };
-
-    const handleNota = (codigo) => {
-        // Implementar lógica para gerar a nota fiscal da venda com o código fornecido
-        console.log(`Gerar nota fiscal para venda com código ${codigo}`);
+        navigate(`/editar-venda/${codigo}`);
     };
 
     // Função para filtrar vendas com base no CPF do funcionário
@@ -121,9 +114,6 @@ const ListarVendas = () => {
                                     </button>
                                     <button onClick={() => handleEdit(venda.codigo)} className="action-button">
                                         <img src={editIcon} alt="Editar" />
-                                    </button>
-                                    <button onClick={() => handleNota(venda.codigo)} className="action-button">
-                                        <img src={invoiceIcon} alt="Nota Fiscal" />
                                     </button>
                                 </td>
                             </tr>
