@@ -77,7 +77,7 @@ const ListarCompras = () => {
     };
 
     const handleEdit = (codigo) => {
-        navigate(`/editar-venda/${codigo}`);
+        navigate(`/editar-compra/${codigo}`);
     };
 
     // Função para filtrar vendas com base no nome do cliente

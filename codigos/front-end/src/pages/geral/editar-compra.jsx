@@ -1,29 +1,28 @@
-
 import React from 'react';
-import EditarVenda from '../../components/geral/EditarVenda';
-import '../../styles/geral/EditarVenda-pag.css'; // Para os estilos da página
+import EditarCompra from '../../components/geral/EditarCompra';
+import '../../styles/geral/EditarCompra-pag.css'; // Para os estilos da página
 import { useNavigate } from 'react-router-dom';
 
-const PaginaEditarVenda = () => {
+const PaginaEditarCompra = () => {
     const navigate = useNavigate();
 
     const handleVoltar = () => {
-        navigate('/Listar-vendas');
+        navigate('/listar-compras');
     }
 
     return (
-        <div className="pagina-editar-venda-container">
+        <div className="pagina-editar-compra-container">
             <header className="header">
-                <h1>Editar Venda</h1>
+                <h1>Editar Compra</h1>
                 <button onClick={handleVoltar} className="botao-voltar">
                     Voltar
                 </button>
             </header>
             <main className="pagina-main">
-                <EditarVenda />
+                <EditarCompra />
             </main>
         </div>
     );
 };
 
-export default PaginaEditarVenda;
+export default PaginaEditarCompra;
