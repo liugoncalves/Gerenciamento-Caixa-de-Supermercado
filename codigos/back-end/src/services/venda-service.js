@@ -196,7 +196,7 @@ async function AlterarVenda(codigo_venda, venda) {
         }
 
         // Consultar o endereço do cliente existente
-        const enderecoExistente = await endereco_repository.ConsultarEnderecoPorCPF(vendaExistente.cpf_cliente);
+        const enderecoExistente = await endereco_repository.ConsultarEnderecoCPF(vendaExistente.cpf_cliente);
         if (!enderecoExistente) {
             throw new Error('Endereço do cliente não encontrado.');
         }
@@ -207,7 +207,7 @@ async function AlterarVenda(codigo_venda, venda) {
             venda.codigo_produto !== vendaExistente.codigo_produto ||
             venda.quantidade !== vendaExistente.quantidade) {
             
-            const endereco = await endereco_repository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
+            const endereco = await endereco_repository.ConsultarEnderecoCPF(venda.cpf_cliente);
             if (!endereco) {
                 throw new Error('Endereço do cliente não encontrado.');
             }

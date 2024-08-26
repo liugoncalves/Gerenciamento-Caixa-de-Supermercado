@@ -93,6 +93,14 @@ async function ConsultarEndereco(codigo) {
     return await endereco_repository.ConsultarEndereco(codigo);
 }
 
+// Consulta um endereço com base no CPF do cliente
+//* @param {string} cpf_cliente - CPF do cliente a ser consultado.
+//* @returns {Promise<Object>} Dados do endereço.
+//*/
+async function ConsultarEnderecoCPF(cpf_cliente) {
+    return await endereco_repository.ConsultarEnderecoCPF(cpf_cliente);
+}
+
 /**
  * Altera os dados de um endereço existente após validação do CPF e do CEP.
  * @param {number} codigo_antigo - Código antigo do endereço.
@@ -131,4 +139,5 @@ async function DeletarEndereco(codigo) {
 }
 
 // Exportação das funções do módulo
-export default { CadastrarEndereco, ListarEnderecos, OrdenarListaEnderecos, ConsultarEndereco, AlterarEndereco, DeletarEndereco };
+export default { CadastrarEndereco, ListarEnderecos, OrdenarListaEnderecos, 
+                 ConsultarEndereco, ConsultarEnderecoCPF, AlterarEndereco, DeletarEndereco };

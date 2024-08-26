@@ -122,7 +122,7 @@ async function ConsultarEndereco(codigo) {
 }
 
 // Função para consultar um endereço por CPF do cliente
-async function ConsultarEnderecoPorCPF(cpf) {
+async function ConsultarEnderecoCPF(cpf) {
     const conn = await Conectar();
 
     try {
@@ -228,7 +228,7 @@ export default {
     ListarEnderecos, 
     OrdenarListaEnderecos, 
     ConsultarEndereco, 
-    ConsultarEnderecoPorCPF, 
+    ConsultarEnderecoCPF, 
     AlterarEndereco, 
     DeletarEndereco 
 };

@@ -7,6 +7,7 @@ router.post('/cadastrar', enderecoController.CadastrarEndereco);
 router.get('/listar', enderecoController.ListarEnderecos);
 router.get('/ordenar', enderecoController.OrdenarListaEnderecos);
 router.get('/consultar/:codigo', enderecoController.ConsultarEndereco);
+router.get('/consultarCPF/:cpf_cliente', enderecoController.ConsultarEnderecoCPF);
 router.put('/alterar/:codigo', enderecoController.AlterarEndereco);
 router.delete('/deletar/:codigo', enderecoController.DeletarEndereco);
 

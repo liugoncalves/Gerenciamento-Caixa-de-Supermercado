@@ -88,6 +88,28 @@ async function ConsultarEndereco(req, res) {
     }
 }
 
+//Consultar endereço por CPF
+async function ConsultarEnderecoCPF(req, res) {
+    // obtenção do cpf da consulta
+    const cpf_cliente = req.params.cpf_cliente;
+
+    if (!cpf_cliente) {
+        return res.status(400).send('Digite um CPF para realizar a busca.');
+    }
+
+    try {
+        // tentativa de consultar o endereço
+        const resultado = await endereco_service.ConsultarEnderecoCPF(cpf_cliente);
+        if (!resultado) {
+            return res.status(404).send('Endereço não encontrado.');
+        }
+        res.send(resultado);
+    } catch (error) {
+        // tratamento de erros
+        res.status(500).send(error.message);
+    }
+}
+
 /**
  * Altera as informações de um endereço existente.
  * @param {Object} req - Requisição HTTP.
@@ -177,4 +199,5 @@ function ValidarDadosEndereco(endereco) {
 }
 
 // exportação das funções do módulo
-export default { CadastrarEndereco, ListarEnderecos, OrdenarListaEnderecos, ConsultarEndereco, AlterarEndereco, DeletarEndereco };
+export default { CadastrarEndereco, ListarEnderecos, OrdenarListaEnderecos, 
+                 ConsultarEndereco, ConsultarEnderecoCPF, AlterarEndereco, DeletarEndereco };

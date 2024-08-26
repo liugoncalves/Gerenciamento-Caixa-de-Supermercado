@@ -166,12 +166,12 @@ async function AlterarVenda(codigoVenda, venda) {
             RETURNING *;
         `;
         const valores = [
-            venda.CPF_Cliente,
-            venda.CPF_Funcionario,
-            venda.CodigoProduto,
-            venda.Quantidade,
-            venda.Logradouro,
-            venda.ValorTotal,
+            venda.cpf_cliente,
+            venda.cpf_funcionario,
+            venda.codigo_produto,
+            venda.quantidade,
+            venda.logradouro,
+            venda.valorTotal,
             codigoVenda
         ];
 
