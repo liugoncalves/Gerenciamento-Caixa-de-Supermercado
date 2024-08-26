@@ -1,0 +1,81 @@
+.pagina-gerenciar-clientes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os elementos na horizontal */
+    justify-content: center; /* Centraliza os elementos na vertical */
+    min-height: 100vh; /* Garante que a página ocupe toda a altura da tela */
+    padding: 20px;
+    background-color: #f4f4f4; /* Cor de fundo da página */
+}
+
+.header {
+    width: 100%; /* Faz o header ocupar toda a largura da página */
+    background-color: #002c51; /* Cor de fundo do header */
+    padding: 10px 0; /* Espaçamento interno no header */
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ffffff; /* Cor do texto do título */
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.pagina-main {
+    display: flex;
+    justify-content: center; /* Centraliza o conteúdo da seção principal */
+    align-items: center;
+    width: 100%; /* Faz o main ocupar toda a largura da página */
+    flex-grow: 1;
+}
+
+.produtos-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o formulário horizontalmente */
+    width: 100%;
+    max-width: 600px; /* Define uma largura máxima para o formulário */
+    margin: 0 auto; /* Centraliza o formulário com margens automáticas */
+}
+
+.logout-button {
+    align-self: flex-end;
+    margin-bottom: 10px;
+    margin-right: 20px; /* Adiciona espaço à direita */
+}
+
+.produtos-table th, .produtos-table td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center; /* Centraliza o texto nas células */
+}
+
+.search-add-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinha verticalmente os itens no centro */
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ff5733; /* Cor de fundo vibrante para destaque */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Suaviza a transição de cor */
+}
+
+.add-button:hover {
+    background-color: #00c711; /* Cor de fundo ao passar o mouse */
+}

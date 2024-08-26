@@ -48,28 +48,34 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 2. **Navegue até a pasta onde o projeto foi clonado:**
    ```bash
    cd endereco-repositorio
-3. **Instale as dependências:**
+3 . **Entre na pasta do back-end**
+
+4. **Instale as dependências:**
    ```bash
    npm install
-4. **Configure o Banco de Dados:**
-   - Estabeleça uma conexão com o banco de dados (recomendável - PostgreSQL).
-   - Crie um banco de dados se ainda não o tiver feito.
-   - Execute em seu Banco de Dados o script `criar_tabelas.sql` localizado na pasta `database` para criar as tabelas necessárias.
-
+   
+5. **Entre na pasta do front-end**
+   
+6. **Instale as dependências:**
+   ```bash
+   npm install
+   
 ## Uso
 
-1. **Inicie o Servidor:**
+1. **Inicie o Servidor back-end:**
    ```bash
    npm start
+2. **Inicie o Servidor front-end**
+    ```bash
+   npm run dev
 
 ## Estrutura do Projeto
 
 ```plaintext
 gerenciamento-caixa-de-supermercado/
-  ├── database/                  # Scripts SQL para criação e gerenciamento das tabelas
-  │   └── criar_tabelas.sql      # Arquivo de criação das tabelas
+  ├── database/                  # Contém os códigos para criar a base de dados
   │
-  ├── docs/                    
+  ├── docs/                      
   │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
   │   ├── Requisitos/            # Documento de requisitos
   │   ├── Diagramas/             # Contém todos os diagramas do projeto
@@ -77,27 +83,54 @@ gerenciamento-caixa-de-supermercado/
   │
   ├── node_modules/              # Pacotes e dependências instaladas
   │
-  ├── src/
+  ├── codigos/                   # Pasta que contém o código-fonte do projeto
   │   ├── back-end/
-  │   │   ├── controllers/       # Lida com a lógica de controle da aplicação
-  │   │   ├── repositories/      # Comunicação com o banco de dados
-  │   │   ├── routes/            # Define as rotas da aplicação
-  │   │   └── services/          # Lógica de negócios
+  │   │   ├── src/
+  │   │   │   ├── controllers/   # Lida com a lógica de controle da aplicação
+  │   │   │   ├── repositories/  # Comunicação com o banco de dados
+  │   │   │   ├── routes/        # Define as rotas da aplicação
+  │   │   │   ├── services/      # Lógica de negócios
+  │   │   │   └── server.js      # Ponto de entrada da aplicação
+  │   │   │
+  │   │   ├── package-lock.json  # Bloqueia as versões exatas das dependências instaladas
+  │   │   ├── package.json       # Dependências e scripts do back-end
   │   │
   │   ├── front-end/
-  │   │   └── views/             # Templates para renderização no front-end
+  │   │   ├── src/
+  │   │   │   ├── components/    # Componentes reutilizáveis do front-end
+  │   │   │   │   ├── geral/     # Componentes gerais
+  │   │   │   │   ├── gerente/   # Componentes específicos para o gerente
+  │   │   │   │   └── vendedor/  # Componentes específicos para o vendedor
+  │   │   │   │
+  │   │   │   ├── styles/        # Estilos CSS e pré-processadores
+  │   │   │   │   ├── geral/     # Estilos gerais
+  │   │   │   │   ├── gerente/   # Estilos específicos para o gerente
+  │   │   │   │   └── vendedor/  # Estilos específicos para o vendedor
+  │   │   │   │
+  │   │   │   ├── pages/         # Páginas do front-end
+  │   │   │   │   ├── geral/     # Páginas gerais
+  │   │   │   │   ├── gerente/   # Páginas específicas para o gerente
+  │   │   │   │   └── vendedor/  # Páginas específicas para o vendedor
+  │   │   │   │
+  │   │   │   ├── services/      # Serviços de API e lógica de negócios do front-end
+  │   │   │   │   └── api.js     # Arquivo da API
+  │   │   │   │
+  │   │   │   ├── assets/        # Recursos estáticos como imagens e fontes
+  │   │   │   │   └── images/    # Imagens do projeto
+  │   │   │
+  │   │   ├── package-lock.json  # Bloqueia as versões exatas das dependências instaladas no front-end
+  │   │   ├── package.json       # Dependências e scripts do front-end
   │
   ├── uploads/                   # Pasta para armazenar arquivos emitidos (nota fiscal)
   │
   ├── .gitignore                 # Arquivos e pastas a serem ignorados pelo Git
-  ├── package-lock.json          # Bloqueia as versões exatas das dependências instaladas
-  ├── package.json               # Dependências e scripts do projeto
-  ├── README.md                  # Informações sobre o projeto
-  └── server.js                  # Ponto de entrada da aplicação
+  ├── README.md                  # Informações sobre o projeto principal
+  └── server.js                  # (Possivelmente) ponto de entrada principal do back-end
+
 ```
 ## Definições de Pastas
 - **Documentação**: Deve estar na pasta `docs/`. Além de incluir padrões adotados e requisitos.
-- **Código**: Deve estar na pasta `src/`. Além disso, ter pastas separadas para desenvolvimento de `back-end` e `front-end`.
+- **Código**: Deve estar na pasta `codigos/`. Além disso, ter pastas separadas para desenvolvimento de `back-end` e `front-end`.
   
 ## Estrutura de Branches
 - **`main`**: Branch principal que deve sempre refletir o estado estável e final do projeto. Não deve ser usada para desenvolvimento diário.

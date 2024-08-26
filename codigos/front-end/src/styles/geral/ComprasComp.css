@@ -1,0 +1,74 @@
+/* Estilos para o container principal */
+.listar-compras-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o campo de busca */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Estilos para a tabela de compras */
+.compras-list {
+    overflow-x: auto;
+}
+
+.compras-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.compras-table th, .compras-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.compras-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Estilo para os botões de ação */
+.action-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 5px;
+}
+
+.action-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.action-button img:hover {
+    filter: hue-rotate(60deg);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .listar-compras-container {
+        padding: 10px;
+    }
+
+    .compras-table th, .compras-table td {
+        padding: 8px;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}

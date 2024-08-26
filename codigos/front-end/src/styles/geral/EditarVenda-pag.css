@@ -1,0 +1,49 @@
+
+.pagina-editar-venda-container {
+    padding: 20px;
+}
+
+.header {
+    background-color: #003c69; /* Cor de fundo da faixa de cabeçalho */
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.pagina-main {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+form input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #003c69; /* Cor de fundo do botão */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #003c69; /* Cor do botão ao passar o mouse */
+}
+
+.success-message {
+    color: green;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}

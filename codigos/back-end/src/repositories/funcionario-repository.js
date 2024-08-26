@@ -1,10 +1,19 @@
-import { query } from 'express';
 import pg from 'pg';
 
-async function CadastrarFuncionario(funcionario) {
-    const conn = await conectar();
+// Função para conectar ao banco de dados
+async function Conectar() {
+    const pool = new pg.Pool({
+        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
+    });
 
-    try{
+    return await pool.connect();
+}
+
+// Função para cadastrar um novo funcionário
+async function CadastrarFuncionario(funcionario) {
+    const conn = await Conectar();
+
+    try {
         const sql = `
             INSERT INTO funcionarios (cpf, nome, email, senha, cargo, salario, dataAdmissao)
             VALUES ($1, $2, $3, $4, $5, $6, NOW())
@@ -27,11 +36,12 @@ async function CadastrarFuncionario(funcionario) {
     }
 }
 
+// Função para listar todos os funcionários
 async function ListarFuncionarios() {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
-        const sql = "SELECT cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionarios";
+        const sql = "SELECT nome, cpf, email, senha, cargo, salario, TO_CHAR(dataadmissao, 'YYYY-MM-DD HH24:MI:SS') as dataadmissao FROM funcionarios";
         const resultado = await conn.query(sql);
 
         if (resultado.rowCount === 0) {
@@ -47,8 +57,9 @@ async function ListarFuncionarios() {
     }
 }
 
+// Função para ordenar a lista de funcionários com base em um critério
 async function OrdenarListaFuncionarios(criterio) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     let sql = `
         SELECT cpf, nome, email, cargo, salario, 
@@ -83,8 +94,9 @@ async function OrdenarListaFuncionarios(criterio) {
     }
 }
 
+// Função para consultar um funcionário pelo CPF
 async function ConsultarFuncionario(cpf) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -108,24 +120,24 @@ async function ConsultarFuncionario(cpf) {
     }
 }
 
-async function AlterarFuncionario(cpf_antigo, funcionario) {
-    const conn = await conectar();
+// Função para alterar os dados de um funcionário sem alterar a senha
+async function AlterarFuncionario(cpfAntigo, funcionario) {
+    const conn = await Conectar();
 
     try {
         const sql = `
             UPDATE funcionarios 
-            SET cpf = $1, nome = $2, email = $3, senha = $4, cargo = $5, salario = $6
-            WHERE cpf = $7
+            SET cpf = $1, nome = $2, email = $3, cargo = $4, salario = $5
+            WHERE cpf = $6
             RETURNING *;
         `;
         const valores = [
             funcionario.cpf,
             funcionario.nome,
             funcionario.email,
-            funcionario.senha,
             funcionario.cargo,
             funcionario.salario,
-            cpf_antigo
+            cpfAntigo
         ];
         const resultado = await conn.query(sql, valores);
 
@@ -133,8 +145,8 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
             return { mensagem: 'Funcionário não encontrado para alteração.' };
         }
 
-        return { mensagem: 'Funcionário alterado com sucesso.'};
-         
+        return { mensagem: 'Funcionário alterado com sucesso.' };
+
     } catch (error) {
         throw new Error('Erro ao alterar funcionário: ' + error.message);
     } finally {
@@ -142,14 +154,41 @@ async function AlterarFuncionario(cpf_antigo, funcionario) {
     }
 }
 
-async function DeletarFuncionario(cpf){
-    const conn = await conectar();
 
-    try{
+// Função para alterar a senha de um funcionário pelo CPF
+async function AlterarSenhaFuncionario(cpf, senhaCriptografada) {
+    const conn = await Conectar();
+
+    try {
+        const sql = `
+            UPDATE funcionarios 
+            SET senha = $1
+            WHERE cpf = $2
+        `;
+        const resultado = await conn.query(sql, [senhaCriptografada, cpf]);
+
+        if (resultado.rowCount === 0) {
+            return { mensagem: 'Funcionário não encontrado para alteração de senha.' };
+        }
+
+        return { mensagem: 'Senha alterada com sucesso.' };
+    } catch (error) {
+        throw new Error('Erro ao alterar a senha do funcionário: ' + error.message);
+    } finally {
+        conn.release();
+    }
+}
+
+
+// Função para deletar um funcionário pelo CPF
+async function DeletarFuncionario(cpf) {
+    const conn = await Conectar();
+
+    try {
         const sql = "DELETE FROM funcionarios WHERE cpf = $1";
-        var query = await conn.query(sql, [cpf]);
+        const resultado = await conn.query(sql, [cpf]);
         
-        if (query.rowCount === 0) {
+        if (resultado.rowCount === 0) {
             return { mensagem: 'Funcionário não encontrado para exclusão.' };
         }
 
@@ -162,8 +201,9 @@ async function DeletarFuncionario(cpf){
     }
 }
 
+// Função para consultar um funcionário por email
 async function ConsultarPorEmail(email) {
-    const conn = await conectar();
+    const conn = await Conectar();
 
     try {
         const sql = `
@@ -181,23 +221,19 @@ async function ConsultarPorEmail(email) {
         return resultado.rows[0];
 
     } catch (err) {
-        throw new Error('Erro ao consultar funcionário: ' + err.message);
+        throw new Error('Erro ao consultar funcionário por email: ' + err.message);
     } finally {
         conn.release();
     }
 }
 
-async function conectar(){
-    const pool = new pg.Pool({
-        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
-        //    user: 'postgres',
-        //    password: 'rootleo',
-        //    host: 'localhost',
-        //    port: 5432,
-        //    database: 'BDTeste'
-    });
-
-    return await pool.connect();
-}
-
-export default { CadastrarFuncionario , ListarFuncionarios , OrdenarListaFuncionarios , ConsultarFuncionario, AlterarFuncionario , DeletarFuncionario, ConsultarPorEmail };
+export default { 
+    CadastrarFuncionario, 
+    ListarFuncionarios, 
+    OrdenarListaFuncionarios, 
+    ConsultarFuncionario, 
+    AlterarFuncionario,
+    AlterarSenhaFuncionario, 
+    DeletarFuncionario, 
+    ConsultarPorEmail 
+};

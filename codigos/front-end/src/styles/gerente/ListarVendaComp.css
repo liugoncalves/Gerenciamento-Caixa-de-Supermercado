@@ -1,0 +1,65 @@
+/* src/styles/gerente/ListarVendaComp.css */
+.listar-vendas-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.vendas-list {
+    overflow-x: auto;
+}
+
+.vendas-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vendas-table th, .vendas-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.vendas-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.action-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.action-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.action-button img:hover {
+    filter: brightness(0.8); /* Ajusta o brilho ao passar o mouse */
+}
+
+/* Estilo específico para o botão de deletar */
+.delete-button img {
+    filter: hue-rotate(60deg); /* Ajusta a cor do ícone de deletar ao passar o mouse */
+}
+
+/* Adiciona um pouco de espaçamento entre os ícones */
+.action-button {
+    margin-right: 10px;
+}
