@@ -1,5 +1,4 @@
-/* Contêiner principal para centralizar a página inteira */
-.pagina-gerenciar-produtos-container {
+.pagina-gerenciar-clientes-container {
     display: flex;
     flex-direction: column;
     align-items: center; /* Centraliza os elementos na horizontal */
@@ -9,7 +8,6 @@
     background-color: #f4f4f4; /* Cor de fundo da página */
 }
 
-/* Estilo para o cabeçalho */
 .header {
     width: 100%; /* Faz o header ocupar toda a largura da página */
     background-color: #002c51; /* Cor de fundo do header */
@@ -24,7 +22,6 @@
     margin: 0;
 }
 
-/* Estilo para a seção principal */
 .pagina-main {
     display: flex;
     justify-content: center; /* Centraliza o conteúdo da seção principal */
@@ -33,7 +30,6 @@
     flex-grow: 1;
 }
 
-/* Centraliza o formulário */
 .produtos-form-container {
     display: flex;
     flex-direction: column;
@@ -43,21 +39,18 @@
     margin: 0 auto; /* Centraliza o formulário com margens automáticas */
 }
 
-/* Estilo para o botão de logout */
 .logout-button {
     align-self: flex-end;
     margin-bottom: 10px;
     margin-right: 20px; /* Adiciona espaço à direita */
 }
 
-/* Alinhar o texto ao centro nas células da tabela */
 .produtos-table th, .produtos-table td {
     padding: 15px;
     border: 1px solid #ddd;
     text-align: center; /* Centraliza o texto nas células */
 }
 
-/* Alinhar o botão "Cadastrar Produto" na mesma altura do campo de pesquisa */
 .search-add-container {
     display: flex;
     justify-content: space-between;
