@@ -57,7 +57,7 @@ const EditarVenda = () => {
                 setSuccessMessage('Venda atualizada com sucesso!');
                 setErrorMessage(''); // Limpar mensagens de erro
                 setTimeout(() => {
-                    navigate('/gerenciar-vendas'); // Redireciona após a atualização
+                    navigate('/Listar-vendas'); // Redireciona após a atualização
                 }, 1500); // Atraso de 1,5 segundos para exibir a mensagem de sucesso
             })
             .catch(error => {

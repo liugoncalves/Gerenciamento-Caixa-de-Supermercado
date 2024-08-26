@@ -37,7 +37,7 @@ async function GerarNotaFiscal(codigoVenda) {
         }
 
         // Consultar o endereço do cliente
-        const endereco = await endereco_repository.ConsultarEnderecoPorCPF(venda.cpf_cliente);
+        const endereco = await endereco_repository.ConsultarEnderecoCPF(venda.cpf_cliente);
         if (!endereco) {
             throw new Error('Endereço do cliente não encontrado.');
         }
