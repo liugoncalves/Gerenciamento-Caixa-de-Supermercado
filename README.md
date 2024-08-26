@@ -48,15 +48,26 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 2. **Navegue até a pasta onde o projeto foi clonado:**
    ```bash
    cd endereco-repositorio
-3. **Instale as dependências:**
+3 . **Entre na pasta do back-end**
+
+4. **Instale as dependências:**
    ```bash
    npm install
-
+   
+5. **Entre na pasta do front-end**
+   
+6. **Instale as dependências:**
+   ```bash
+   npm install
+   
 ## Uso
 
-1. **Inicie o Servidor:**
+1. **Inicie o Servidor back-end:**
    ```bash
    npm start
+2. **Inicie o Servidor front-end**
+    ```bash
+   npm run dev
 
 ## Estrutura do Projeto
 
