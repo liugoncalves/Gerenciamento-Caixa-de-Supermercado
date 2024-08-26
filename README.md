@@ -62,7 +62,9 @@ Tabela de VENDAS (Envolve 3 ou mais tabelas)
 
 ```plaintext
 gerenciamento-caixa-de-supermercado/
-  ├── docs/                    
+  ├── database/                  # Contém os códigos para criar a base de dados
+  │
+  ├── docs/                      
   │   ├── Padrões adotados/      # Detalha as três regras utilizadas na Especificação de Requisitos
   │   ├── Requisitos/            # Documento de requisitos
   │   ├── Diagramas/             # Contém todos os diagramas do projeto
@@ -70,27 +72,54 @@ gerenciamento-caixa-de-supermercado/
   │
   ├── node_modules/              # Pacotes e dependências instaladas
   │
-  ├── src/
+  ├── codigos/                   # Pasta que contém o código-fonte do projeto
   │   ├── back-end/
-  │   │   ├── controllers/       # Lida com a lógica de controle da aplicação
-  │   │   ├── repositories/      # Comunicação com o banco de dados
-  │   │   ├── routes/            # Define as rotas da aplicação
-  │   │   └── services/          # Lógica de negócios
+  │   │   ├── src/
+  │   │   │   ├── controllers/   # Lida com a lógica de controle da aplicação
+  │   │   │   ├── repositories/  # Comunicação com o banco de dados
+  │   │   │   ├── routes/        # Define as rotas da aplicação
+  │   │   │   ├── services/      # Lógica de negócios
+  │   │   │   └── server.js      # Ponto de entrada da aplicação
+  │   │   │
+  │   │   ├── package-lock.json  # Bloqueia as versões exatas das dependências instaladas
+  │   │   ├── package.json       # Dependências e scripts do back-end
   │   │
   │   ├── front-end/
-  │   │   └── views/             # Templates para renderização no front-end
+  │   │   ├── src/
+  │   │   │   ├── components/    # Componentes reutilizáveis do front-end
+  │   │   │   │   ├── geral/     # Componentes gerais
+  │   │   │   │   ├── gerente/   # Componentes específicos para o gerente
+  │   │   │   │   └── vendedor/  # Componentes específicos para o vendedor
+  │   │   │   │
+  │   │   │   ├── styles/        # Estilos CSS e pré-processadores
+  │   │   │   │   ├── geral/     # Estilos gerais
+  │   │   │   │   ├── gerente/   # Estilos específicos para o gerente
+  │   │   │   │   └── vendedor/  # Estilos específicos para o vendedor
+  │   │   │   │
+  │   │   │   ├── pages/         # Páginas do front-end
+  │   │   │   │   ├── geral/     # Páginas gerais
+  │   │   │   │   ├── gerente/   # Páginas específicas para o gerente
+  │   │   │   │   └── vendedor/  # Páginas específicas para o vendedor
+  │   │   │   │
+  │   │   │   ├── services/      # Serviços de API e lógica de negócios do front-end
+  │   │   │   │   └── api.js     # Arquivo da API
+  │   │   │   │
+  │   │   │   ├── assets/        # Recursos estáticos como imagens e fontes
+  │   │   │   │   └── images/    # Imagens do projeto
+  │   │   │
+  │   │   ├── package-lock.json  # Bloqueia as versões exatas das dependências instaladas no front-end
+  │   │   ├── package.json       # Dependências e scripts do front-end
   │
   ├── uploads/                   # Pasta para armazenar arquivos emitidos (nota fiscal)
   │
   ├── .gitignore                 # Arquivos e pastas a serem ignorados pelo Git
-  ├── package-lock.json          # Bloqueia as versões exatas das dependências instaladas
-  ├── package.json               # Dependências e scripts do projeto
-  ├── README.md                  # Informações sobre o projeto
-  └── server.js                  # Ponto de entrada da aplicação
+  ├── README.md                  # Informações sobre o projeto principal
+  └── server.js                  # (Possivelmente) ponto de entrada principal do back-end
+
 ```
 ## Definições de Pastas
 - **Documentação**: Deve estar na pasta `docs/`. Além de incluir padrões adotados e requisitos.
-- **Código**: Deve estar na pasta `src/`. Além disso, ter pastas separadas para desenvolvimento de `back-end` e `front-end`.
+- **Código**: Deve estar na pasta `codigos/`. Além disso, ter pastas separadas para desenvolvimento de `back-end` e `front-end`.
   
 ## Estrutura de Branches
 - **`main`**: Branch principal que deve sempre refletir o estado estável e final do projeto. Não deve ser usada para desenvolvimento diário.
