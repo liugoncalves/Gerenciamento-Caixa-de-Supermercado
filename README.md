@@ -1,3 +1,4 @@
+
 # 🛒 **Sistema de Caixa de Supermercado** — Gerencie Produtos, Clientes e Vendas! 📦💾
 
 > Um sistema completo para a operação de caixa de supermercados, permitindo cadastro de produtos, clientes, funcionários e vendas de forma prática e rápida.
@@ -31,7 +32,6 @@ Ideal para supermercados de pequeno a médio porte que desejam melhorar o fluxo 
 - **Express.js** — Framework para construção das APIs
 - **Postman** — Testes de API (versão 11.6.2)
 - **pgAdmin4** — Gerenciamento de banco de dados (versão 8.10)
-
 
 ---
 
@@ -76,7 +76,6 @@ npm start
 
 Pronto! O servidor estará rodando e as APIs disponíveis.
 
-
 ---
 
 ## 💼 Estrutura do Projeto
@@ -116,6 +115,7 @@ feat: Cadastro de novos produtos
 fix: Correção no endpoint de deletar cliente
 docs: Atualização do manual de instalação
 ```
+
 ## 👤 Integrantes do Projeto
 
 - Leonardo Gonçalves Flora
@@ -123,4 +123,3 @@ docs: Atualização do manual de instalação
 - Maicon Querino Jesus de Souza
 
 ---
-
