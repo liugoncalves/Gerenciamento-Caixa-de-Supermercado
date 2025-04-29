@@ -17,6 +17,7 @@ app.use('/funcionarios', funcionarioRouter);
 app.use('/produtos', produtoRouter);
 app.use('/clientes', clienteRouter);
 app.use('/enderecos', enderecoRouter);
+app.use('/vendas', vendaRouter);
 
 
 // Adicionar uma rota básica

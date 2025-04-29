@@ -1,13 +1,27 @@
 import pg from 'pg';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 // Função para conectar ao banco de dados
 async function Conectar() {
     const pool = new pg.Pool({
-        connectionString: "postgres://postgres:rootleo@localhost:5432/caixa-supermercado"
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
     });
 
-    return await pool.connect();
+    const conn = await pool.connect();
+
+    // Setando o search_path para o schema 'mercado'
+    await conn.query('SET search_path TO mercado, public;');
+
+    return conn;
 }
+
 
 // Função para cadastrar um novo funcionário
 async function CadastrarFuncionario(funcionario) {

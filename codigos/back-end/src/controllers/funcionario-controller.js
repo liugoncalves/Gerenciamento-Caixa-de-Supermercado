@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-import funcionarioService from '../services/funcionario-service.js';
-
-async function CadastrarFuncionario(req, res) {
-    const { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
-    
-    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
-
-    // Validação dos Dados
-    const erroValidacao = validarDadosFuncionario(funcionario);
-    if (erroValidacao) {
-        return res.status(400).send(erroValidacao);
-    }
-
-    try {
-        let resultado = await funcionarioService.CadastrarFuncionario(funcionario);
-        res.status(201).send(resultado);
-    } catch (error) {
-=======
 // importação do serviço de funcionário
 import funcionario_service from '../services/funcionario-service.js';
 
@@ -44,19 +25,10 @@ async function CadastrarFuncionario(req, res) {
         res.status(201).send(resultado);
     } catch (error) {
         // tratamento de erros
->>>>>>> development
         res.status(500).send(`${error.message}`);
     }
 }
 
-<<<<<<< HEAD
-
-async function ListarFuncionarios(req, res){
-    res.send(await funcionarioService.ListarFuncionarios());
-}
-
-async function OrdenarListaFuncionarios(req, res) {
-=======
 /**
  * Lista todos os funcionários cadastrados.
  * @param {Object} req - Requisição HTTP.
@@ -74,7 +46,6 @@ async function ListarFuncionarios(req, res) {
  */
 async function OrdenarListaFuncionarios(req, res) {
     // obtenção do critério de ordenação da consulta
->>>>>>> development
     const criterio = req.query.criterio;
 
     if (!criterio) {
@@ -82,25 +53,15 @@ async function OrdenarListaFuncionarios(req, res) {
     }
 
     try {
-<<<<<<< HEAD
-        const resultado = await funcionarioService.OrdenarListaFuncionarios(criterio);
-        res.status(200).send(resultado);
-    } catch (error) {
-=======
         // tentativa de ordenar a lista de funcionários
         const resultado = await funcionario_service.OrdenarListaFuncionarios(criterio);
         res.status(200).send(resultado);
     } catch (error) {
         // tratamento de erros
->>>>>>> development
         res.status(500).send(`${error.message}`);
     }
 }
 
-<<<<<<< HEAD
-
-async function ConsultarFuncionario(req, res) {
-=======
 /**
  * Consulta um funcionário com base no CPF fornecido.
  * @param {Object} req - Requisição HTTP.
@@ -108,7 +69,6 @@ async function ConsultarFuncionario(req, res) {
  */
 async function ConsultarFuncionario(req, res) {
     // obtenção do CPF da consulta
->>>>>>> development
     let cpf = req.params.cpf;
 
     if (!cpf) {
@@ -116,43 +76,18 @@ async function ConsultarFuncionario(req, res) {
     }
 
     try {
-<<<<<<< HEAD
-        const resultado = await funcionarioService.ConsultarFuncionario(cpf);
-=======
         // tentativa de consultar o funcionário
         const resultado = await funcionario_service.ConsultarFuncionario(cpf);
->>>>>>> development
         if (!resultado) {
             return res.status(404).send('Funcionário não encontrado.');
         }
         res.send(resultado);
     } catch (error) {
-<<<<<<< HEAD
-=======
         // tratamento de erros
->>>>>>> development
         res.status(500).send(`Erro ao consultar funcionário: ${error.message}`);
     }
 }
 
-<<<<<<< HEAD
-async function AlterarFuncionario(req, res) {
-    let cpf_antigo = req.params.cpf;
-    let { cpf, nome, email, senha, cargo, salario, data_admissao } = req.body;
-
-    const funcionario = { cpf, nome, email, senha, cargo, salario, data_admissao };
-
-    // Validação dos Dados
-    const erroValidacao = validarDadosFuncionario(funcionario);
-    if (erroValidacao) {
-        return res.status(400).send(erroValidacao);
-    }
-
-    try {
-        let resultado = await funcionarioService.AlterarFuncionario(cpf_antigo, funcionario);
-        res.status(200).send(resultado);
-    } catch (error) {
-=======
 /**
  * Altera as informações de um funcionário existente.
  * @param {Object} req - Requisição HTTP.
@@ -183,14 +118,10 @@ async function AlterarFuncionario(req, res) {
         res.status(200).send(resultado);
     } catch (error) {
         // tratamento de erros
->>>>>>> development
         res.status(500).send(`${error.message}`);
     }
 }
 
-<<<<<<< HEAD
-async function DeletarFuncionario(req, res) {
-=======
 
 /**
  * Altera a senha de um funcionário existente.
@@ -230,7 +161,6 @@ async function AlterarSenhaFuncionario(req, res) {
  */
 async function DeletarFuncionario(req, res) {
     // obtenção do CPF para exclusão
->>>>>>> development
     let cpf = req.params.cpf;
 
     if (!cpf) {
@@ -238,21 +168,6 @@ async function DeletarFuncionario(req, res) {
     }
 
     try {
-<<<<<<< HEAD
-        let resultado = await funcionarioService.DeletarFuncionario(cpf);
-        res.status(200).send(resultado);
-    } catch (error) {
-        res.status(500).send(`${error.message}`);
-    }
-
-
-}
-
-async function RealizarLogin(req, res) {
-    const { email, senha } = req.body;
-
-    // Verificação inicial dos dados
-=======
         // tentativa de deletar o funcionário
         let resultado = await funcionario_service.DeletarFuncionario(cpf);
         res.status(200).send(resultado);
@@ -272,52 +187,23 @@ async function RealizarLogin(req, res) {
     const { email, senha } = req.body;
 
     // verificação inicial dos dados
->>>>>>> development
     if (!email || !senha) {
         return res.status(400).send('Preencha todos os campos.');
     }
 
     try {
-<<<<<<< HEAD
-        const resultado = await funcionarioService.RealizarLogin(email, senha);
-=======
         // tentativa de realizar o login
         const resultado = await funcionario_service.RealizarLogin(email, senha);
->>>>>>> development
         if (!resultado) {
             return res.status(401).send('Credenciais incorretas.');
         }
         res.status(200).send(resultado);
     } catch (error) {
-<<<<<<< HEAD
-=======
         // tratamento de erros
->>>>>>> development
         res.status(500).send(`${error.message}`);
     }
 }
 
-<<<<<<< HEAD
-
-// Função para validar os dados do funcionário e evitar duplicação de código
-function validarDadosFuncionario(funcionario) {
-    const { cpf, nome, email, senha, cargo, salario } = funcionario;
-
-    if (!cpf || !nome || !email || !senha || !cargo || !salario) {
-        return 'Preencha todos os campos.';
-    }
-    
-    if (!['gerente', 'vendedor'].includes(cargo)) {
-        return 'Cargo inválido. Escolha entre "gerente" e "vendedor".';
-    }
-
-    if (cpf.length !== 11) {
-        return 'O CPF deve conter 11 dígitos.';
-    }
-    
-    if (salario <= 0) {
-        return 'Salário deve ser maior que zero.';
-=======
 /**
  * Valida os dados fornecidos para um funcionário.
  * @param {Object} funcionario - Dados do funcionário.
@@ -340,17 +226,11 @@ function ValidarDadosFuncionario(funcionario) {
     
     if (salario <= 0) {
         return 'salário deve ser maior que zero.';
->>>>>>> development
     }
 
     return null;
 }
 
-<<<<<<< HEAD
-
-export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, AlterarFuncionario, DeletarFuncionario , RealizarLogin };
-=======
 // exportação das funções do módulo
 export default { CadastrarFuncionario, ListarFuncionarios, OrdenarListaFuncionarios, ConsultarFuncionario, 
                  AlterarFuncionario, AlterarSenhaFuncionario, DeletarFuncionario, RealizarLogin };
->>>>>>> development
