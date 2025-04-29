@@ -43,19 +43,13 @@ git clone https://github.com/liugoncalves/Gerenciamento-Caixa-de-Supermercado.gi
 cd Gerenciamento-Caixa-de-Supermercado
 ```
 
-### 2. Crie e Ative um Ambiente Virtual Node.js
+### 2. Configure o Ambiente Node.js
 *Recomendado para isolar as dependências do projeto.*
 
 Caso use **nvm** (Node Version Manager):
 ```bash
 nvm install 18.17.1
 nvm use 18.17.1
-```
-
-Ou apenas crie um ambiente isolado manualmente:
-```bash
-# Se quiser, use "corepack" para isolar dependências (recomendado)
-corepack enable
 ```
 
 ### 3. Instale as Dependências do Projeto
@@ -65,19 +59,24 @@ npm install
 ```
 
 ### 4. Configure o Banco de Dados
-- Certifique-se que o PostgreSQL esteja instalado e rodando.
-- Crie um banco de dados chamado `supermercado`.
-- Atualize as configurações de conexão no arquivo `.env`.
+- Certifique-se de que o PostgreSQL esteja instalado e rodando.
+- Crie um banco de dados e schema chamados `mercado`.
+- Atualize as configurações de conexão no arquivo `.env` (modelo fornecido no projeto).
 
 ### 5. Execute o Servidor Backend
 ```bash
 npm start
 ```
 
-Pronto! O servidor estará rodando e as APIs disponíveis.
+Servidor iniciado! As APIs estarão disponíveis para serem testadas.
 
-Agora, você pode realizar solicitações nas APIs do sistema. Para testar as APIs, use ferramentas como Postman ou Insomnia, ou faça requisições diretamente pelo frontend (caso esteja implementado).
+### 6. Teste as Rotas da API
+Use ferramentas como Postman ou Insomnia para testar endpoints como:
 
+- `GET /produtos/listar`
+- `POST /clientes/cadastrar`
+- `GET /vendas/listar`
+- entre outros!
 
 ---
 
@@ -88,10 +87,10 @@ Gerenciamento-Caixa-de-Supermercado/
  ├── database/          # Scripts de criação do banco de dados
  ├── docs/              # Documentação geral do projeto
  ├── codigos/
- │    ├── back-end/    # Código-fonte principal da aplicação
+ │    ├── back-end/     # Código-fonte principal da aplicação
  │    └── uploads/      # Pasta para arquivos de notas fiscais (se houver)
- ├── .gitignore        # Arquivos ignorados no Git
- ├── README.md          # Este arquivo :)
+ ├── .gitignore         # Arquivos ignorados no Git
+ ├── README.md          # Este arquivo :) 
 ```
 
 ---
@@ -118,6 +117,8 @@ feat: Cadastro de novos produtos
 fix: Correção no endpoint de deletar cliente
 docs: Atualização do manual de instalação
 ```
+
+---
 
 ## 👤 Integrantes do Projeto
 
