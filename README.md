@@ -76,6 +76,9 @@ npm start
 
 Pronto! O servidor estará rodando e as APIs disponíveis.
 
+Agora, você pode realizar solicitações nas APIs do sistema. Para testar as APIs, use ferramentas como Postman ou Insomnia, ou faça requisições diretamente pelo frontend (caso esteja implementado).
+
+
 ---
 
 ## 💼 Estrutura do Projeto
