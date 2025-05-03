@@ -1,191 +1,140 @@
-import pg from 'pg';
+import pool from '../config/db.js';
 
-import dotenv from 'dotenv';
+class ProdutoRepository {
+    async cadastrar(produto) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                INSERT INTO produtos (codigo, nome, valor, quantidade)
+                VALUES ($1, $2, $3, $4)
+                RETURNING *;
+            `;
+            const resultado = await conn.query(sql, [
+                produto.codigo,
+                produto.nome,
+                produto.valor,
+                produto.quantidade
+            ]);
 
-dotenv.config();
+            return resultado.rows[0];    
 
-// Função para conectar ao banco de dados
-async function Conectar() {
-    const pool = new pg.Pool({
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-    });
-
-    const conn = await pool.connect();
-
-    // Setando o search_path para o schema 'mercado'
-    await conn.query('SET search_path TO mercado, public;');
-
-    return conn;
-}
-
-
-// Função para cadastrar um novo produto
-async function CadastrarProduto(produto) {
-    const conn = await Conectar();
-
-    try {
-        const sql = `
-            INSERT INTO produtos (codigo, nome, valor, quantidade)
-            VALUES ($1, $2, $3, $4)
-            RETURNING codigo;
-        `;
-        await conn.query(sql, [
-            produto.codigo,
-            produto.nome,
-            produto.valor,
-            produto.quantidade
-        ]);
-
-        return { mensagem: 'Produto cadastrado com sucesso.' };
-    
-    } catch (err) {
-        throw new Error('Erro ao cadastrar produto: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-// Função para listar todos os produtos
-async function ListarProdutos() {
-    const conn = await Conectar();
-
-    try {
-        const sql = "SELECT codigo, nome, valor, quantidade FROM produtos";
-        const resultado = await conn.query(sql);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Nenhum produto cadastrado.' };
+        } catch (err) {
+            if (err.code === '23505'){
+                if (err.detail?.includes('codigo')){
+                    throw new Error('Código já Cadastrado.');
+                }
+            }
+            throw new Error(`Erro ao cadastrar produto no Sistema: ${err.message}`);
+        } finally {
+            conn.release();
         }
-
-        return resultado.rows;
-
-    } catch (err) {
-        throw new Error('Erro ao listar produtos: ' + err.message);
-    } finally {
-        conn.release();
     }
-}
 
-// Função para ordenar a lista de produtos com base em um critério
-async function OrdenarListaProdutos(criterio) {
-    const conn = await Conectar();
+    async listarTodos() {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                SELECT codigo, nome, valor, quantidade 
+                FROM produtos
+            `;
+            const resultado = await conn.query(sql);
 
-    try {
-        let sql = 'SELECT codigo, nome, valor, quantidade FROM produtos';
+            return resultado.rows ? resultado.rows : null;
+
+        } catch (err) {
+            throw new Error(`Erro ao listar produtos: ${err.message}`);
+        } finally {
+            conn.release();
+        }
+    }
+
+    async ordenarPorColuna(coluna, direcao = 'ASC') {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                SELECT codigo, nome, valor, quantidade 
+                FROM produtos
+                ORDER BY ${coluna} ${direcao.toUpperCase()}
+            `;
+            const resultado = await conn.query(sql);
+            return resultado.rows.length ? resultado.rows : null;
+
+        } catch (err) {
+            throw new Error(`Erro ao ordenar produtos: ${err.message}`);
+        } finally {
+            conn.release();
+        }
+    }
+
+    async consultarPorCodigo(codigo) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                SELECT codigo, nome, valor, quantidade 
+                FROM produtos 
+                WHERE codigo = $1
+            `;
+            const resultado = await conn.query(sql, [codigo]);
+
+            return resultado.rows[0] || null;
         
-        switch (criterio) {
-            case 'nome':
-                sql += ' ORDER BY nome';
-                break;
-            case 'codigo':
-                sql += ' ORDER BY codigo';
-                break;
-            default:
-                throw new Error('Critério de ordenação inválido.');
+        } catch (err) {
+            throw new Error('Erro ao consultar produto: ' + err.message);
+        } finally {
+            conn.release();
         }
+    }
+
+    async alterar(codigoAntigo, produto) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                UPDATE produtos
+                SET codigo = $1, nome = $2, valor = $3, quantidade = $4
+                WHERE codigo = $5
+                RETURNING *;
+            `;
+            const resultado = await conn.query(sql, [
+                produto.codigo,
+                produto.nome,
+                produto.valor,
+                produto.quantidade,
+                codigoAntigo
+            ]);
+
+            return resultado.rows[0] || null;
         
-        const resultado = await conn.query(sql);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Nenhum produto cadastrado.' };
+        } catch (err) {
+            if (err.code === '23505'){
+                if (err.detail?.includes('codigo')){
+                    throw new Error('Código já Cadastrado.');
+                }
+                } else{
+                    throw new Error('Valor duplicado: já existe um produto com esses dados.')
+                }
+        } finally {
+            conn.release();
         }
+    }
 
-        return resultado.rows;
+    async deletar(codigo) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                DELETE FROM produtos 
+                WHERE codigo = $1
+                RETURNING *;
+            `;
+            const resultado = await conn.query(sql, [codigo]);
 
-    } catch (err) {
-        throw new Error('Erro ao ordenar produtos: ' + err.message);
-    } finally {
-        conn.release();
+            return resultado.rows[0] ||  null;
+            
+        } catch (err) {
+            throw new Error(`Erro ao deletar produto: ' ${err.message}`);
+        } finally {
+            conn.release();
+        }
     }
 }
 
-// Função para consultar um produto pelo código
-async function ConsultarProduto(codigo) {
-    const conn = await Conectar();
-
-    try {
-        const sql = `
-            SELECT codigo, nome, valor, quantidade 
-            FROM produtos 
-            WHERE codigo = $1
-        `;
-        const resultado = await conn.query(sql, [codigo]);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Produto não encontrado.' };
-        }
-
-        return resultado.rows[0];
-    
-    } catch (err) {
-        throw new Error('Erro ao consultar produto: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-// Função para alterar os dados de um produto
-async function AlterarProduto(codigoAntigo, produto) {
-    const conn = await Conectar();
-
-    try {
-        const sql = `
-            UPDATE produtos
-            SET codigo = $1, nome = $2, valor = $3, quantidade = $4
-            WHERE codigo = $5
-            RETURNING codigo;
-        `;
-        const resultado = await conn.query(sql, [
-            produto.codigo,
-            produto.nome,
-            produto.valor,
-            produto.quantidade,
-            codigoAntigo
-        ]);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Produto não encontrado para alteração.' };
-        }
-
-        return { mensagem: 'Produto alterado com sucesso.' };
-    
-    } catch (err) {
-        throw new Error('Erro ao alterar produto: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-// Função para deletar um produto pelo código
-async function DeletarProduto(codigo) {
-    const conn = await Conectar();
-
-    try {
-        const sql = "DELETE FROM produtos WHERE codigo = $1";
-        const resultado = await conn.query(sql, [codigo]);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Produto não encontrado para exclusão.' };
-        }
-
-        return { mensagem: 'Produto deletado com sucesso.' };
-    
-    } catch (err) {
-        throw new Error('Erro ao deletar produto: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-export default {
-    CadastrarProduto,
-    ListarProdutos,
-    OrdenarListaProdutos,
-    ConsultarProduto,
-    AlterarProduto,
-    DeletarProduto
-};
+export default new ProdutoRepository();

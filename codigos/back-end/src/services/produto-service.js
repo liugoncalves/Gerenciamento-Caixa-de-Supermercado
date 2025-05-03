@@ -1,86 +1,57 @@
 import produto_repository from '../repositories/produto-repository.js';
 import venda_repository from '../repositories/venda-repository.js';
 
-/**
- * Cadastra um novo produto.
- * @param {Object} produto - Dados do produto a ser cadastrado.
- * @returns {Promise<Object>} Resultado da operação de cadastro.
- * @throws {Error} Se ocorrer um erro durante o cadastro.
- */
-async function CadastrarProduto(produto) {
-    try {
-        return await produto_repository.CadastrarProduto(produto);
-    } catch (error) {
-        throw new Error(error.message);
+class ProdutoService{
+    async cadastrarProduto(produto) {
+        return await produto_repository.cadastrar(produto);
     }
-}
 
-/**
- * Lista todos os produtos cadastrados.
- * @returns {Promise<Array>} Lista de produtos.
- */
-async function ListarProdutos() {
-    return await produto_repository.ListarProdutos();
-}
-
-/**
- * Ordena a lista de produtos com base no critério especificado.
- * @param {string} criterio - Critério de ordenação.
- * @returns {Promise<Array>} Lista de produtos ordenada.
- * @throws {Error} Se ocorrer um erro durante a ordenação.
- */
-async function OrdenarListaProdutos(criterio) {
-    try {
-        return await produto_repository.OrdenarListaProdutos(criterio);
-    } catch (error) {
-        throw new Error(`Erro ao ordenar produtos: ${error.message}`);
+    async listarProdutos() {
+        return await produto_repository.listarTodos();
     }
-}
 
-/**
- * Consulta um produto com base no código fornecido.
- * @param {string} codigo - Código do produto a ser consultado.
- * @returns {Promise<Object>} Dados do produto.
- */
-async function ConsultarProduto(codigo) {
-    return await produto_repository.ConsultarProduto(codigo);
-}
+    async ordenarListaProdutos(coluna, direcao = 'ASC') {
+        const colunasValidas = ['codigo', 'nome', 'valor'];
+        const direcoesValidas = ['ASC', 'DESC'];
 
-/**
- * Altera os dados de um produto existente.
- * @param {string} codigo_antigo - Código antigo do produto.
- * @param {Object} produto - Dados atualizados do produto.
- * @returns {Promise<Object>} Resultado da operação de alteração.
- * @throws {Error} Se ocorrer um erro durante a alteração.
- */
-async function AlterarProduto(codigo_antigo, produto) {
-    try {
-        return await produto_repository.AlterarProduto(codigo_antigo, produto);
-    } catch (error) {
-        throw new Error(error.message);
+        if(!colunasValidas.includes(coluna)){
+            throw new Error('Coluna de ordenação inválida.');
+        }
+
+        if (!direcoesValidas.includes(direcao.toUpperCase())) {
+            throw new Error('Direção de ordenação inválida.');
+        }
+
+        return await produto_repository.ordenarPorColuna(coluna, direcao.toUpperCase());
     }
-}
 
-/**
- * Deleta um produto com base no código fornecido.
- * @param {string} codigo - Código do produto a ser deletado.
- * @returns {Promise<Object>} Resultado da operação de deleção.
- * @throws {Error} Se o produto estiver associado a vendas ou ocorrer um erro durante a deleção.
- */
-async function DeletarProduto(codigo) {
-    try {
-        // Verificar se o produto está associado a vendas concluídas.
-        const vendas_associadas = await venda_repository.ConsultarVendaPorCodProduto(codigo);
+    async consultarProduto(codigo) {
+        const produto = await produto_repository.consultarPorCodigo(codigo);
+        if(!produto){
+            throw new Error('Produto não encontrado.');
+        }
+
+        return produto;
+    }
+
+
+    async alterarProduto(codigo_antigo, produto) {
+        return await produto_repository.alterar(codigo_antigo, produto);
+    }
+
+    async deletarProduto(codigo) {
+        const vendas_associadas = await venda_repository.consultarVendaPorCodProduto(codigo);
         if (vendas_associadas && vendas_associadas.length > 0) {
             throw new Error('Produto não pode ser excluído, pois está associado a compras.');
         }
+        const deletado = await produto_repository.deletar(codigo);
+        if(!deletado){
+            throw new Error('Produto não encontrado para deletar.');
+        }
 
-        return await produto_repository.DeletarProduto(codigo);
-
-    } catch (error) {
-        throw new Error(error.message);
+        return deletado;
     }
+
 }
 
-// Exportação das funções do módulo
-export default { CadastrarProduto, ListarProdutos, OrdenarListaProdutos, ConsultarProduto, AlterarProduto, DeletarProduto };
+export default new ProdutoService();

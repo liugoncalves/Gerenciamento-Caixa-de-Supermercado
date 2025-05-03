@@ -3,14 +3,14 @@ import funcionarioController from '../controllers/funcionario-controller.js';
 
 const router = express.Router();
 
-router.post('/cadastrar', funcionarioController.CadastrarFuncionario);
-router.get('/listar', funcionarioController.ListarFuncionarios);
-router.get('/ordenar', funcionarioController.OrdenarListaFuncionarios);
-router.get('/consultar/:cpf', funcionarioController.ConsultarFuncionario);
-router.put('/alterar/:cpf', funcionarioController.AlterarFuncionario);
-router.put('/alterarsenha/:cpf', funcionarioController.AlterarSenhaFuncionario);
-router.delete('/deletar/:cpf', funcionarioController.DeletarFuncionario);
+router.post('/', funcionarioController.cadastrarFuncionario);
+router.get('/', funcionarioController.listarFuncionarios);
+router.get('/ordenar', funcionarioController.ordenarListaFuncionarios);
+router.get('/:cpf', funcionarioController.consultarFuncionario);
+router.put('/:cpf', funcionarioController.alterarFuncionario);
+router.put('/alterar-senha/:cpf', funcionarioController.alterarSenhaFuncionario);
+router.delete('/:cpf', funcionarioController.deletarFuncionario);
 
-router.post('/login', funcionarioController.RealizarLogin);
+router.post('/login', funcionarioController.realizarLogin);
 
 export default router;

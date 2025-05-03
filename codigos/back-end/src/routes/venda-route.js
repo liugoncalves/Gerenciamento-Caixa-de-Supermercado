@@ -3,12 +3,12 @@ import vendaController from '../controllers/venda-controller.js';
 
 const router = express.Router();
 
-router.post('/cadastrar', vendaController.RealizarVenda);
-router.post('/gerar-nota-fiscal/:codigo', vendaController.GerarNotaFiscal);
-router.get('/listar', vendaController.ListarVendas);
-router.get('/consultar/:codigo', vendaController.ConsultarVenda);
-router.put('/alterar/:codigo', vendaController.AlterarVenda);
-router.delete('/deletar/:codigo', vendaController.DeletarVenda);
+router.post('/', vendaController.realizarVenda);
+router.post('/gerar-nota-fiscal/:codigo', vendaController.gerarNotaFiscal);
+router.get('/', vendaController.listarVendas);
+router.get('/:codigo', vendaController.consultarVenda);
+router.put('/:codigo', vendaController.alterarVenda);
+router.delete('/:codigo', vendaController.deletarVenda);
 
 
 export default router;

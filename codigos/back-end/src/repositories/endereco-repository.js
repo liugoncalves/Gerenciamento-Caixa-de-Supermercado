@@ -1,184 +1,116 @@
-import pg from 'pg';
+import pool from '../config/db.js';
 
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-// Função para conectar ao banco de dados
-async function Conectar() {
-    const pool = new pg.Pool({
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-    });
-
-    const conn = await pool.connect();
-
-    // Setando o search_path para o schema 'mercado'
-    await conn.query('SET search_path TO mercado, public;');
-
-    return conn;
-}
-
-
-// Função para cadastrar um novo endereço
-async function CadastrarEndereco(endereco) {
-    const conn = await Conectar();
-
-    try {
-        const sql = `
-            INSERT INTO enderecos (nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            RETURNING codigo;
-        `;
-        await conn.query(sql, [
-            endereco.nome_rua,
-            endereco.numero,
-            endereco.complemento,
-            endereco.bairro,
-            endereco.cidade,
-            endereco.estado,
-            endereco.cep,
-            endereco.cpf_cliente
-        ]);
-
-        return { mensagem: 'Endereço cadastrado com sucesso.' };
-    
-    } catch (err) {
-        throw new Error('Erro ao cadastrar endereço: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}	
-
-// Função para listar todos os endereços
-async function ListarEnderecos() {
-    const conn = await Conectar();
-
-    try {
-        const sql = 'SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente FROM enderecos';
-        const resultado = await conn.query(sql);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Nenhum endereço cadastrado.' };
+class EnderecoRepository {
+    async cadastrar(endereco) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                INSERT INTO enderecos (nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING codigo;
+            `;
+            const valores = [endereco.nome_rua, endereco.numero, endereco.complemento, endereco.bairro,
+                             endereco.cidade, endereco.estado, endereco.cep, endereco.cpf_cliente]
+            const resultado = await conn.query(sql, valores);
+            return resultado.rows[0];
+        
+        } catch (err) {
+            if (err.code === '23505') {
+                if (err.detail?.includes('cpf_cliente')) throw new Error('O cliente com esse CPF já tem endereço cadastrado no Sistema.');
+            }
+            throw new Error(`Erro ao cadastrar endereço: ${err.message}`);
+        } finally {
+            conn.release();
         }
+    }	
 
-        return resultado.rows;
+    // Função para listar todos os endereços
+    async listarTodos() {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+            SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente 
+            FROM enderecos
+            `;
+            const resultado = await conn.query(sql);
+            return resultado.rows;
 
-    } catch (err) {
-        throw new Error('Erro ao listar endereços: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-// Função para ordenar a lista de endereços com base em um critério
-async function OrdenarListaEnderecos(criterio) {
-    const conn = await Conectar();
-
-    let sql = `
-        SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente
-        FROM enderecos
-    `;
-
-    // Determinar o critério de ordenação
-    if (criterio === 'nome_rua') {
-        sql += ' ORDER BY nome_rua ASC';
-    } else if (criterio === 'cidade') {
-        sql += ' ORDER BY cidade ASC';
-    } else if (criterio === 'estado') {
-        sql += ' ORDER BY estado ASC';
-    } else {
-        throw new Error('Critério de ordenação inválido.');
-    }
-
-    try {
-        const resultado = await conn.query(sql);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Nenhum endereço encontrado.' };
+        } catch (err) {
+            throw new Error('Erro ao listar endereços: ' + err.message);
+        } finally {
+            conn.release();
         }
-
-        return resultado.rows;
-
-    } catch (err) {
-        throw new Error('Erro ao ordenar endereços: ' + err.message);
-    } finally {
-        conn.release();
     }
-}
 
-// Função para consultar um endereço pelo código
-async function ConsultarEndereco(codigo) {
-    const conn = await Conectar();
-
-    try {
-        const sql = `
+    // Função para ordenar a lista de endereços com base em um critério
+    async ordenarPorColuna(coluna) {
+        const conn = await pool.connect();
+        try{
+        let sql = `
             SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente
             FROM enderecos
-            WHERE codigo = $1
+            ORDER BY ${coluna}
         `;
-        const resultado = await conn.query(sql, [codigo]);
+        const resultado = await conn.query(sql);
+        return resultado.rows;
 
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Endereço não encontrado.' };
+        } catch (err) {
+            throw new Error('Erro ao ordenar endereços: ' + err.message);
+        } finally {
+            conn.release();
         }
-
-        return resultado.rows[0];
-
-    } catch (err) {
-        throw new Error('Erro ao consultar endereço: ' + err.message);
-    } finally {
-        conn.release();
     }
-}
 
-// Função para consultar um endereço por CPF do cliente
-async function ConsultarEnderecoCPF(cpf) {
-    const conn = await Conectar();
+    // Função para consultar um endereço pelo código
+    async consultarPorCodigo(codigo) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                SELECT codigo, nome_rua, numero, complemento, bairro, cidade, estado, cep, cpf_cliente
+                FROM enderecos
+                WHERE codigo = $1
+            `;
+            const resultado = await conn.query(sql, [codigo]);
+            return resultado.rows[0] || null;
 
-    try {
-        const sql = `
-            SELECT 
-                nome_rua,
-                numero,
-                complemento,
-                bairro,
-                cidade,
-                estado,
-                cep
-            FROM enderecos
-            WHERE cpf_cliente = $1;
-        `;
-        const resultado = await conn.query(sql, [cpf]);
-
-        if (resultado.rows.length === 0) {
-            return null; // Nenhum endereço encontrado para o CPF fornecido
+        } catch (err) {
+            throw new Error('Erro ao consultar endereço: ' + err.message);
+        } finally {
+            conn.release();
         }
-
-        return resultado.rows[0]; // Retorna o endereço encontrado
-
-    } catch (error) {
-        throw new Error('Erro ao consultar o endereço: ' + error.message);
-    } finally {
-        conn.release();
     }
-}
 
-// Função para alterar um endereço
-async function AlterarEndereco(codigoAntigo, endereco) {
-    const conn = await Conectar();
+    // Função para consultar um endereço por CPF do cliente
+    async consultarPorCPF(cpf) {
+        const conn = await pool.connect();
+        try {
+            const sql = `
+                SELECT nome_rua, numero, complemento, bairro, cidade, estado, cep
+                FROM enderecos
+                WHERE cpf_cliente = $1;
+            `;
+            const resultado = await conn.query(sql, [cpf]);
+            return resultado.rows[0] || null;
 
-    try {
-        // Atualiza o endereço na tabela de endereços
-        const sqlEndereco = `
+        } catch (error) {
+            throw new Error('Erro ao consultar o endereço: ' + error.message);
+        } finally {
+            conn.release();
+        }
+    }
+
+
+    async alterar(codigoAntigo, endereco) {
+        const conn = await pool.connect();
+        try {
+          await conn.query('BEGIN');
+          const sqlEndereco = `
             UPDATE enderecos
             SET nome_rua = $1, numero = $2, complemento = $3, bairro = $4, cidade = $5, estado = $6, cep = $7, cpf_cliente = $8
             WHERE codigo = $9
-        `;
-        const resultadoEndereco = await conn.query(sqlEndereco, [
+            RETURNING codigo;
+          `;
+          const resultadoEndereco = await conn.query(sqlEndereco, [
             endereco.nome_rua,
             endereco.numero,
             endereco.complemento,
@@ -188,61 +120,54 @@ async function AlterarEndereco(codigoAntigo, endereco) {
             endereco.cep,
             endereco.cpf_cliente,
             codigoAntigo
-        ]);
-
-        if (resultadoEndereco.rowCount === 0) {
-            return { mensagem: 'Endereço não encontrado para alteração.' };
-        }
-
-        // Cria o logradouro atualizado
-        const logradouroAtualizado = `${endereco.nome_rua}, ${endereco.numero}${endereco.complemento ? ', ' + endereco.complemento : ''}, ${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}, ${endereco.cep}`;
-
-        // Atualiza o logradouro nas vendas associadas ao CPF do cliente
-        const sqlVendas = `
+          ]);
+      
+          if (resultadoEndereco.rowCount === 0) {
+            await conn.query('ROLLBACK');
+            return null; // Endereço não encontrado
+          }
+      
+          const logradouroAtualizado = formatarLogradouro(endereco);
+      
+          const sqlVendas = `
             UPDATE vendas
             SET logradouro = $1
             WHERE cpf_cliente = $2
-        `;
-        await conn.query(sqlVendas, [
-            logradouroAtualizado,
-            endereco.cpf_cliente
-        ]);
-
-        return { mensagem: 'Endereço alterado com sucesso.' };
-    } catch (err) {
-        throw new Error('Erro ao alterar endereço: ' + err.message);
-    } finally {
-        conn.release();
-    }
-}
-
-// Função para deletar um endereço pelo código
-async function DeletarEndereco(codigo) {
-    const conn = await Conectar();
-
-    try {
-        const sql = 'DELETE FROM enderecos WHERE codigo = $1';
-        const resultado = await conn.query(sql, [codigo]);
-
-        if (resultado.rowCount === 0) {
-            return { mensagem: 'Endereço não encontrado para exclusão.' };
+          `;
+          await conn.query(sqlVendas, [logradouroAtualizado, endereco.cpf_cliente]);
+      
+          await conn.query('COMMIT');
+          return true; // Alteração bem-sucedida
+      
+        } catch (err) {
+          await conn.query('ROLLBACK');
+          throw new Error('Erro no repositório ao alterar endereço: ' + err.message);
+        } finally {
+          conn.release();
         }
 
-        return { mensagem: 'Endereço excluído com sucesso.' };
+      }
 
-    } catch (err) {
-        throw new Error('Erro ao excluir endereço: ' + err.message);
-    } finally {
-        conn.release();
+    // Função para deletar um endereço pelo código
+    async deletar(codigo) {
+        const conn = await pool.connect();
+        try {
+            const sql = 'DELETE FROM enderecos WHERE codigo = $1 RETURNING*';
+            const resultado = await conn.query(sql, [codigo]);
+            
+            return resultado.rows[0] || null;
+
+        } catch (err) {
+            throw new Error('Erro ao excluir endereço: ' + err.message);
+        } finally {
+            conn.release();
+        }
     }
 }
 
-export default { 
-    CadastrarEndereco, 
-    ListarEnderecos, 
-    OrdenarListaEnderecos, 
-    ConsultarEndereco, 
-    ConsultarEnderecoCPF, 
-    AlterarEndereco, 
-    DeletarEndereco 
-};
+function formatarLogradouro(endereco) {
+    return `${endereco.nome_rua}, ${endereco.numero}${endereco.complemento ? ', ' + endereco.complemento : ''}, ${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}, ${endereco.cep}`;
+}
+  
+export default new EnderecoRepository();
+

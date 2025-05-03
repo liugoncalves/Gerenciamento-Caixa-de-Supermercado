@@ -1,165 +1,109 @@
-// importação do serviço de cliente
-import cliente_service from '../services/cliente-service.js';
+// src/controllers/cliente-controller.js
+import clienteService from '../services/cliente-service.js';
 
-/**
- * Cadastra um novo cliente no sistema.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function CadastrarCliente(req, res) {
-    // destruição dos dados enviados na requisição
+function validarDadosCliente(cliente) {
+  const { nome, cpf, telefone, email } = cliente;
+
+  if (!nome || !cpf || !telefone || !email) {
+    return 'Preencha todos os campos obrigatórios.';
+  }
+
+  if (!/^\d{11}$/.test(cpf)) {
+    return 'O CPF deve conter exatamente 11 dígitos numéricos.';
+  }
+
+  return null;
+}
+
+class ClienteController {
+  async cadastrarCliente(req, res) {
     const { nome, cpf, telefone, email } = req.body;
+    const cliente = { nome, cpf, telefone, email };
 
-    // criação do objeto cliente
-    const cliente = { nome, cpf, telefone, email};
-
-    // validação dos dados do cliente
-    const erro_validacao = ValidarDadosCliente(cliente);
-    if (erro_validacao) {
-        return res.status(400).send(erro_validacao);
+    const erro = validarDadosCliente(cliente);
+    if (erro) {
+      return res.status(400).json({ mensagem: erro });
     }
 
     try {
-        // tentativa de cadastrar o cliente
-        let resultado = await cliente_service.CadastrarCliente(cliente);
-        res.status(201).send(resultado);
+      const resultado = await clienteService.cadastrarCliente(cliente);
+      res.status(201).json({ mensagem: resultado });
     } catch (error) {
-        // tratamento de erros
-        res.status(500).send(`${error.message}`);
+      res.status(400).json({ mensagem: error.message });
     }
-}
+  }
 
-/**
- * Lista todos os clientes cadastrados.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function ListarClientes(req, res) {
-    // listagem de clientes
-    res.send(await cliente_service.ListarClientes());
-}
+  async listarClientes(req, res) {
+    try {
+      const resultado = await clienteService.listarClientes();
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(500).json({ mensagem: 'Erro ao listar os clientes. Tente novamente.' });
+    }
+  }
 
-/**
- * Ordena a lista de clientes com base no critério fornecido.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function OrdenarListaClientes(req, res) {
-    // obtenção do critério de ordenação da consulta
-    const criterio = req.query.criterio;
+  async ordenarListaClientes(req, res) {
+    const { criterio, ordem } = req.query;
 
     if (!criterio) {
-        return res.status(400).send('Critério de ordenação não especificado.');
+      return res.status(400).json({ mensagem: 'Critério de ordenação não informado.' });
     }
 
     try {
-        // tentativa de ordenar a lista de clientes
-        const resultado = await cliente_service.OrdenarListaClientes(criterio);
-        res.status(200).send(resultado);
+      const resultado = await clienteService.ordenarListaClientes(criterio, ordem);
+      res.status(200).json(resultado);
     } catch (error) {
-        // tratamento de erros
-        res.status(500).send(`${error.message}`);
+      res.status(400).json({ mensagem: error.message });
     }
-}
+  }
 
-/**
- * Consulta um cliente com base no CPF fornecido.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function ConsultarCliente(req, res) {
-    // obtenção do CPF da consulta
+  async consultarCliente(req, res) {
     const cpf = req.params.cpf;
 
     if (!cpf) {
-        return res.status(400).send('Digite um CPF para realizar a busca.');
+      return res.status(400).json({ mensagem: 'Informe um CPF para buscar o cliente.' });
     }
 
     try {
-        // tentativa de consultar o cliente
-        const resultado = await cliente_service.ConsultarCliente(cpf);
-        if (!resultado) {
-            return res.status(404).send('Cliente não encontrado.');
-        }
-        res.send(resultado);
+      const resultado = await clienteService.consultarCliente(cpf);
+      res.status(200).json(resultado);
     } catch (error) {
-        // tratamento de erros
-        res.status(500).send(error.message);
+      res.status(400).json({ mensagem: error.message });
     }
-}
+  }
 
-/**
- * Altera as informações de um cliente existente.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function AlterarCliente(req, res) {
-    // obtenção do CPF antigo e novos dados do cliente
-    let cpf_antigo = req.params.cpf;
-    let { nome, cpf, telefone, email, data_cadastro } = req.body;
+  async alterarCliente(req, res) {
+    const cpfAntigo = req.params.cpf;
+    const { nome, cpf, telefone, email } = req.body;
+    const cliente = { nome, cpf, telefone, email };
 
-    // criação do objeto cliente com os novos dados
-    const cliente = { nome, cpf, telefone, email, data_cadastro };
-
-    // validação dos dados do cliente
-    const erro_validacao = ValidarDadosCliente(cliente);
-    if (erro_validacao) {
-        return res.status(400).send(erro_validacao);
+    const erro = validarDadosCliente(cliente);
+    if (erro) {
+      return res.status(400).json({ mensagem: erro });
     }
 
     try {
-        // tentativa de alterar as informações do cliente
-        let resultado = await cliente_service.AlterarCliente(cpf_antigo, cliente);
-        res.status(200).send(resultado);
+      const resultado = await clienteService.alterarCliente(cpfAntigo, cliente);
+      res.status(200).json({ mensagem: resultado });
     } catch (error) {
-        // tratamento de erros
-        res.status(500).send(error.message);
+      res.status(400).json({ mensagem: error.message });
     }
-}
+  }
 
-/**
- * Deleta um cliente com base no CPF fornecido.
- * @param {Object} req - Requisição HTTP.
- * @param {Object} res - Resposta HTTP.
- */
-async function DeletarCliente(req, res) {
-    // obtenção do CPF para exclusão
-    let cpf = req.params.cpf;
+  async deletarCliente(req, res) {
+    const cpf = req.params.cpf;
 
     if (!cpf) {
-        return res.status(400).send('Digite um CPF para realizar a exclusão.');
+      return res.status(400).json({ mensagem: 'Informe um CPF para excluir o cliente.' });
     }
 
     try {
-        // tentativa de deletar o cliente
-        let resultado = await cliente_service.DeletarCliente(cpf);
-        res.status(200).send(resultado);
+      const resultado = await clienteService.deletarCliente(cpf);
+      res.status(200).json({ mensagem: resultado });
     } catch (error) {
-        // tratamento de erros
-        res.status(500).send(error.message);
+      res.status(400).json({ mensagem: error.message });
     }
+  }
 }
 
-/**
- * Valida os dados fornecidos para um cliente.
- * @param {Object} cliente - Dados do cliente.
- * @returns {string|null} Mensagem de erro ou null se os dados estiverem válidos.
- */
-function ValidarDadosCliente(cliente) {
-    const { nome, cpf, telefone, email } = cliente;
-
-    // verificação de campos obrigatórios
-    if (!nome || !cpf || !telefone || !email) { 
-        return 'preencha todos os campos.';
-    }
-
-    // verificação do tamanho do CPF
-    if (cpf.length !== 11) {
-        return 'o cpf deve conter 11 dígitos.';
-    }
-
-    return null;
-}
-
-// exportação das funções do módulo
-export default { CadastrarCliente, ListarClientes, OrdenarListaClientes, ConsultarCliente, AlterarCliente, DeletarCliente };
+export default new ClienteController();
