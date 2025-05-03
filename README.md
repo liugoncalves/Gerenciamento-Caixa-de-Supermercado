@@ -41,21 +41,22 @@ Gerenciamento-Caixa-de-Supermercado/
 ├── codigos/
 │   └── back-end/
 │       ├── src/
-│       │   ├── config/              # Configurações do projeto e conexão com o banco
-│       │   ├── controllers/         # Lógica dos endpoints
-│       │   ├── middlewares/         # Middlewares de autenticação e validação
-│       │   ├── repositories/        # Acesso direto ao banco de dados (CRUD)
-│       │   ├── routes/              # Definição das rotas da API
-│       │   ├── services/            # Regras de negócio
-│       │   └── utils/               # Funções auxiliares
-│       ├── .env                     # Configurações de ambiente
-│       ├── app.js                   # Configuração e integração dos módulos
-│       └── server.js                # Inicialização do servidor
-├── database/                        # Scripts SQL para criação das tabelas
-├── docs/                            # Documentação adicional
+│       │   ├── config/
+│       │   ├── controllers/
+│       │   ├── middlewares/
+│       │   ├── repositories/
+│       │   ├── routes/
+│       │   ├── services/
+│       │   └── utils/
+│       ├── .env
+│       ├── app.js
+│       └── server.js
+├── database/
+│   └── criar-tabelas.sql
+├── docs/
 ├── uploads/
-│   └── notas-fiscais/              # Armazenamento de arquivos de notas fiscais
-└── README.md                        # Documentação principal do projeto
+│   └── notas-fiscais/
+└── README.md
 ```
 
 ---
@@ -87,9 +88,52 @@ npm install
 
 ### 4. Configure o Banco de Dados
 
-- Crie um banco de dados chamado `mercado` no PostgreSQL.
-- Execute o script `database/criar-tabelas.sql`.
-- Preencha o arquivo `.env` com suas credenciais de conexão.
+Certifique-se de que o PostgreSQL está instalado e em execução.
+
+#### ➤ Crie o banco de dados e o schema:
+
+Abra seu terminal ou cliente SQL (como pgAdmin ou DBeaver) e execute os comandos abaixo:
+
+```sql
+CREATE DATABASE mercado;
+\c mercado
+CREATE SCHEMA mercado;
+```
+
+> 🛑 **Importante:** o schema `mercado` deve existir antes de rodar a aplicação, pois ele será usado como o schema padrão via `search_path` no código da aplicação.
+
+#### ➤ Execute o script de criação das tabelas:
+
+```bash
+psql -U seu_usuario -d mercado -f database/criar-tabelas.sql
+```
+
+#### ➤ Configure as variáveis de ambiente:
+
+Crie um arquivo `.env` na pasta `codigos/back-end/` com as seguintes configurações:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=mercado
+```
+
+#### ➤ Confirmação no código:
+
+O schema `mercado` já é definido automaticamente na conexão, através do parâmetro `search_path` no arquivo `src/config/db.js`:
+
+```js
+const pool = new pg.Pool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  options: '-c search_path=mercado'
+});
+```
 
 ### 5. Execute o Servidor
 
@@ -136,8 +180,6 @@ docs: Adicionar seção de instalação no README
 
 ---
 
-## 👨‍💻 Desenvolvedores
+## 👨‍💻 Desenvolvedor
 
 - Leonardo Gonçalves Flora
-
----
