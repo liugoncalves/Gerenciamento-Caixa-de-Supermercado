@@ -141,7 +141,7 @@ const pool = new pg.Pool({
 npm start
 ```
 
-Servidor iniciado! As APIs estarão disponíveis em `http://localhost:3000`.
+Servidor iniciado! As APIs estarão disponíveis em `http://localhost:3002`.
 
 ### 6. Teste os Endpoints
 
